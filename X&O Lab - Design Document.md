@@ -5,7 +5,7 @@ X&O Lab is a Football playbook creator, allowing users to draw their own plays, 
 | Layer | Technology |
 |-------|-------------|
 | **Frontend** | React, TypeScript, MUI |
-| **Backend** | Spring Boot |
+| **Backend** | Spring Boot 3.5.10 |
 | **Security** | Spring Security |
 | **Database** | PostgreSQL |
 | **Build Tools / Tooling** | Vite, Maven |
@@ -138,11 +138,6 @@ Then the playsheet will be downloaded as an excel file
 - formation_id int not null (fk)
 - play_image varchar(100) not null
 - notes varchar(5000),
-
-### playbook_play
-- playbook_play_id serial primary key
-- playbook_id int not null (fk)
-- play_id int not null (fk)
 
 #### playsheet table
 - playsheet_id serial primary key
@@ -771,30 +766,17 @@ private final ArrayList<String> messages = new ArrayList<>();
 private ResultType type = ResultType.SUCCESS;
 private T payload;
 
-public ResultType getType() {
-    return type;
-}
+public ResultType getType();
 
-public boolean isSuccess() {
-    return type == ResultType.SUCCESS;
-}
+public boolean isSuccess();
 
-public T getPayload() {
-    return payload;
-}
+public T getPayload();
 
-public void setPayload(T payload) {
-    this.payload = payload;
-}
+public void setPayload(T payload);
 
-public List<String> getMessages() {
-    return new ArrayList<>(messages);
-}
+public List<String> getMessages();
 
-public void addMessages(String message, ResultType type) {
-    messages.add(message);
-    this.type = type;
-}
+public void addMessages(String message, ResultType type);
 ```
 
 #### ResultType
