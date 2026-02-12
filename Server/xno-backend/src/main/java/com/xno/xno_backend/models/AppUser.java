@@ -34,5 +34,5 @@ public class AppUser {
     @JoinTable(name = "app_user_role" ,
     joinColumns = @JoinColumn(name = "app_user_id"),
     inverseJoinColumns = @JoinColumn(name = "app_role_id"))
-    private Set<Role> roles = new HashSet<>();
+    private Set<AppRole> roles = new HashSet<>();
 }
