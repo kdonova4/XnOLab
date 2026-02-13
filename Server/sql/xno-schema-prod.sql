@@ -55,7 +55,7 @@ create table playsheet (
 	playsheet_id bigserial primary key,
 	playsheet_name varchar(50) not null,
 	created_at timestamp not null,
-	updated_at timestamp not null,
+	updated_at timestamp,
 	app_user_id bigint not null,
 	playbook_id bigint not null,
 	foreign key (app_user_id) references app_user(app_user_id),
