@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -40,5 +41,5 @@ public class PlaySheet {
     private Playbook playbook;
 
     @OneToMany(mappedBy = "playSheet", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PlaySheetSituation> situations;
+    private Set<PlaySheetSituation> situations;
 }

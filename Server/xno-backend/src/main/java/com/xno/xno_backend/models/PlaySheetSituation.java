@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -30,5 +31,5 @@ public class PlaySheetSituation {
     private PlaySheet playSheet;
 
     @OneToMany(mappedBy = "playSheetSituation", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PlaySheetSituationPlay> plays;
+    private Set<PlaySheetSituationPlay> plays;
 }
