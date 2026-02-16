@@ -24,4 +24,9 @@ public class PlaySheetSituationPlay {
     @ManyToOne
     @JoinColumn(name = "play_id", nullable = false)
     private Play play;
+
+    public PlaySheetSituationPlay(PlaySheetSituation playSheetSituation, Play play) {
+        this.playSheetSituation = playSheetSituation;
+        this.play = play;
+    }
 }

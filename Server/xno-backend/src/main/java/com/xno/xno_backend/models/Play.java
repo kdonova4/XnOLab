@@ -37,4 +37,13 @@ public class Play {
     @ManyToOne
     @JoinColumn(name = "formation_id")
     private Formation formation;
+
+    public Play(String playName, String playImageUrl, String notes, AppUser user, Playbook playbook, Formation formation) {
+        this.playName = playName;
+        this.playImageUrl = playImageUrl;
+        this.notes = notes;
+        this.user = user;
+        this.playbook = playbook;
+        this.formation = formation;
+    }
 }

@@ -35,4 +35,9 @@ public class Formation {
     @OneToMany(mappedBy = "formation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Play> plays = new ArrayList<>();
 
+    public Formation(String formationName, String formationImageUrl, AppUser user) {
+        this.formationName = formationName;
+        this.formationImageUrl = formationImageUrl;
+        this.user = user;
+    }
 }

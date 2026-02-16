@@ -1,6 +1,7 @@
 package com.xno.xno_backend.models;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import java.util.Set;
 
 @Entity
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "app_user")
 public class AppUser {
@@ -35,4 +37,12 @@ public class AppUser {
     joinColumns = @JoinColumn(name = "app_user_id"),
     inverseJoinColumns = @JoinColumn(name = "app_role_id"))
     private Set<AppRole> roles = new HashSet<>();
+
+    public AppUser(String username, String email, String password, boolean disabled, Set<AppRole> roles) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.disabled = disabled;
+        this.roles = roles;
+    }
 }

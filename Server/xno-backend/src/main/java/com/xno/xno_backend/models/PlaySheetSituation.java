@@ -32,4 +32,10 @@ public class PlaySheetSituation {
 
     @OneToMany(mappedBy = "playSheetSituation", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PlaySheetSituationPlay> plays;
+
+    public PlaySheetSituation(String situationName, String situationColor, PlaySheet playSheet) {
+        this.situationName = situationName;
+        this.situationColor = situationColor;
+        this.playSheet = playSheet;
+    }
 }

@@ -42,4 +42,12 @@ public class PlaySheet {
 
     @OneToMany(mappedBy = "playSheet", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PlaySheetSituation> situations;
+
+    public PlaySheet(String playSheetName, Timestamp createdAt, Timestamp updatedAt, AppUser user, Playbook playbook) {
+        this.playSheetName = playSheetName;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.user = user;
+        this.playbook = playbook;
+    }
 }

@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface PlaybookRepository extends JpaRepository<Playbook, Long> {
     List<Playbook> findByUser_AppUserId(Long userId);
 
-    Optional<Playbook> findByPlaybookName(String playbookName);
+    List<Playbook> findByPlaybookNameContainingIgnoreCaseAndUser_AppUserId(String name, Long userId);
 
     @Query("""
             SELECT DISTINCT pb

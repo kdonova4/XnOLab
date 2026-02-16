@@ -34,4 +34,9 @@ public class Playbook {
         this.playbookName = playbookName;
         this.user = user;
     }
+
+    public Playbook(String playbookName, AppUser user) {
+        this.playbookName = playbookName;
+        this.user = user;
+    }
 }
