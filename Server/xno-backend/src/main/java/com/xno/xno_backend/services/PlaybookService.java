@@ -11,9 +11,9 @@ public interface PlaybookService {
 
     List<PlaybookSummaryResponseDTO> getAllPlaybooksByUser(Long userId);
 
-    PlaybookSummaryResponseDTO createPlaybook(PlaybookCreateDTO playbookCreateDTO);
+    Result<PlaybookSummaryResponseDTO> createPlaybook(PlaybookCreateDTO playbookCreateDTO);
 
-    PlaybookSummaryResponseDTO updatePlaybook(PlaybookUpdateDTO playbookUpdateDTO);
+    Result<PlaybookSummaryResponseDTO> updatePlaybook(PlaybookUpdateDTO playbookUpdateDTO);
 
     void deletePlaybook(Long playbookId);
 }

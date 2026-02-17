@@ -14,6 +14,8 @@ public interface PlaySheetRepository extends JpaRepository<PlaySheet, Long> {
 
     Optional<PlaySheet> findByPlaySheetName(String playSheetName);
 
+    List<PlaySheet> findByPlaySheetNameContainingIgnoreCaseAndUser_AppUserId(String name, Long userId);
+
     List<PlaySheet> findByUser_AppUserId(Long userId);
 
     List<PlaySheet> findByPlaybook_PlaybookId(Long playbookId);

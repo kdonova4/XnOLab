@@ -11,6 +11,9 @@ import java.util.Optional;
 
 @Repository
 public interface PlaybookRepository extends JpaRepository<Playbook, Long> {
+
+    Optional<Playbook> findByPlaybookName(String name);
+
     List<Playbook> findByUser_AppUserId(Long userId);
 
     List<Playbook> findByPlaybookNameContainingIgnoreCaseAndUser_AppUserId(String name, Long userId);

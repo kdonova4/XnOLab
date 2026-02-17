@@ -41,6 +41,12 @@ public class PlaybookRepositoryTest {
     }
 
     @Test
+    void shouldFindByPlaybookName() {
+        Optional<Playbook> playbook = playbookRepository.findByPlaybookName("playbook1");
+        assertTrue(playbook.isPresent());
+    }
+
+    @Test
     void shouldFindByUserId() {
         Optional<AppUser> user = appUserRepository.findByUsername("kdonova4");
         List<Playbook> playbooks = playbookRepository.findByUser_AppUserId(user.get().getAppUserId());
@@ -48,8 +54,9 @@ public class PlaybookRepositoryTest {
     }
 
     @Test
-    void shouldFindByName() {
-        List<Playbook> playbooks = playbookRepository.findByPlaybookNameContainingIgnoreCaseAndUser_AppUserId("play", 1L);
+    void shouldSearchByNameAndUser() {
+        Optional<AppUser> user = appUserRepository.findByUsername("kdonova4");
+        List<Playbook> playbooks = playbookRepository.findByPlaybookNameContainingIgnoreCaseAndUser_AppUserId("play", user.get().getAppUserId());
         assertEquals(1, playbooks.size());
     }
 
