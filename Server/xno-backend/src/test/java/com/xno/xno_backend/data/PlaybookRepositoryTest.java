@@ -4,14 +4,12 @@ import com.xno.xno_backend.models.AppUser;
 import com.xno.xno_backend.models.Playbook;
 import com.xno.xno_backend.repositories.AppUserRepository;
 import com.xno.xno_backend.repositories.PlaybookRepository;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
@@ -61,7 +59,6 @@ public class PlaybookRepositoryTest {
     }
 
     @Test
-    @Transactional
     void shouldLoadFullPlaybook() {
         Optional<AppUser> user = appUserRepository.findByUsername("kdonova4");
         List<Playbook> playbooks = playbookRepository.loadPlaybookByUser(user.get().getAppUserId());

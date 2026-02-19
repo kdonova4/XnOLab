@@ -38,7 +38,20 @@ public class FormationServiceImpl implements FormationService{
 
     @Override
     public List<FormationResponseDTO> searchByFormationName(String formationName) {
-        return List.of();
+        List<Formation> formations = formationRepository.findByFormationNameContainingIgnoreCaseAndUser_AppUserId(formationName, 1L);
+
+        // REFACTOR TO A DEDICATED MAPPER CLASS!!!!!!!!
+        List<FormationResponseDTO> formationResponseDTOS = formations.stream()
+                .map(formation -> {
+
+                    return new FormationResponseDTO(
+                            formation.getFormationId(),
+                            formation.getFormationName(),
+                            formation.getFormationImageUrl()
+                    );
+                }).toList();
+
+        return formationResponseDTOS;
     }
 
     @Override
