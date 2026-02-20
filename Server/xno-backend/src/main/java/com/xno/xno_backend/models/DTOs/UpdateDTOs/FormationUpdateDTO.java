@@ -8,5 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FormationUpdateDTO {
+    private Long formationId;
     private String formationName;
 }

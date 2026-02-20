@@ -51,4 +51,5 @@ public class AppUser {
         this.email = email;
         this.password = password;
     }
+
 }

@@ -47,12 +47,12 @@ public class PrePopulate {
         Playbook playbook = new Playbook("playbook1", user);
         playbookRepository.save(playbook);
 
-        Formation formation = new Formation("formation1", "url", user);
+        Formation formation = new Formation("formation1", "url", "id", user);
         formationRepository.save(formation);
 
-        Play play1 = new Play("play1", "url1", "notes", user, playbook, formation);
-        Play play2 = new Play("play2", "url2", "notes", user, playbook, formation);
-        Play play3 = new Play("play3", "url3", "notes", user, playbook, formation);
+        Play play1 = new Play("play1", "url1", "id", "notes", user, playbook, formation);
+        Play play2 = new Play("play2", "url2", "id", "notes", user, playbook, formation);
+        Play play3 = new Play("play3", "url3", "id", "notes", user, playbook, formation);
 
         playRepository.save(play1);
         playRepository.save(play2);

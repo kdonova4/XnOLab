@@ -34,6 +34,7 @@ create table formation (
 	formation_id bigserial primary key,
 	formation_name varchar(50) not null,
 	formation_image_url varchar(300) not null,
+	formation_public_id varchar(300) not null,
 	app_user_id bigint not null,
 	foreign key (app_user_id) references app_user(app_user_id)
 );
@@ -42,6 +43,7 @@ create table play (
 	play_id bigserial primary key,
 	play_name varchar(50) not null,
 	play_image_url varchar(300) not null,
+	play_public_id varchar(300) not null,
 	notes varchar(5000),
 	formation_id bigint not null,
 	playbook_id bigint not null,
@@ -77,3 +79,11 @@ create table playsheet_situation_play (
 	foreign key (playsheet_situation_id) references playsheet_situation(playsheet_situation_id),
 	foreign key (play_id) references play(play_id)
 );
+
+insert into app_role (role_name) values 
+('ROLE_USER'),
+('ROLE_ADMIN');
+
+select * from app_role;
+select * from app_user;
+select * from app_user_role;

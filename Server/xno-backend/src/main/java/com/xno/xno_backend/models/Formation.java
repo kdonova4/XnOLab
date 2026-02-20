@@ -28,6 +28,9 @@ public class Formation {
     @Column(name = "formation_image_url", length = 300, nullable = false)
     private String formationImageUrl;
 
+    @Column(name = "formation_public_id", length = 300, nullable = false)
+    private String formationPublicId;
+
     @ManyToOne
     @JoinColumn(name = "app_user_id")
     private AppUser user;
@@ -35,9 +38,10 @@ public class Formation {
     @OneToMany(mappedBy = "formation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Play> plays = new ArrayList<>();
 
-    public Formation(String formationName, String formationImageUrl, AppUser user) {
+    public Formation(String formationName, String formationImageUrl, String formationPublicId, AppUser user) {
         this.formationName = formationName;
         this.formationImageUrl = formationImageUrl;
+        this.formationPublicId = formationPublicId;
         this.user = user;
     }
 }

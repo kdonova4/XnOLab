@@ -23,6 +23,9 @@ public class Play {
     @Column(name = "play_image_url", length = 300, nullable = false)
     private String playImageUrl;
 
+    @Column(name = "play_public_id", length = 300, nullable = false)
+    private String playPublicId;
+
     @Column(name = "notes")
     private String notes;
 
@@ -38,9 +41,10 @@ public class Play {
     @JoinColumn(name = "formation_id")
     private Formation formation;
 
-    public Play(String playName, String playImageUrl, String notes, AppUser user, Playbook playbook, Formation formation) {
+    public Play(String playName, String playImageUrl, String playPublicId, String notes, AppUser user, Playbook playbook, Formation formation) {
         this.playName = playName;
         this.playImageUrl = playImageUrl;
+        this.playPublicId = playPublicId;
         this.notes = notes;
         this.user = user;
         this.playbook = playbook;
