@@ -16,13 +16,20 @@ public interface PlaybookRepository extends JpaRepository<Playbook, Long> {
 
     List<Playbook> findByUser_AppUserId(Long userId);
 
+    Optional<Playbook> findByPlaybookIdAndUser_AppUserId(Long playbookId, Long userId);
+
+    boolean existsByUser_AppUserIdAndPlaybookNameAndPlaybookIdNot(Long userId, String playbookName, Long playbookId);
+
+    boolean existsByUser_AppUserIdAndPlaybookName(Long userId, String playbookName);
+
     List<Playbook> findByPlaybookNameContainingIgnoreCaseAndUser_AppUserId(String name, Long userId);
 
     @Query("""
             SELECT DISTINCT pb
             FROM Playbook pb
             LEFT JOIN FETCH pb.plays p
-            WHERE pb.user.appUserId = :userId
+            LEFT JOIN FETCH p.formation f
+            WHERE pb.playbookId = :playbookId
             """)
-    List<Playbook> loadPlaybookByUser(@Param("userId") Long userId);
+    Optional<Playbook> loadPlaybookByPlaybookId(@Param("playbookId") Long playbookId);
 }

@@ -70,7 +70,15 @@ public class FormationServiceImpl implements FormationService{
         String formationUrl = uploadResult.get("secure_url").toString();
         String publicId = uploadResult.get("public_id").toString();
 
-        AppUser appUser = appUserRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("User not found"));
+        Optional<AppUser> optional = appUserRepository.findById(userId);
+
+        if(optional.isEmpty()) {
+            result.addMessages("User with ID " + userId + " Not Found", ResultType.NOT_FOUND);
+            return result;
+        }
+
+        AppUser appUser = optional.get();
+
         Formation formation = new Formation(formationCreateDTO.getFormationName(), formationUrl, publicId,  appUser);
 
         Formation savedFormation = formationRepository.save(formation);
@@ -84,7 +92,42 @@ public class FormationServiceImpl implements FormationService{
 
     @Override
     public Result<FormationResponseDTO> updateFormation(FormationUpdateDTO formationUpdateDTO, MultipartFile file, Long userId) {
-        return null;
+        Result<FormationResponseDTO> result = validateUpdate(formationUpdateDTO, file, userId);
+
+        if(!result.isSuccess()) {
+            return result;
+        }
+
+        Optional<Formation> optional = formationRepository.findById(formationUpdateDTO.getFormationId());
+
+        if(optional.isEmpty()) {
+            result.addMessages("Formation with ID " + formationUpdateDTO.getFormationId() + " Not Found", ResultType.NOT_FOUND);
+            return result;
+        }
+
+        Formation existing = optional.get();
+
+        if(file != null) {
+
+
+            Map uploadResult = imageService.uploadImage(file);
+
+            String formationUrl = uploadResult.get("secure_url").toString();
+            String publicId = uploadResult.get("public_id").toString();
+
+            imageService.deleteImage(existing.getFormationPublicId());
+
+            existing.setFormationImageUrl(formationUrl);
+            existing.setFormationPublicId(publicId);
+        }
+
+        existing.setFormationName(formationUpdateDTO.getFormationName());
+
+        Formation savedFormation = formationRepository.save(existing);
+        FormationResponseDTO response = new FormationResponseDTO(savedFormation.getFormationId(), savedFormation.getFormationName(), savedFormation.getFormationImageUrl());
+        result.setPayload(response);
+
+        return result;
     }
 
     @Override
@@ -143,8 +186,13 @@ public class FormationServiceImpl implements FormationService{
             return result;
         }
 
-        if(formationUpdateDTO.getFormationId() == null || !formationRepository.existsById(formationUpdateDTO.getFormationId())) {
-            result.addMessages("Formation must exist with same ID", ResultType.INVALID);
+        if(formationUpdateDTO.getFormationId() == null) {
+            result.addMessages("Formation ID cannot be null", ResultType.INVALID);
+            return result;
+        }
+
+        if(formationRepository.findByFormationIdAndUser_AppUserId(formationUpdateDTO.getFormationId(), userId).isEmpty()) {
+            result.addMessages("Formation must exist and belong to user", ResultType.INVALID);
             return result;
         }
 

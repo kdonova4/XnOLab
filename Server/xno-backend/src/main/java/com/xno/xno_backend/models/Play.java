@@ -38,7 +38,7 @@ public class Play {
     private Playbook playbook;
 
     @ManyToOne
-    @JoinColumn(name = "formation_id")
+    @JoinColumn(name = "formation_id", nullable = false)
     private Formation formation;
 
     public Play(String playName, String playImageUrl, String playPublicId, String notes, AppUser user, Playbook playbook, Formation formation) {

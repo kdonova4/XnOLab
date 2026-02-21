@@ -9,11 +9,13 @@ import java.util.List;
 
 public interface PlaybookService {
 
+    PlaybookDetailResponseDTO getPlaybookDetails(Long playbookId);
+
     List<PlaybookSummaryResponseDTO> getAllPlaybooksByUser(Long userId);
 
-    Result<PlaybookSummaryResponseDTO> createPlaybook(PlaybookCreateDTO playbookCreateDTO);
+    Result<PlaybookSummaryResponseDTO> createPlaybook(PlaybookCreateDTO playbookCreateDTO, Long userId);
 
-    Result<PlaybookSummaryResponseDTO> updatePlaybook(PlaybookUpdateDTO playbookUpdateDTO);
+    Result<PlaybookSummaryResponseDTO> updatePlaybook(PlaybookUpdateDTO playbookUpdateDTO, Long userId);
 
     void deletePlaybook(Long playbookId);
 }

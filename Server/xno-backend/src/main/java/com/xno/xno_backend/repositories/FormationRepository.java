@@ -13,6 +13,8 @@ public interface FormationRepository extends JpaRepository<Formation, Long> {
 
     Optional<Formation> findByFormationName(String formationName);
 
+    Optional<Formation> findByFormationIdAndUser_AppUserId(Long formationId, Long userId);
+
     List<Formation> findByFormationNameContainingIgnoreCaseAndUser_AppUserId(String formationName, Long userId);
 
     List<Formation> findByUser_AppUserId(Long userId);

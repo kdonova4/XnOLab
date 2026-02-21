@@ -11,7 +11,11 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "playbook")
+@Table(name = "playbook",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uk_user_playbook_name",
+                columnNames = {"app_user_id", "playbook_name"}
+        ))
 public class Playbook {
 
     @Id
@@ -23,7 +27,7 @@ public class Playbook {
     private String playbookName;
 
     @ManyToOne
-    @JoinColumn(name = "app_user_id")
+    @JoinColumn(name = "app_user_id", nullable = false)
     private AppUser user;
 
     @OneToMany(mappedBy = "playbook", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -8,5 +8,5 @@ public interface ImageService {
 
     Map uploadImage(MultipartFile file);
 
-    boolean deleteImage(String publicId);
+    void deleteImage(String publicId);
 }

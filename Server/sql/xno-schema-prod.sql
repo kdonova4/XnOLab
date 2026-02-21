@@ -27,7 +27,8 @@ create table playbook (
 	playbook_id bigserial primary key,
 	playbook_name varchar(50) not null,
 	app_user_id bigint not null,
-	foreign key (app_user_id) references app_user(app_user_id)
+	foreign key (app_user_id) references app_user(app_user_id),
+	constraint uk_user_playbook_name unique (app_user_id, playbook_name)
 );
 
 create table formation (

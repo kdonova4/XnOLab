@@ -34,7 +34,7 @@ public class CloudinaryImageService implements ImageService{
     }
 
     @Override
-    public boolean deleteImage(String publicId) {
+    public void deleteImage(String publicId) {
         Map<String, Object> options = ObjectUtils.asMap(
                 "resource_type", "image",
                 "invalidate", true
@@ -46,11 +46,6 @@ public class CloudinaryImageService implements ImageService{
             throw new RuntimeException("Image deletion failed");
         }
 
-        if(uploadResult.get("result").equals("ok")) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     public File convertToFile(MultipartFile file) throws IOException {
