@@ -10,6 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PlaySheetUpdateDTO {
+    private Long playSheetId;
     private String playSheetName;
     private List<PlaySheetSituationUpdateDTO> situations;
 }

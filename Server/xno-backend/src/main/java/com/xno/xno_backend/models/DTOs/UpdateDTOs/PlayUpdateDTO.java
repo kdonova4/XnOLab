@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PlayUpdateDTO {
+    private Long playId;
     private String playName;
     private String playNotes;
 }
