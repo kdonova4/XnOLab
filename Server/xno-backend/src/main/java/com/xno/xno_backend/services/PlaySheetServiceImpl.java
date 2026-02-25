@@ -1,22 +1,41 @@
 package com.xno.xno_backend.services;
 
+import com.xno.xno_backend.models.*;
 import com.xno.xno_backend.models.DTOs.CreateDTOs.PlaySheetCreateDTO;
 import com.xno.xno_backend.models.DTOs.CreateDTOs.PlaySheetSituationCreateDTO;
 import com.xno.xno_backend.models.DTOs.ResponseDTOs.PlaySheetDetailResponseDTO;
 import com.xno.xno_backend.models.DTOs.ResponseDTOs.PlaySheetSummaryResponseDTO;
+import com.xno.xno_backend.models.DTOs.ResponseDTOs.PlaybookSummaryResponseDTO;
+import com.xno.xno_backend.models.DTOs.UpdateDTOs.PlaySheetSituationUpdateDTO;
 import com.xno.xno_backend.models.DTOs.UpdateDTOs.PlaySheetUpdateDTO;
-import com.xno.xno_backend.repositories.PlaySheetRepository;
+import com.xno.xno_backend.models.DTOs.UpdateDTOs.PlayUpdateDTO;
+import com.xno.xno_backend.repositories.*;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class PlaySheetServiceImpl implements PlaySheetService {
 
     private final PlaySheetRepository playSheetRepository;
+    private final PlaybookRepository playbookRepository;
+    private final AppUserRepository appUserRepository;
+    private final PlayRepository playRepository;
+    private final PlaySheetSituationRepository playSheetSituationRepository;
+    private final PlaySheetSituationPlayRepository playSheetSituationPlayRepository;
 
-    public PlaySheetServiceImpl(PlaySheetRepository playSheetRepository) {
+    public PlaySheetServiceImpl(PlaySheetRepository playSheetRepository, PlaybookRepository playbookRepository, AppUserRepository appUserRepository, PlayRepository playRepository, PlaySheetSituationRepository playSheetSituationRepository, PlaySheetSituationPlayRepository playSheetSituationPlayRepository) {
         this.playSheetRepository = playSheetRepository;
+        this.playbookRepository = playbookRepository;
+        this.appUserRepository = appUserRepository;
+        this.playRepository = playRepository;
+        this.playSheetSituationRepository = playSheetSituationRepository;
+        this.playSheetSituationPlayRepository = playSheetSituationPlayRepository;
     }
 
 
@@ -49,7 +68,39 @@ public class PlaySheetServiceImpl implements PlaySheetService {
     public Result<PlaySheetSummaryResponseDTO> createPlaySheet(PlaySheetCreateDTO playSheetCreateDTO, Long userId) {
 
         // Validate DTO
+        Result<PlaySheetSummaryResponseDTO> result = validateCreate(playSheetCreateDTO, userId);
+
+        if(!result.isSuccess()) {
+            return result;
+        }
         // Validate Playbook, User...
+        Optional<Playbook> optionalPlaybook = playbookRepository.findById(playSheetCreateDTO.getPlaybookId());
+
+        if(optionalPlaybook.isEmpty()) {
+            result.addMessages("Playbook with ID " + playSheetCreateDTO.getPlaybookId() + " Not Found", ResultType.NOT_FOUND);
+            return result;
+        }
+
+        Playbook playbook = optionalPlaybook.get();
+
+        if(!playbook.getUser().getAppUserId().equals(userId)) {
+            result.addMessages("User does not own this playbook", ResultType.FORBIDDEN);
+            return result;
+        }
+
+        Optional<AppUser> optional = appUserRepository.findById(userId);
+
+        if(optional.isEmpty()) {
+            result.addMessages("User with ID " + userId + " Not Found", ResultType.NOT_FOUND);
+            return result;
+        }
+
+        AppUser appUser = optional.get();
+
+
+        PlaySheet playSheet = new PlaySheet(playSheetCreateDTO.getPlaySheetName(),
+                Timestamp.valueOf(LocalDateTime.now()), null, appUser, playbook);
+
 
         // if successful
         // Create PlaySheet
@@ -58,34 +109,171 @@ public class PlaySheetServiceImpl implements PlaySheetService {
         // Then create the PlaySheetSituationPlay and assign the play ID and the situation ID accordingly
         // Add this PlaySheetSituationPlay to the current created situation's plays list then move on to the next play ID
         // once finished with a situation, add it to the PlaySheet's situations list
+        for(PlaySheetSituationCreateDTO situation : playSheetCreateDTO.getSituations()) {
+
+            PlaySheetSituation playSheetSituation = new PlaySheetSituation(situation.getSituationName(),
+                    situation.getSituationColor(), playSheet);
+
+            for(Long id : situation.getPlayIds()) {
+                Optional<Play> optionalPlay = playRepository.findById(id);
+                if(optionalPlay.isEmpty()) {
+                    result.addMessages(String.format("Play with ID %d does not exist for situation %s", id,situation.getSituationName()), ResultType.INVALID);
+                    return result;
+                }
+
+                Play play = optionalPlay.get();
+
+                PlaySheetSituationPlay playSheetSituationPlay = new PlaySheetSituationPlay(playSheetSituation, play);
+                playSheetSituation.getPlays().add(playSheetSituationPlay);
+            }
+
+            playSheet.getSituations().add(playSheetSituation);
+        }
+
+
+
 
 
         // Save PlaySheet
         // Convert saved PlaySheet into a SummaryDTO
         // Set result payload
         // return result
-
-        return null;
+        PlaySheet savedPlaySheet = playSheetRepository.save(playSheet);
+        PlaySheetSummaryResponseDTO playSheetSummaryResponseDTO = new PlaySheetSummaryResponseDTO(
+                savedPlaySheet.getPlaySheetId(),
+                savedPlaySheet.getPlaySheetName(),
+                savedPlaySheet.getCreatedAt(),
+                savedPlaySheet.getUpdatedAt(),
+                new PlaybookSummaryResponseDTO(
+                        playbook.getPlaybookId(),
+                        playbook.getPlaybookName()
+                )
+        );
+        result.setPayload(playSheetSummaryResponseDTO);
+        return result;
     }
 
     @Override
-    public Result<PlaySheetSummaryResponseDTO> updatePlaySheet(PlaySheetUpdateDTO playSheetUpdateDTO, Long playSheetId, Long userId) {
+    public Result<PlaySheetSummaryResponseDTO> updatePlaySheet(PlaySheetUpdateDTO playSheetUpdateDTO, Long userId) {
 
         // Validate DTO
+        Result<PlaySheetSummaryResponseDTO> result = validateUpdate(playSheetUpdateDTO, userId);
+
+        if(!result.isSuccess()) {
+            return result;
+        }
+
+        Optional<PlaySheet> optionalPlaySheet = playSheetRepository.findById(playSheetUpdateDTO.getPlaySheetId());
+
+        if(optionalPlaySheet.isEmpty()) {
+            result.addMessages("PlaySheet not found with ID " + playSheetUpdateDTO.getPlaySheetId(), ResultType.NOT_FOUND);
+            return result;
+        }
+
 
         // if successful
         // fetch existing PlaySheet
+        PlaySheet playSheet = optionalPlaySheet.get();
+
+        if(!playSheet.getUser().getAppUserId().equals(userId)) {
+            result.addMessages("User does not own this PlaySheet", ResultType.FORBIDDEN);
+            return result;
+        }
+
+        playSheet.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
+        playSheet.setPlaySheetName(playSheetUpdateDTO.getPlaySheetName());
+
         // Update PlaySheet fields
         // Convert the List of PlaySheetSituations from PlaySheet to a Map of (SituationId, PlaySheetSituation)
+        Map<Long, PlaySheetSituation> existingSituations = playSheet.getSituations()
+                .stream()
+                .collect(Collectors.toMap(
+                        PlaySheetSituation::getPlaySheetSituationId,
+                        Function.identity()
+                ));
+
+        Set<Long> incomingIds = new HashSet<>();
 
         // Loop through the playSheetUpdateDTO situations
-        //  -> if the playSheetSituationId is null, create the situation and add it to the situation list for the existing PlaySheet, assign the PlaySheet to the situation
-        //  -> else, meaning the situation has an ID, get the playSheetSituation and update it
-        //  -> Add these situations, incoming situations, to a set of incoming IDs
-        //  -> then using .removeIf(), remove the situations from the existing PlaySheet situations list that don't match with the incoming IDs
+        for(PlaySheetSituationUpdateDTO situation : playSheetUpdateDTO.getSituations()) {
+            //  -> if the playSheetSituationId is null, create the situation, assign the PlaySheet to the situation
+            if(situation.getPlaySheetSituationId() == null) {
+                PlaySheetSituation playSheetSituation = new PlaySheetSituation(
+                        situation.getSituationName(),
+                        situation.getSituationColor(),
+                        playSheet
+                );
 
-        //  -> For the PlaySheetSituation plays, if the situation is null, For each id, find the Play id, and situation and create the SituationPlay
-        //  -> Add them to the situationPlay list and then add the whole situation to the Existing PlaySheet
+                //  -> For the PlaySheetSituation plays, if the situation is null, For each id, find the Play id
+                //  And situation and create the SituationPlay
+                for(Long id : situation.getPlayIds()) {
+                    Optional<Play> optionalPlay = playRepository.findById(id);
+                    if(optionalPlay.isEmpty()) {
+                        result.addMessages(String.format("Play with ID %d does not exist for situation %s", id,situation.getSituationName()), ResultType.NOT_FOUND);
+                        return result;
+                    }
+
+                    Play play = optionalPlay.get();
+
+                    PlaySheetSituationPlay playSheetSituationPlay = new PlaySheetSituationPlay(playSheetSituation, play);
+                    playSheetSituation.getPlays().add(playSheetSituationPlay);
+                }
+
+                playSheet.getSituations().add(playSheetSituation);
+            } else {
+                PlaySheetSituation existing = existingSituations.get(situation.getPlaySheetSituationId());
+
+                if(existing == null) {
+                    result.addMessages(String.format("Situation with ID %d does not exist for PlaySheet %d", situation.getPlaySheetSituationId(), playSheet.getPlaySheetId()), ResultType.NOT_FOUND);
+                    return result;
+                }
+
+                existing.setSituationName(situation.getSituationName());
+                existing.setSituationColor(situation.getSituationColor());
+
+
+
+                // Update PlayLists
+                Set<Long> existingIds = existing.getPlays().stream()
+                        .map(playSheetSituationPlay -> playSheetSituationPlay.getPlay().getPlayId())
+                        .collect(Collectors.toSet());
+
+                Set<Long> incomingPlayIds = new HashSet<>(situation.getPlayIds());
+
+                Set<Long> toRemove = new HashSet<>(existingIds);
+                toRemove.removeAll(incomingPlayIds);
+
+                Set<Long> toAdd = new HashSet<>(incomingPlayIds);
+                toAdd.removeAll(existingIds);
+
+                existing.getPlays().removeIf(psp -> toRemove.contains(psp.getPlay().getPlayId()));
+
+                for(Long id : toAdd) {
+                    Optional<Play> optionalPlay = playRepository.findById(id);
+                    if(optionalPlay.isEmpty()) {
+                        result.addMessages(String.format("Play with ID %d does not exist for situation %s", id,situation.getSituationName()), ResultType.NOT_FOUND);
+                        return result;
+                    }
+
+                    Play play = optionalPlay.get();
+                    PlaySheetSituationPlay playSheetSituationPlay = new PlaySheetSituationPlay(existing, play);
+                    existing.getPlays().add(playSheetSituationPlay);
+                }
+
+                incomingIds.add(existing.getPlaySheetSituationId());
+            }
+        }
+
+        playSheet.getSituations().removeIf(playSheetSituation ->
+            playSheetSituation.getPlaySheetSituationId() != null && !incomingIds.contains(playSheetSituation.getPlaySheetSituationId()));
+
+
+        // First, Get the Situation
+        // Then, Validate it is there and return the result if not
+        // Then, Update the situationName and situationColor
+        // Next, Add the situationId to the Incoming ID set
+        // Then, handle PlaySheetSituationPlays
+        //
 
         //  -> If the situation does exist, create a set of ids from the existing situation, compare then using .removeAll() with the dto set of IDs
         //  -> For removing it is existing - incoming [1,2,3] - [3,4,5] = removing [1,2]
@@ -93,17 +281,30 @@ public class PlaySheetServiceImpl implements PlaySheetService {
         //  -> Loop through add set and create each PlaySheetSituationPlay, assign the Play and Situation for each then add to situation plays list
         //  -> Use .removeIf() to remove the contained removed ids in the situations plays list;
 
+
+
         // Save PlaySheet
         // Convert Saved PlaySheet into a Summary DTO
         // Set result payload
         // Return result
-
-        return null;
+        PlaySheet savedPlaySheet = playSheetRepository.save(playSheet);
+        PlaySheetSummaryResponseDTO playSheetSummaryResponseDTO = new PlaySheetSummaryResponseDTO(
+                savedPlaySheet.getPlaySheetId(),
+                savedPlaySheet.getPlaySheetName(),
+                savedPlaySheet.getCreatedAt(),
+                savedPlaySheet.getUpdatedAt(),
+                new PlaybookSummaryResponseDTO(
+                        savedPlaySheet.getPlaybook().getPlaybookId(),
+                        savedPlaySheet.getPlaybook().getPlaybookName()
+                )
+        );
+        result.setPayload(playSheetSummaryResponseDTO);
+        return result;
     }
 
     @Override
     public void deletePlaySheet(Long playSheetId, Long userId) {
-
+        playSheetRepository.deleteByPlaySheetIdAndUser_AppUserId(playSheetId, userId);
     }
 
     private Result<PlaySheetSummaryResponseDTO> validateCreate(PlaySheetCreateDTO playSheetCreateDTO, Long userId) {
@@ -127,6 +328,58 @@ public class PlaySheetServiceImpl implements PlaySheetService {
             for(PlaySheetSituationCreateDTO situation : playSheetCreateDTO.getSituations()) {
                 if(situation.getPlayIds().isEmpty()) {
                     result.addMessages("Cannot have a situation without any plays", ResultType.INVALID);
+                    return result;
+                }
+                if(situation.getSituationName() == null || situation.getSituationName().isBlank()) {
+                    result.addMessages("Situation Name cannot be null or blank", ResultType.INVALID);
+                    return result;
+                }
+                if(situation.getSituationColor() == null || situation.getSituationColor().isBlank()) {
+                    result.addMessages("Situation Color cannot be null or blank", ResultType.INVALID);
+                    return result;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private Result<PlaySheetSummaryResponseDTO> validateUpdate(PlaySheetUpdateDTO playSheetUpdateDTO, Long userId) {
+        Result<PlaySheetSummaryResponseDTO> result = new Result<>();
+
+        if(playSheetUpdateDTO == null) {
+            result.addMessages("PlaySheet Update cannot be null", ResultType.INVALID);
+            return result;
+        }
+
+        String name = playSheetUpdateDTO.getPlaySheetName();
+        if(name == null || name.isBlank()) {
+            result.addMessages("PlaySheet name cannot be null or blank", ResultType.INVALID);
+            return result;
+        }
+
+        Optional<AppUser> optional = appUserRepository.findById(userId);
+
+        if(optional.isEmpty()) {
+            result.addMessages("User with ID " + userId + " Not Found", ResultType.NOT_FOUND);
+            return result;
+        }
+
+        if(playSheetUpdateDTO.getSituations().isEmpty()) {
+            result.addMessages("Cannot create PlaySheet with 0 situations", ResultType.INVALID);
+            return result;
+        } else {
+            for(PlaySheetSituationUpdateDTO situation : playSheetUpdateDTO.getSituations()) {
+                if(situation.getPlayIds().isEmpty()) {
+                    result.addMessages("Cannot have a situation without any plays", ResultType.INVALID);
+                    return result;
+                }
+                if(situation.getSituationName() == null || situation.getSituationName().isBlank()) {
+                    result.addMessages("Situation Name cannot be null or blank", ResultType.INVALID);
+                    return result;
+                }
+                if(situation.getSituationColor() == null || situation.getSituationColor().isBlank()) {
+                    result.addMessages("Situation Color cannot be null or blank", ResultType.INVALID);
                     return result;
                 }
             }

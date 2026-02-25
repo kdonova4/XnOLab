@@ -29,4 +29,7 @@ public interface PlaySheetRepository extends JpaRepository<PlaySheet, Long> {
             WHERE ps.playSheetId = :id
             """)
     Optional<PlaySheet> loadPlaySheetById(@Param("id") Long playSheetId);
+
+    void deleteByPlaySheetIdAndUser_AppUserId(Long playSheetId, Long userId);
+
 }

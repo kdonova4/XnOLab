@@ -21,7 +21,7 @@ public interface PlaySheetService {
 
     Result<PlaySheetSummaryResponseDTO> createPlaySheet(PlaySheetCreateDTO playSheetCreateDTO, Long userId);
 
-    Result<PlaySheetSummaryResponseDTO> updatePlaySheet(PlaySheetUpdateDTO playSheetUpdateDTO, Long playSheetId, Long userId);
+    Result<PlaySheetSummaryResponseDTO> updatePlaySheet(PlaySheetUpdateDTO playSheetUpdateDTO, Long userId);
 
     void deletePlaySheet(Long playSheetId, Long userId);
 }
