@@ -60,8 +60,9 @@ public class PlaybookRepositoryTest {
 
     @Test
     void shouldLoadFullPlaybook() {
+        Optional<AppUser> user = appUserRepository.findByUsername("kdonova4");
         Optional<Playbook> playbook = playbookRepository.findByPlaybookName("playbook1");
-        Optional<Playbook> fullPlaybook = playbookRepository.loadPlaybookByPlaybookId(playbook.get().getPlaybookId());
+        Optional<Playbook> fullPlaybook = playbookRepository.loadPlaybookByPlaybookId(playbook.get().getPlaybookId(), user.get().getAppUserId());
         System.out.println("PRINTINTINGINGINIGNG++++++++++++++++++++++++++++++++++++");
         System.out.println(fullPlaybook.get().getPlays().get(0).getFormation().getFormationName());
         assertEquals(3, fullPlaybook.get().getPlays().size());

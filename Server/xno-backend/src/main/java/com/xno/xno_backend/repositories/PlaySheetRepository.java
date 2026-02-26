@@ -14,11 +14,13 @@ public interface PlaySheetRepository extends JpaRepository<PlaySheet, Long> {
 
     Optional<PlaySheet> findByPlaySheetName(String playSheetName);
 
+    Optional<PlaySheet> findByPlaySheetIdAndUser_AppUserId(Long playSheetId, Long userId);
+
     List<PlaySheet> findByPlaySheetNameContainingIgnoreCaseAndUser_AppUserId(String name, Long userId);
 
     List<PlaySheet> findByUser_AppUserId(Long userId);
 
-    List<PlaySheet> findByPlaybook_PlaybookId(Long playbookId);
+    List<PlaySheet> findByPlaybook_PlaybookIdAndUser_AppUserId(Long playbookId, Long userId);
 
     @Query("""
             SELECT DISTINCT ps
@@ -27,8 +29,9 @@ public interface PlaySheetRepository extends JpaRepository<PlaySheet, Long> {
             LEFT JOIN FETCH pss.plays pssp
             LEFT JOIN FETCH pssp.play
             WHERE ps.playSheetId = :id
+            AND ps.user.appUserId = :userId
             """)
-    Optional<PlaySheet> loadPlaySheetById(@Param("id") Long playSheetId);
+    Optional<PlaySheet> loadPlaySheetByPlaySheetIdAndUserId(@Param("id") Long playSheetId, @Param("userId") Long userId);
 
     void deleteByPlaySheetIdAndUser_AppUserId(Long playSheetId, Long userId);
 

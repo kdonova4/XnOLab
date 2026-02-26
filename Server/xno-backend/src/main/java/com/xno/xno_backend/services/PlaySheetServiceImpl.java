@@ -3,9 +3,7 @@ package com.xno.xno_backend.services;
 import com.xno.xno_backend.models.*;
 import com.xno.xno_backend.models.DTOs.CreateDTOs.PlaySheetCreateDTO;
 import com.xno.xno_backend.models.DTOs.CreateDTOs.PlaySheetSituationCreateDTO;
-import com.xno.xno_backend.models.DTOs.ResponseDTOs.PlaySheetDetailResponseDTO;
-import com.xno.xno_backend.models.DTOs.ResponseDTOs.PlaySheetSummaryResponseDTO;
-import com.xno.xno_backend.models.DTOs.ResponseDTOs.PlaybookSummaryResponseDTO;
+import com.xno.xno_backend.models.DTOs.ResponseDTOs.*;
 import com.xno.xno_backend.models.DTOs.UpdateDTOs.PlaySheetSituationUpdateDTO;
 import com.xno.xno_backend.models.DTOs.UpdateDTOs.PlaySheetUpdateDTO;
 import com.xno.xno_backend.models.DTOs.UpdateDTOs.PlayUpdateDTO;
@@ -41,27 +39,121 @@ public class PlaySheetServiceImpl implements PlaySheetService {
 
     @Override
     public PlaySheetSummaryResponseDTO getPlaySheetSummaryById(Long playSheetId, Long userId) {
-        return null;
+        PlaySheet playSheet = playSheetRepository.findByPlaySheetIdAndUser_AppUserId(playSheetId, userId)
+                .orElseThrow(() -> new NoSuchElementException(String.format("PlaySheet ID %d not found for User %d", playSheetId, userId)));
+
+        PlaySheetSummaryResponseDTO playSheetSummaryResponseDTO =
+                new PlaySheetSummaryResponseDTO(
+                        playSheet.getPlaySheetId(),
+                        playSheet.getPlaySheetName(),
+                        playSheet.getCreatedAt(),
+                        playSheet.getUpdatedAt(),
+                        new PlaybookSummaryResponseDTO(
+                                playSheet.getPlaybook().getPlaybookId(),
+                                playSheet.getPlaybook().getPlaybookName()
+                        )
+                );
+
+        return playSheetSummaryResponseDTO;
     }
 
     @Override
     public PlaySheetDetailResponseDTO loadPlaySheetDetailsById(Long playSheetId, Long userId) {
-        return null;
+        PlaySheet playSheet = playSheetRepository.loadPlaySheetByPlaySheetIdAndUserId(playSheetId, userId).orElseThrow(
+                () -> new NoSuchElementException(String.format("PlaySheet ID %d not found for User %d", playSheetId, userId))
+        );
+
+        PlaySheetDetailResponseDTO detailResponseDTO = new PlaySheetDetailResponseDTO(
+                playSheet.getPlaySheetId(),
+                playSheet.getPlaySheetName(),
+                playSheet.getCreatedAt(),
+                playSheet.getUpdatedAt(),
+                new PlaybookSummaryResponseDTO(
+                        playSheet.getPlaybook().getPlaybookId(),
+                        playSheet.getPlaybook().getPlaybookName()
+                ),
+                playSheet.getSituations().stream().map(
+                        situation -> new PlaySheetSituationResponseDTO(
+                                situation.getPlaySheetSituationId(),
+                                situation.getSituationName(),
+                                situation.getSituationColor(),
+                                situation.getPlaySheet().getPlaySheetId(),
+                                situation.getPlays().stream()
+                                        .map(psp -> new PlaySheetSituationPlayResponseDTO(
+                                                new PlayResponseDTO(
+                                                        psp.getPlay().getPlayId(),
+                                                        psp.getPlay().getPlayName(),
+                                                        psp.getPlay().getPlayImageUrl(),
+                                                        psp.getPlay().getNotes(),
+                                                        new FormationResponseDTO(
+                                                                psp.getPlay().getFormation().getFormationId(),
+                                                                psp.getPlay().getFormation().getFormationName(),
+                                                                psp.getPlay().getFormation().getFormationImageUrl()
+                                                        )
+                                                )
+                                        )).toList()
+                        )
+                ).toList()
+        );
+
+        return detailResponseDTO;
     }
 
     @Override
     public List<PlaySheetSummaryResponseDTO> searchPlaySheetByName(String name, Long userId) {
-        return List.of();
+        List<PlaySheet> playSheets = playSheetRepository.findByPlaySheetNameContainingIgnoreCaseAndUser_AppUserId(name, userId);
+
+        List<PlaySheetSummaryResponseDTO> summaryResponseDTOS = playSheets.stream()
+                .map(playSheet -> new PlaySheetSummaryResponseDTO(
+                        playSheet.getPlaySheetId(),
+                        playSheet.getPlaySheetName(),
+                        playSheet.getCreatedAt(),
+                        playSheet.getUpdatedAt(),
+                        new PlaybookSummaryResponseDTO(
+                                playSheet.getPlaybook().getPlaybookId(),
+                                playSheet.getPlaybook().getPlaybookName()
+                        )
+                )).toList();
+
+        return summaryResponseDTOS;
     }
 
     @Override
     public List<PlaySheetSummaryResponseDTO> getPlaySheetByUser(Long userId) {
-        return List.of();
+        List<PlaySheet> playSheets = playSheetRepository.findByUser_AppUserId(userId);
+
+        List<PlaySheetSummaryResponseDTO> summaryResponseDTOS = playSheets.stream()
+                .map(playSheet -> new PlaySheetSummaryResponseDTO(
+                        playSheet.getPlaySheetId(),
+                        playSheet.getPlaySheetName(),
+                        playSheet.getCreatedAt(),
+                        playSheet.getUpdatedAt(),
+                        new PlaybookSummaryResponseDTO(
+                                playSheet.getPlaybook().getPlaybookId(),
+                                playSheet.getPlaybook().getPlaybookName()
+                        )
+                )).toList();
+
+        return summaryResponseDTOS;
     }
 
     @Override
     public List<PlaySheetSummaryResponseDTO> getPlaySheetByPlaybook(Long playbookId, Long userId) {
-        return List.of();
+        List<PlaySheet> playSheets = playSheetRepository.findByPlaybook_PlaybookIdAndUser_AppUserId(playbookId, userId);
+
+        List<PlaySheetSummaryResponseDTO> summaryResponseDTOS = playSheets.stream()
+                .map(playSheet -> new PlaySheetSummaryResponseDTO(
+                        playSheet.getPlaySheetId(),
+                        playSheet.getPlaySheetName(),
+                        playSheet.getCreatedAt(),
+                        playSheet.getUpdatedAt(),
+                        new PlaybookSummaryResponseDTO(
+                                playSheet.getPlaybook().getPlaybookId(),
+                                playSheet.getPlaybook().getPlaybookName()
+                        )
+                )).toList();
+
+        return summaryResponseDTOS;
     }
 
     @Override
@@ -130,15 +222,9 @@ public class PlaySheetServiceImpl implements PlaySheetService {
             playSheet.getSituations().add(playSheetSituation);
         }
 
-
-
-
-
         // Save PlaySheet
-        // Convert saved PlaySheet into a SummaryDTO
-        // Set result payload
-        // return result
         PlaySheet savedPlaySheet = playSheetRepository.save(playSheet);
+        // Convert saved PlaySheet into a SummaryDTO
         PlaySheetSummaryResponseDTO playSheetSummaryResponseDTO = new PlaySheetSummaryResponseDTO(
                 savedPlaySheet.getPlaySheetId(),
                 savedPlaySheet.getPlaySheetName(),
@@ -149,6 +235,7 @@ public class PlaySheetServiceImpl implements PlaySheetService {
                         playbook.getPlaybookName()
                 )
         );
+
         result.setPayload(playSheetSummaryResponseDTO);
         return result;
     }
@@ -170,8 +257,6 @@ public class PlaySheetServiceImpl implements PlaySheetService {
             return result;
         }
 
-
-        // if successful
         // fetch existing PlaySheet
         PlaySheet playSheet = optionalPlaySheet.get();
 
@@ -197,7 +282,7 @@ public class PlaySheetServiceImpl implements PlaySheetService {
         // Loop through the playSheetUpdateDTO situations
         for(PlaySheetSituationUpdateDTO situation : playSheetUpdateDTO.getSituations()) {
             //  -> if the playSheetSituationId is null, create the situation, assign the PlaySheet to the situation
-            if(situation.getPlaySheetSituationId() == null) {
+            if(situation.getPlaySheetSituationId() == null) { // NEW SITUATION
                 PlaySheetSituation playSheetSituation = new PlaySheetSituation(
                         situation.getSituationName(),
                         situation.getSituationColor(),
@@ -220,7 +305,7 @@ public class PlaySheetServiceImpl implements PlaySheetService {
                 }
 
                 playSheet.getSituations().add(playSheetSituation);
-            } else {
+            } else { // EXISTING SITUATION
                 PlaySheetSituation existing = existingSituations.get(situation.getPlaySheetSituationId());
 
                 if(existing == null) {
@@ -238,16 +323,21 @@ public class PlaySheetServiceImpl implements PlaySheetService {
                         .map(playSheetSituationPlay -> playSheetSituationPlay.getPlay().getPlayId())
                         .collect(Collectors.toSet());
 
+                // create set from list of incoming situation play ids
                 Set<Long> incomingPlayIds = new HashSet<>(situation.getPlayIds());
 
+                // For removing it is existing - incoming [1,2,3] - [3,4,5] = removing [1,2]
                 Set<Long> toRemove = new HashSet<>(existingIds);
                 toRemove.removeAll(incomingPlayIds);
 
+                // Adding its incoming - existing = [1,6,3,2] - [4,2,3,8,5] = adding [1,6]
                 Set<Long> toAdd = new HashSet<>(incomingPlayIds);
                 toAdd.removeAll(existingIds);
 
+                // Remove The plays from the existing play list
                 existing.getPlays().removeIf(psp -> toRemove.contains(psp.getPlay().getPlayId()));
 
+                // add the plays to the existing plays list
                 for(Long id : toAdd) {
                     Optional<Play> optionalPlay = playRepository.findById(id);
                     if(optionalPlay.isEmpty()) {
@@ -260,34 +350,20 @@ public class PlaySheetServiceImpl implements PlaySheetService {
                     existing.getPlays().add(playSheetSituationPlay);
                 }
 
+                // Add the incoming situation id to this set to know which situations to remove later
                 incomingIds.add(existing.getPlaySheetSituationId());
             }
         }
 
+        // removing any situation that is not new or is not in the incoming situation list
         playSheet.getSituations().removeIf(playSheetSituation ->
             playSheetSituation.getPlaySheetSituationId() != null && !incomingIds.contains(playSheetSituation.getPlaySheetSituationId()));
 
 
-        // First, Get the Situation
-        // Then, Validate it is there and return the result if not
-        // Then, Update the situationName and situationColor
-        // Next, Add the situationId to the Incoming ID set
-        // Then, handle PlaySheetSituationPlays
-        //
-
-        //  -> If the situation does exist, create a set of ids from the existing situation, compare then using .removeAll() with the dto set of IDs
-        //  -> For removing it is existing - incoming [1,2,3] - [3,4,5] = removing [1,2]
-        //  -> For Adding its incoming - existing = [1,6,3,2] - [4,2,3,8,5] = adding [1,6]
-        //  -> Loop through add set and create each PlaySheetSituationPlay, assign the Play and Situation for each then add to situation plays list
-        //  -> Use .removeIf() to remove the contained removed ids in the situations plays list;
-
-
-
         // Save PlaySheet
-        // Convert Saved PlaySheet into a Summary DTO
-        // Set result payload
-        // Return result
         PlaySheet savedPlaySheet = playSheetRepository.save(playSheet);
+
+        // Convert Saved PlaySheet into a Summary DTO
         PlaySheetSummaryResponseDTO playSheetSummaryResponseDTO = new PlaySheetSummaryResponseDTO(
                 savedPlaySheet.getPlaySheetId(),
                 savedPlaySheet.getPlaySheetName(),

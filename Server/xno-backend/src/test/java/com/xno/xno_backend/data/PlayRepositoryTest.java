@@ -64,9 +64,10 @@ public class PlayRepositoryTest {
     }
 
     @Test
-    void shouldFindByPlaybook() {
+    void shouldFindByPlaybookAndUser() {
+        Optional<AppUser> appUser = appUserRepository.findByUsername("kdonova4");
         Optional<Playbook> playbook = playbookRepository.findByPlaybookName("playbook1");
-        List<Play> plays = playRepository.findByPlaybook_PlaybookId(playbook.get().getPlaybookId());
+        List<Play> plays = playRepository.findByPlaybook_PlaybookIdAndPlaybook_User_AppUserId(playbook.get().getPlaybookId(), appUser.get().getAppUserId());
         assertEquals(3, plays.size());
     }
 }

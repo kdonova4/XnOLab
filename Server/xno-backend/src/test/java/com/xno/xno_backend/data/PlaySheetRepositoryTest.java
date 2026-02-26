@@ -73,8 +73,9 @@ public class PlaySheetRepositoryTest {
 
     @Test
     void shouldLoadFullPlaySheet() {
+        Optional<AppUser> user = appUserRepository.findByUsername("kdonova4");
         Optional<PlaySheet> playSheet = playSheetRepository.findByPlaySheetName("playsheet1");
-        Optional<PlaySheet> fullPlaySheet = playSheetRepository.loadPlaySheetById(playSheet.get().getPlaySheetId());
+        Optional<PlaySheet> fullPlaySheet = playSheetRepository.loadPlaySheetByPlaySheetIdAndUserId(playSheet.get().getPlaySheetId(), user.get().getAppUserId());
         List<PlaySheetSituation> playSheetSituations = fullPlaySheet.get().getSituations().stream().toList();
         assertEquals(2, playSheetSituations.size());
         assertFalse(playSheetSituations.getFirst().getPlays().isEmpty());

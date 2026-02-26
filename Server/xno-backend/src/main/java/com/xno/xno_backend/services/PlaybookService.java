@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface PlaybookService {
 
-    PlaybookDetailResponseDTO getPlaybookDetails(Long playbookId);
+    PlaybookDetailResponseDTO getPlaybookDetails(Long playbookId, Long userId);
 
     List<PlaybookSummaryResponseDTO> getAllPlaybooksByUser(Long userId);
 
@@ -17,5 +17,5 @@ public interface PlaybookService {
 
     Result<PlaybookSummaryResponseDTO> updatePlaybook(PlaybookUpdateDTO playbookUpdateDTO, Long userId);
 
-    void deletePlaybook(Long playbookId);
+    void deletePlaybook(Long playbookId, Long userId);
 }

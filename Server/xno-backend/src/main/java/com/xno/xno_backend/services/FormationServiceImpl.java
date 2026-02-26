@@ -44,8 +44,8 @@ public class FormationServiceImpl implements FormationService{
     }
 
     @Override
-    public List<FormationResponseDTO> searchByFormationName(String formationName) {
-        List<Formation> formations = formationRepository.findByFormationNameContainingIgnoreCaseAndUser_AppUserId(formationName, 1L);
+    public List<FormationResponseDTO> searchByFormationName(String formationName, Long userId) {
+        List<Formation> formations = formationRepository.findByFormationNameContainingIgnoreCaseAndUser_AppUserId(formationName, userId);
 
         // REFACTOR TO A DEDICATED MAPPER CLASS!!!!!!!!
         List<FormationResponseDTO> formationResponseDTOS = formations.stream()
@@ -131,8 +131,8 @@ public class FormationServiceImpl implements FormationService{
     }
 
     @Override
-    public void deleteFormation(Long formationId) {
-        formationRepository.deleteById(formationId);
+    public void deleteFormation(Long formationId, Long userId) {
+        formationRepository.deleteByFormationIdAndUser_AppUserId(formationId, userId);
     }
 
     private Result<FormationResponseDTO> validateCreate(FormationCreateDTO formationCreateDTO, MultipartFile file, Long userId) {

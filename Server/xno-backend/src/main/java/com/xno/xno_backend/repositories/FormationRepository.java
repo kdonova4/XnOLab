@@ -18,4 +18,7 @@ public interface FormationRepository extends JpaRepository<Formation, Long> {
     List<Formation> findByFormationNameContainingIgnoreCaseAndUser_AppUserId(String formationName, Long userId);
 
     List<Formation> findByUser_AppUserId(Long userId);
+
+    void deleteByFormationIdAndUser_AppUserId(Long formationId, Long userId);
+
 }

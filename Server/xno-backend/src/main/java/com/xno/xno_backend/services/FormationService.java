@@ -11,11 +11,11 @@ public interface FormationService {
 
     List<FormationResponseDTO> getAllFormationsByUser(Long userId);
 
-    List<FormationResponseDTO> searchByFormationName(String formationName);
+    List<FormationResponseDTO> searchByFormationName(String formationName, Long userId);
 
     Result<FormationResponseDTO> createFormation(FormationCreateDTO formationCreateDTO, MultipartFile file, Long userId);
 
     Result<FormationResponseDTO> updateFormation(FormationUpdateDTO formationUpdateDTO, MultipartFile file, Long userId);
 
-    void deleteFormation(Long formationId);
+    void deleteFormation(Long formationId, Long userId);
 }

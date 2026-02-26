@@ -28,8 +28,8 @@ public class PlaybookServiceImpl implements PlaybookService{
     }
 
     @Override
-    public PlaybookDetailResponseDTO getPlaybookDetails(Long playbookId) {
-        Playbook fullPlaybook = playbookRepository.loadPlaybookByPlaybookId(playbookId).orElseThrow(
+    public PlaybookDetailResponseDTO getPlaybookDetails(Long playbookId, Long userId) {
+        Playbook fullPlaybook = playbookRepository.loadPlaybookByPlaybookId(playbookId, userId).orElseThrow(
                 () -> new NoSuchElementException("Playbook Not Found With ID " + playbookId)
         );
 
@@ -115,8 +115,8 @@ public class PlaybookServiceImpl implements PlaybookService{
     }
 
     @Override
-    public void deletePlaybook(Long playbookId) {
-        playbookRepository.deleteById(playbookId);
+    public void deletePlaybook(Long playbookId, Long userId) {
+        playbookRepository.deleteByPlaybookIdAndUser_AppUserId(playbookId, userId);
     }
 
     private Result<PlaybookSummaryResponseDTO> validateCreate(PlaybookCreateDTO playbookCreateDTO, Long userId) {

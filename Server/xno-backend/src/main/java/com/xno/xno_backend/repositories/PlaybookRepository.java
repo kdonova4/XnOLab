@@ -30,6 +30,10 @@ public interface PlaybookRepository extends JpaRepository<Playbook, Long> {
             LEFT JOIN FETCH pb.plays p
             LEFT JOIN FETCH p.formation f
             WHERE pb.playbookId = :playbookId
+            AND pb.user.appUserId = :userId
             """)
-    Optional<Playbook> loadPlaybookByPlaybookId(@Param("playbookId") Long playbookId);
+    Optional<Playbook> loadPlaybookByPlaybookId(@Param("playbookId") Long playbookId, @Param("userId") Long userId);
+
+    void deleteByPlaybookIdAndUser_AppUserId(Long playbookId, Long userId);
+
 }
