@@ -22,4 +22,9 @@ public class AppRole {
     public AppRole(Role roleName) {
         this.roleName = roleName;
     }
+
+    public AppRole(long roleId, Role roleName) {
+        this.roleId = roleId;
+        this.roleName = roleName;
+    }
 }

@@ -4,5 +4,6 @@ public enum ResultType {
     SUCCESS,
     INVALID,
     NOT_FOUND,
-    FORBIDDEN
+    FORBIDDEN,
+    UNAUTHORIZED
 }
