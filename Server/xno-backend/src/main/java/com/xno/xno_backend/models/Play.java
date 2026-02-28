@@ -50,4 +50,15 @@ public class Play {
         this.playbook = playbook;
         this.formation = formation;
     }
+
+    public Play(Long playId, String playName, String playImageUrl, String playPublicId, String notes, AppUser user, Playbook playbook, Formation formation) {
+        this.playId = playId;
+        this.playName = playName;
+        this.playImageUrl = playImageUrl;
+        this.playPublicId = playPublicId;
+        this.notes = notes;
+        this.user = user;
+        this.playbook = playbook;
+        this.formation = formation;
+    }
 }

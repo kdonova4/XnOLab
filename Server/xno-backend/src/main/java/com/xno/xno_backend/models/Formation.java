@@ -44,4 +44,12 @@ public class Formation {
         this.formationPublicId = formationPublicId;
         this.user = user;
     }
+
+    public Formation(Long formationId, String formationName, String formationImageUrl, String formationPublicId, AppUser user) {
+        this.formationId = formationId;
+        this.formationName = formationName;
+        this.formationImageUrl = formationImageUrl;
+        this.formationPublicId = formationPublicId;
+        this.user = user;
+    }
 }

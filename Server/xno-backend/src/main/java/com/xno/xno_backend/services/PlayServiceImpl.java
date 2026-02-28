@@ -115,12 +115,12 @@ public class PlayServiceImpl implements PlayService {
         }
 
         if(optionalPlaybook.isEmpty()) {
-            result.addMessages("Playbook with ID " + userId + " not found", ResultType.NOT_FOUND);
+            result.addMessages("Playbook with ID " + play.getPlaybookId() + " not found", ResultType.NOT_FOUND);
             return result;
         }
 
         if(optionalFormation.isEmpty()) {
-            result.addMessages("Formation with ID " + userId + " not found", ResultType.NOT_FOUND);
+            result.addMessages("Formation with ID " + play.getFormationId() + " not found", ResultType.NOT_FOUND);
             return result;
         }
 
@@ -217,8 +217,8 @@ public class PlayServiceImpl implements PlayService {
             return result;
         }
 
-        if(file.isEmpty()) {
-            result.addMessages("File cannot be empty", ResultType.INVALID);
+        if(file == null || file.isEmpty()) {
+            result.addMessages("File cannot be null or empty", ResultType.INVALID);
             return result;
         }
 
@@ -263,10 +263,12 @@ public class PlayServiceImpl implements PlayService {
         }
 
         Optional<Play> optionalPlay = playRepository.findById(playUpdateDTO.getPlayId());
-        Play play = new Play();
-        if(optionalPlay.isPresent()) {
-            play = optionalPlay.get();
+
+        if(optionalPlay.isEmpty()) {
+            result.addMessages("Play with ID " + playUpdateDTO.getPlayId() + " Not Found", ResultType.NOT_FOUND);
+            return result;
         }
+        Play play = optionalPlay.get();
 
         if(playRepository.findByPlayNameAndUser_AppUserIdAndPlaybook_PlaybookId(playUpdateDTO.getPlayName(), userId, play.getPlaybook().getPlaybookId()).isPresent()) {
             result.addMessages("Play name cannot be duplicated within a playbook", ResultType.INVALID);

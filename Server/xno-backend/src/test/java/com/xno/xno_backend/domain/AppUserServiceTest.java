@@ -8,6 +8,7 @@ import com.xno.xno_backend.models.UserDetailsImpl;
 import com.xno.xno_backend.repositories.AppRoleRepository;
 import com.xno.xno_backend.repositories.AppUserRepository;
 import com.xno.xno_backend.security.jwt.JwtUtils;
+import com.xno.xno_backend.security.requests.LoginRequest;
 import com.xno.xno_backend.security.requests.SignUpRequest;
 import com.xno.xno_backend.services.AppUserServiceImpl;
 import com.xno.xno_backend.services.Result;
@@ -20,7 +21,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -124,6 +128,27 @@ public class AppUserServiceTest {
         actual = service.registerUser(signUpRequest);
         assertEquals(ResultType.INVALID, actual.getType());
         assertTrue(actual.getMessages().contains("Email is already taken!"));
+    }
+
+    @Test
+    void shouldAuthenticateUser() {
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authentication);
+
+        when(jwtUtils.generateJwtCookie(any(UserDetailsImpl.class))).thenReturn(null);
+        when(authentication.getPrincipal()).thenReturn(userDetails);
+        Result<UserInfoResponse> actual = service.authenticateUser(new LoginRequest(appUser.getUsername(), appUser.getPassword()));
+
+        assertEquals(ResultType.SUCCESS, actual.getType());
+    }
+
+    @Test
+    void shouldNotAuthenticateUser() {
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenThrow(BadCredentialsException.class);
+
+        Result<UserInfoResponse> actual = service.authenticateUser(new LoginRequest(appUser.getUsername(), appUser.getPassword()));
+
+        assertEquals(ResultType.UNAUTHORIZED, actual.getType());
+        assertTrue(actual.getMessages().contains("Bad Credentials"));
     }
 
 }

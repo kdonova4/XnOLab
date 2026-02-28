@@ -138,7 +138,7 @@ public class AppUserServiceImpl implements AppUserService{
         ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
 
         List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority()).toList();
-        UserInfoResponse response = new UserInfoResponse(userDetails.getUserId(), userDetails.getUsername(), roles);
+        UserInfoResponse response = new UserInfoResponse(userDetails.getUserId(), jwtCookie, userDetails.getUsername(), roles);
 
         result.setPayload(response);
 
