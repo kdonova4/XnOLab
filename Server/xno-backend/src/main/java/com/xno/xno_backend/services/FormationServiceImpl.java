@@ -148,14 +148,11 @@ public class FormationServiceImpl implements FormationService{
             return result;
         }
 
-        if(file == null) {
-            result.addMessages("Image cannot be null", ResultType.INVALID);
+        if(file == null || file.isEmpty()) {
+            result.addMessages("Image cannot be null or empty", ResultType.INVALID);
             return result;
         }
 
-        if(file.isEmpty()) {
-            result.addMessages("Image file is empty", ResultType.INVALID);
-        }
 
         String name = formationCreateDTO.getFormationName();
         if(name == null || name.isBlank()) {
@@ -199,6 +196,7 @@ public class FormationServiceImpl implements FormationService{
         String name = formationUpdateDTO.getFormationName();
         if(name == null || name.isBlank()) {
             result.addMessages("Formation Name cannot be blank or empty", ResultType.INVALID);
+            return result;
         }
 
         List<Formation> userFormations = formationRepository.findByUser_AppUserId(userId);
@@ -210,8 +208,10 @@ public class FormationServiceImpl implements FormationService{
         });
 
         Formation formation = formationRepository.findById(formationUpdateDTO.getFormationId()).get();
-        if(!formation.getPlays().isEmpty() && file != null) {
+
+        if(formation.getPlays() != null && file != null) {
             result.addMessages("Cannot edit formation image in use by plays", ResultType.INVALID);
+            return result;
         }
 
         return result;
