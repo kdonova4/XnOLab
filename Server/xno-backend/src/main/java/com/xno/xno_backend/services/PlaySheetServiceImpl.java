@@ -24,16 +24,13 @@ public class PlaySheetServiceImpl implements PlaySheetService {
     private final PlaybookRepository playbookRepository;
     private final AppUserRepository appUserRepository;
     private final PlayRepository playRepository;
-    private final PlaySheetSituationRepository playSheetSituationRepository;
-    private final PlaySheetSituationPlayRepository playSheetSituationPlayRepository;
 
-    public PlaySheetServiceImpl(PlaySheetRepository playSheetRepository, PlaybookRepository playbookRepository, AppUserRepository appUserRepository, PlayRepository playRepository, PlaySheetSituationRepository playSheetSituationRepository, PlaySheetSituationPlayRepository playSheetSituationPlayRepository) {
+    public PlaySheetServiceImpl(PlaySheetRepository playSheetRepository, PlaybookRepository playbookRepository,
+                                AppUserRepository appUserRepository, PlayRepository playRepository) {
         this.playSheetRepository = playSheetRepository;
         this.playbookRepository = playbookRepository;
         this.appUserRepository = appUserRepository;
         this.playRepository = playRepository;
-        this.playSheetSituationRepository = playSheetSituationRepository;
-        this.playSheetSituationPlayRepository = playSheetSituationPlayRepository;
     }
 
 

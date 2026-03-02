@@ -209,10 +209,13 @@ public class FormationServiceImpl implements FormationService{
 
         Formation formation = formationRepository.findById(formationUpdateDTO.getFormationId()).get();
 
-        if(formation.getPlays() != null && file != null) {
-            result.addMessages("Cannot edit formation image in use by plays", ResultType.INVALID);
-            return result;
+        if(formation.getPlays() != null) {
+            if(!formation.getPlays().isEmpty() && file != null) {
+                result.addMessages("Cannot edit formation image in use by plays", ResultType.INVALID);
+                return result;
+            }
         }
+
 
         return result;
     }
