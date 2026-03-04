@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -43,7 +44,7 @@ public class PlaySheet {
     private Playbook playbook;
 
     @OneToMany(mappedBy = "playSheet", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<PlaySheetSituation> situations;
+    private Set<PlaySheetSituation> situations = new HashSet<>();
 
     public PlaySheet(String playSheetName, Timestamp createdAt, Timestamp updatedAt, AppUser user, Playbook playbook) {
         this.playSheetName = playSheetName;

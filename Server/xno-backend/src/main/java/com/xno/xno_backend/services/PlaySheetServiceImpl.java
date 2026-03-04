@@ -206,7 +206,7 @@ public class PlaySheetServiceImpl implements PlaySheetService {
             for(Long id : situation.getPlayIds()) {
                 Optional<Play> optionalPlay = playRepository.findById(id);
                 if(optionalPlay.isEmpty()) {
-                    result.addMessages(String.format("Play with ID %d does not exist for situation %s", id,situation.getSituationName()), ResultType.INVALID);
+                    result.addMessages(String.format("Play with ID %d does not exist for situation %s", id,situation.getSituationName()), ResultType.NOT_FOUND);
                     return result;
                 }
 
@@ -388,6 +388,11 @@ public class PlaySheetServiceImpl implements PlaySheetService {
             return result;
         }
 
+        if(userId == null) {
+            result.addMessages("User ID cannot be null", ResultType.INVALID);
+            return result;
+        }
+
         String name = playSheetCreateDTO.getPlaySheetName();
         if(name == null || name.isBlank()) {
             result.addMessages("PlaySheet name cannot be null or blank", ResultType.INVALID);
@@ -422,6 +427,11 @@ public class PlaySheetServiceImpl implements PlaySheetService {
 
         if(playSheetUpdateDTO == null) {
             result.addMessages("PlaySheet Update cannot be null", ResultType.INVALID);
+            return result;
+        }
+
+        if(userId == null) {
+            result.addMessages("User ID cannot be null", ResultType.INVALID);
             return result;
         }
 

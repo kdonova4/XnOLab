@@ -103,7 +103,6 @@ public class FormationServiceTest {
         when(formationRepository.save(any(Formation.class))).thenReturn(formation);
 
         Result<FormationResponseDTO> actual = formationService.createFormation(formationCreateDTO, file, appUser.getAppUserId());
-        System.out.println(actual.getMessages());
         assertEquals(ResultType.SUCCESS, actual.getType());
 
         assertEquals("formation1", actual.getPayload().getFormationName());

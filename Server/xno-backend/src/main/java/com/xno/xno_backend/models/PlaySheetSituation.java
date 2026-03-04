@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -33,7 +34,7 @@ public class PlaySheetSituation {
     private PlaySheet playSheet;
 
     @OneToMany(mappedBy = "playSheetSituation", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<PlaySheetSituationPlay> plays;
+    private Set<PlaySheetSituationPlay> plays = new HashSet<>();
 
     public PlaySheetSituation(String situationName, String situationColor, PlaySheet playSheet) {
         this.situationName = situationName;
