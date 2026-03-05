@@ -4,6 +4,7 @@ import com.xno.xno_backend.models.DTOs.CreateDTOs.PlaySheetCreateDTO;
 import com.xno.xno_backend.models.DTOs.ResponseDTOs.PlaySheetDetailResponseDTO;
 import com.xno.xno_backend.models.DTOs.ResponseDTOs.PlaySheetSummaryResponseDTO;
 import com.xno.xno_backend.models.DTOs.UpdateDTOs.PlaySheetUpdateDTO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -24,4 +25,6 @@ public interface PlaySheetService {
     Result<PlaySheetSummaryResponseDTO> updatePlaySheet(PlaySheetUpdateDTO playSheetUpdateDTO, Long userId);
 
     void deletePlaySheet(Long playSheetId, Long userId);
+
+    Result<MultipartFile> generatePlaySheet(Long playSheetId, Long userId);
 }

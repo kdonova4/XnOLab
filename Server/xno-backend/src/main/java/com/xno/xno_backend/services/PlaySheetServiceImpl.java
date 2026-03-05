@@ -10,6 +10,7 @@ import com.xno.xno_backend.models.DTOs.UpdateDTOs.PlayUpdateDTO;
 import com.xno.xno_backend.repositories.*;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -379,6 +380,30 @@ public class PlaySheetServiceImpl implements PlaySheetService {
     public void deletePlaySheet(Long playSheetId, Long userId) {
         playSheetRepository.deleteByPlaySheetIdAndUser_AppUserId(playSheetId, userId);
     }
+
+    @Override
+    public Result<MultipartFile> generatePlaySheet(Long playSheetId, Long userId) {
+        Result<MultipartFile> result = new Result<>();
+        Optional<PlaySheet> optionalPlaySheet = playSheetRepository.findById(playSheetId);
+
+        if(optionalPlaySheet.isEmpty()) {
+            result.addMessages("PlaySheet not found with ID " + playSheetId, ResultType.NOT_FOUND);
+            return result;
+        }
+
+        // fetch existing PlaySheet
+        PlaySheet playSheet = optionalPlaySheet.get();
+
+        if(!playSheet.getUser().getAppUserId().equals(userId)) {
+            result.addMessages("User does not own this PlaySheet", ResultType.FORBIDDEN);
+            return result;
+        }
+
+
+
+        return null;
+    }
+
 
     private Result<PlaySheetSummaryResponseDTO> validateCreate(PlaySheetCreateDTO playSheetCreateDTO, Long userId) {
         Result<PlaySheetSummaryResponseDTO> result = new Result<>();
