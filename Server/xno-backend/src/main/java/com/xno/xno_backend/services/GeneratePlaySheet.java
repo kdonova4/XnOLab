@@ -2,10 +2,8 @@ package com.xno.xno_backend.services;
 
 import com.xno.xno_backend.models.*;
 import com.xno.xno_backend.models.DTOs.GenerationDetails;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -118,20 +116,19 @@ public class GeneratePlaySheet {
                 new PlaySheetSituation(5L, "3rd & Long (7+)", "red", playSheet, new HashSet<>());
 
         PlaySheetSituation situation6 =
-                new PlaySheetSituation(6L, "Low Red Zone (Inside 10)", "purple", playSheet, new HashSet<>());
+                new PlaySheetSituation(6L, "Low Red Zone (Inside 10)", "indigo", playSheet, new HashSet<>());
 
         PlaySheetSituation situation7 =
                 new PlaySheetSituation(7L, "High Red Zone (10-20)", "pink", playSheet, new HashSet<>());
 
         PlaySheetSituation situation8 =
-                new PlaySheetSituation(8L, "Backed Up (Inside Own 10)", "gray", playSheet, new HashSet<>());
+                new PlaySheetSituation(8L, "Backed Up (Inside Own 10)", "blue_grey", playSheet, new HashSet<>());
 
         PlaySheetSituation situation9 =
                 new PlaySheetSituation(9L, "Two-Minute Drill", "black", playSheet, new HashSet<>());
 
         PlaySheetSituation situation10 =
                 new PlaySheetSituation(10L, "Goal Line (Inside 5)", "gold", playSheet, new HashSet<>());
-
 
         playSheet.getSituations().addAll(Set.of(situation1, situation2,
                 situation3, situation4, situation5,
@@ -241,8 +238,8 @@ public class GeneratePlaySheet {
                 .filter(play -> play.getPlaySheetSituation().equals(situation10))
                 .collect(Collectors.toSet()));
 
-
-        Result<byte[]> result = generatePlaySheet(playSheet);
+        GenerationDetails generationDetails = new GenerationDetails(30, true);
+        Result<byte[]> result = generatePlaySheet(generationDetails, playSheet);
 
         try{
             if(result.isSuccess()) {
@@ -251,13 +248,15 @@ public class GeneratePlaySheet {
                 Files.createDirectories(path.getParent());
 
                 Files.write(path, result.getPayload());
+            } else {
+                System.out.println("Failed");
+                System.out.println(result.getMessages());
             }
         } catch (IOException e) {
             System.out.println("Problem");
         }
 
 
-        System.out.println("hello");
     }
 
     public static Result<byte[]> generatePlaySheet(GenerationDetails generationDetails, PlaySheet playSheet) {
@@ -280,23 +279,121 @@ public class GeneratePlaySheet {
 
         // C
 
-        int maxRows = generationDetails.getMaxRows();
+        int maxRows = generationDetails.getMaxRows() - 1; // 0 indexed
 
 
         try(Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()){
 
-            Sheet sheet = workbook.createSheet("Call Sheet");
-
-            Row row = sheet.createRow(0);
-            Cell column = row.createCell(1);
-            column.setCellValue("Hello");
+            int sheetNum = 1;
+            Sheet currentSheet = workbook.createSheet(playSheet.getPlaySheetName() + " " + sheetNum);
 
 
+            int rowNum = 0;
+            int colNum = 0;
+            int spacing = 2;
+
+            if(maxRows < 25) {
+                maxRows = 25;
+            }
+
+            maxRows = 24;
+            for(PlaySheetSituation situation : playSheet.getSituations()) {
+
+                if(!generationDetails.isWrapPlays()) {
+                    if((maxRows - (rowNum + 1)) < situation.getPlays().size() && colNum <= 22) {
+                                colNum += spacing;
+                                rowNum = 0;
+                    }
+
+                    if(rowNum == 0 && (maxRows - (rowNum + 1)) < situation.getPlays().size()) {
+                        result.addMessages("More plays that max rows, please turn off wrap plays or increase max rows", ResultType.INVALID);
+                        return result;
+                    }
+                } else {
+                    if(rowNum + 1 > maxRows && colNum <= 22) {
+                        rowNum = 0;
+                        colNum += spacing;
+                    }
+                    int currentColumnRowsLeft = maxRows - rowNum;
+                    int totalRowsLeft = (((26 - (colNum + spacing)) / 2) * (maxRows + 1)) + currentColumnRowsLeft;
+
+                    if(colNum == 0 && totalRowsLeft < situation.getPlays().size()) {
+                        result.addMessages("Situation Has too many plays to fit on one side of the Play Sheet", ResultType.INVALID);
+                        return result;
+                    }
+                    if(totalRowsLeft < situation.getPlays().size()) {
+                        rowNum = 0;
+                        colNum = 0;
+                        currentSheet = workbook.createSheet(playSheet.getPlaySheetName() + " " + ++sheetNum);
+                    }
+                }
+
+                if(colNum >= 24 && (maxRows - (rowNum + 1)) < situation.getPlays().size()) {
+                    rowNum = 0;
+                    colNum = 0;
+                    currentSheet = workbook.createSheet(playSheet.getPlaySheetName() + " " + ++sheetNum);
+                }
+                Row row;
+                if(currentSheet.getRow(rowNum) == null) {
+                    row = currentSheet.createRow(rowNum);
+                } else {
+                    row = currentSheet.getRow(rowNum);
+                }
+
+                Cell column = row.createCell(colNum);
+
+                CellRangeAddress cellAddresses = new CellRangeAddress(rowNum, rowNum, colNum, colNum + 1);
+                currentSheet.addMergedRegion(cellAddresses);
+
+                CellStyle style = workbook.createCellStyle();
+
+                style.setAlignment(HorizontalAlignment.CENTER);
+                style.setVerticalAlignment(VerticalAlignment.CENTER);
+
+                style.setFillForegroundColor(IndexedColors.valueOf(situation.getSituationColor().toUpperCase()).getIndex());
+                style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+                column.setCellStyle(style);
+                column.setCellValue(situation.getSituationName());
+                currentSheet.autoSizeColumn(colNum);
+                int currentWidth = currentSheet.getColumnWidth(colNum);
+                currentSheet.setColumnWidth(colNum, currentWidth + 400);
+                currentSheet.setColumnWidth(colNum + 1, currentWidth + 400);
+                rowNum++;
+
+                for(PlaySheetSituationPlay play : situation.getPlays()) {
+                    if(generationDetails.isWrapPlays()) {
+                        if(rowNum > maxRows) {
+                            rowNum = 0;
+                            colNum += spacing;
+                        }
+
+                        if(currentSheet.getRow(rowNum) == null) {
+                            row = currentSheet.createRow(rowNum++);
+                        } else {
+                            row = currentSheet.getRow(rowNum++);
+                        }
+
+                        Cell formationName = row.createCell(colNum);
+                        formationName.setCellValue(play.getPlay().getFormation().getFormationName());
+                        Cell playName = row.createCell(colNum + 1);
+                        playName.setCellValue(play.getPlay().getPlayName());
+                    }
+                }
+
+            }
 
             // Loop through the situation list from playSheet
                 // for each situation merge the cells and change the name and color
+                // if row == maxRows, then move to the next column so that the situation header is not at the bottom
+                // if wrapPlays is true
+                    // if column num > 25 and row > maxRows
+                        // create a new sheet, reset row and column and reprint the situation and continue printing plays
+
+            // reset row and column and create a new sheet
                 // If wrapPlays is false, be sure to check whether # of plays is greater than maxRow - current row
-                // if yes, increment column and reset rowNum
+                // if yes, increment column and reset rowNum, if column is > 25 and plays size > maxRow - current row,
+                // then create a new sheet and reset column and row
                 // if row == 0 and plays list is bigger than max row, return error
                 // now that the situation name is entered and merged and auto sized, move to the next row
                 // Loop through each of the situations plays
@@ -305,6 +402,11 @@ public class GeneratePlaySheet {
                     // make sure to be adding to row
                     // make sure to check whether the row number is the over the max or not
                     // if the row number is over the max, increment the column number and reset the row num. ONLY IF wrapPlays IS TRUE
+                    // if wrapPlays is true
+                        // if column num > 25 and row > maxRows
+                            // create a new sheet, reset row and column and reprint the situation and continue printing plays
+                    // else
+                        // reset row and column and create a new sheet
 
 
 
