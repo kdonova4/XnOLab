@@ -130,10 +130,30 @@ public class GeneratePlaySheet {
         PlaySheetSituation situation10 =
                 new PlaySheetSituation(10L, "Goal Line (Inside 5)", "gold", playSheet, new HashSet<>());
 
+        PlaySheetSituation situation11 =
+                new PlaySheetSituation(11L, "3rd & Long (7+)", "red", playSheet, new HashSet<>());
+
+        PlaySheetSituation situation12 =
+                new PlaySheetSituation(12L, "Low Red Zone (Inside 10)", "indigo", playSheet, new HashSet<>());
+
+        PlaySheetSituation situation13 =
+                new PlaySheetSituation(13L, "High Red Zone (10-20)", "pink", playSheet, new HashSet<>());
+
+        PlaySheetSituation situation14 =
+                new PlaySheetSituation(14L, "Backed Up (Inside Own 10)", "blue_grey", playSheet, new HashSet<>());
+
+        PlaySheetSituation situation15 =
+                new PlaySheetSituation(15L, "Two-Minute Drill", "black", playSheet, new HashSet<>());
+
+        PlaySheetSituation situation16 =
+                new PlaySheetSituation(16L, "Goal Line (Inside 5)", "gold", playSheet, new HashSet<>());
+
         playSheet.getSituations().addAll(Set.of(situation1, situation2,
                 situation3, situation4, situation5,
                 situation6, situation7, situation8,
-                situation9, situation10));
+                situation9, situation10, situation11,
+                situation12, situation13, situation14,
+                situation15, situation16));
 
 
         List<PlaySheetSituationPlay> situationPlays = List.of(
@@ -144,6 +164,47 @@ public class GeneratePlaySheet {
                 new PlaySheetSituationPlay(3L, situation1, plays.get(10)), // play11
                 new PlaySheetSituationPlay(4L, situation1, plays.get(20)), // play21
                 new PlaySheetSituationPlay(5L, situation1, plays.get(30)), // play31
+                new PlaySheetSituationPlay(1L, situation1, plays.get(0)),  // play1
+                new PlaySheetSituationPlay(2L, situation1, plays.get(5)),  // play6
+                new PlaySheetSituationPlay(3L, situation1, plays.get(10)), // play11
+                new PlaySheetSituationPlay(4L, situation1, plays.get(20)), // play21
+                new PlaySheetSituationPlay(5L, situation1, plays.get(30)), // play31
+                new PlaySheetSituationPlay(1L, situation1, plays.get(0)),  // play1
+                new PlaySheetSituationPlay(2L, situation1, plays.get(5)),  // play6
+                new PlaySheetSituationPlay(3L, situation1, plays.get(10)), // play11
+                new PlaySheetSituationPlay(4L, situation1, plays.get(20)), // play21
+                new PlaySheetSituationPlay(5L, situation1, plays.get(30)), // play31
+                new PlaySheetSituationPlay(1L, situation1, plays.get(0)),  // play1
+                new PlaySheetSituationPlay(2L, situation1, plays.get(5)),  // play6
+                new PlaySheetSituationPlay(3L, situation1, plays.get(10)), // play11
+                new PlaySheetSituationPlay(4L, situation1, plays.get(20)), // play21
+                new PlaySheetSituationPlay(5L, situation1, plays.get(30)), // play31
+                new PlaySheetSituationPlay(1L, situation1, plays.get(0)),  // play1
+                new PlaySheetSituationPlay(2L, situation1, plays.get(5)),  // play6
+                new PlaySheetSituationPlay(3L, situation1, plays.get(10)), // play11
+                new PlaySheetSituationPlay(4L, situation1, plays.get(20)), // play21
+                new PlaySheetSituationPlay(5L, situation1, plays.get(30)), // play31
+                new PlaySheetSituationPlay(1L, situation1, plays.get(0)),  // play1
+                new PlaySheetSituationPlay(2L, situation1, plays.get(5)),  // play6
+                new PlaySheetSituationPlay(3L, situation1, plays.get(10)), // play11
+                new PlaySheetSituationPlay(4L, situation1, plays.get(20)), // play21
+                new PlaySheetSituationPlay(5L, situation1, plays.get(30)), // play31
+                new PlaySheetSituationPlay(1L, situation1, plays.get(0)),  // play1
+                new PlaySheetSituationPlay(2L, situation1, plays.get(5)),  // play6
+                new PlaySheetSituationPlay(3L, situation1, plays.get(10)), // play11
+                new PlaySheetSituationPlay(4L, situation1, plays.get(20)), // play21
+                new PlaySheetSituationPlay(5L, situation1, plays.get(30)), // play31
+                new PlaySheetSituationPlay(1L, situation1, plays.get(0)),  // play1
+                new PlaySheetSituationPlay(2L, situation1, plays.get(5)),  // play6
+                new PlaySheetSituationPlay(3L, situation1, plays.get(10)), // play11
+                new PlaySheetSituationPlay(4L, situation1, plays.get(20)), // play21
+                new PlaySheetSituationPlay(5L, situation1, plays.get(30)), // play31
+                new PlaySheetSituationPlay(1L, situation1, plays.get(0)),  // play1
+                new PlaySheetSituationPlay(2L, situation1, plays.get(5)),  // play6
+                new PlaySheetSituationPlay(3L, situation1, plays.get(10)), // play11
+                new PlaySheetSituationPlay(4L, situation1, plays.get(20)), // play21
+                new PlaySheetSituationPlay(5L, situation1, plays.get(30)), // play31
+
 
                 // -------- 1st & 10 --------
                 new PlaySheetSituationPlay(6L, situation2, plays.get(0)),  // play1
@@ -151,6 +212,40 @@ public class GeneratePlaySheet {
                 new PlaySheetSituationPlay(8L, situation2, plays.get(10)), // play11
                 new PlaySheetSituationPlay(9L, situation2, plays.get(20)), // play21
                 new PlaySheetSituationPlay(10L, situation2, plays.get(30)),// play31
+                new PlaySheetSituationPlay(6L, situation2, plays.get(0)),  // play1
+                new PlaySheetSituationPlay(7L, situation2, plays.get(1)),  // play2
+                new PlaySheetSituationPlay(8L, situation2, plays.get(10)), // play11
+                new PlaySheetSituationPlay(9L, situation2, plays.get(20)), // play21
+                new PlaySheetSituationPlay(10L, situation2, plays.get(30)),// play31
+                new PlaySheetSituationPlay(6L, situation2, plays.get(0)),  // play1
+                new PlaySheetSituationPlay(7L, situation2, plays.get(1)),  // play2
+                new PlaySheetSituationPlay(8L, situation2, plays.get(10)), // play11
+                new PlaySheetSituationPlay(9L, situation2, plays.get(20)), // play21
+                new PlaySheetSituationPlay(10L, situation2, plays.get(30)),// play31
+                new PlaySheetSituationPlay(9L, situation2, plays.get(20)), // play21
+                new PlaySheetSituationPlay(10L, situation2, plays.get(30)),// play31
+                new PlaySheetSituationPlay(6L, situation2, plays.get(0)),  // play1
+                new PlaySheetSituationPlay(7L, situation2, plays.get(1)),  // play2
+                new PlaySheetSituationPlay(8L, situation2, plays.get(10)), // play11
+                new PlaySheetSituationPlay(9L, situation2, plays.get(20)), // play21
+                new PlaySheetSituationPlay(10L, situation2, plays.get(30)),// play31
+                new PlaySheetSituationPlay(6L, situation2, plays.get(0)),  // play1
+                new PlaySheetSituationPlay(7L, situation2, plays.get(1)),  // play2
+                new PlaySheetSituationPlay(8L, situation2, plays.get(10)), // play11
+                new PlaySheetSituationPlay(9L, situation2, plays.get(20)), // play21
+                new PlaySheetSituationPlay(10L, situation2, plays.get(30)),// play31new PlaySheetSituationPlay(9L, situation2, plays.get(20)), // play21
+                new PlaySheetSituationPlay(10L, situation2, plays.get(30)),// play31
+                new PlaySheetSituationPlay(6L, situation2, plays.get(0)),  // play1
+                new PlaySheetSituationPlay(7L, situation2, plays.get(1)),  // play2
+                new PlaySheetSituationPlay(8L, situation2, plays.get(10)), // play11
+                new PlaySheetSituationPlay(9L, situation2, plays.get(20)), // play21
+                new PlaySheetSituationPlay(10L, situation2, plays.get(30)),// play31
+                new PlaySheetSituationPlay(6L, situation2, plays.get(0)),  // play1
+                new PlaySheetSituationPlay(7L, situation2, plays.get(1)),  // play2
+                new PlaySheetSituationPlay(8L, situation2, plays.get(10)), // play11
+                new PlaySheetSituationPlay(9L, situation2, plays.get(20)), // play21
+                new PlaySheetSituationPlay(10L, situation2, plays.get(30)),// play31
+
 
                 // -------- 2nd & Medium --------
                 new PlaySheetSituationPlay(11L, situation3, plays.get(6)),  // play7
@@ -158,13 +253,56 @@ public class GeneratePlaySheet {
                 new PlaySheetSituationPlay(13L, situation3, plays.get(23)), // play24
                 new PlaySheetSituationPlay(14L, situation3, plays.get(39)), // play40
                 new PlaySheetSituationPlay(15L, situation3, plays.get(45)), // play46
+                new PlaySheetSituationPlay(11L, situation3, plays.get(6)),  // play7
+                new PlaySheetSituationPlay(12L, situation3, plays.get(7)),  // play8
+                new PlaySheetSituationPlay(13L, situation3, plays.get(23)), // play24
+                new PlaySheetSituationPlay(14L, situation3, plays.get(39)), // play40
+                new PlaySheetSituationPlay(15L, situation3, plays.get(45)), // play46
+                new PlaySheetSituationPlay(11L, situation3, plays.get(6)),  // play7
+                new PlaySheetSituationPlay(12L, situation3, plays.get(7)),  // play8
+                new PlaySheetSituationPlay(13L, situation3, plays.get(23)), // play24
+                new PlaySheetSituationPlay(14L, situation3, plays.get(39)), // play40new PlaySheetSituationPlay(15L, situation3, plays.get(45)), // play46
+                new PlaySheetSituationPlay(11L, situation3, plays.get(6)),  // play7
+                new PlaySheetSituationPlay(12L, situation3, plays.get(7)),  // play8
+                new PlaySheetSituationPlay(13L, situation3, plays.get(23)), // play24
+                new PlaySheetSituationPlay(14L, situation3, plays.get(39)), // play40new PlaySheetSituationPlay(15L, situation3, plays.get(45)), // play46
+                new PlaySheetSituationPlay(11L, situation3, plays.get(6)),  // play7
+                new PlaySheetSituationPlay(12L, situation3, plays.get(7)),  // play8
+                new PlaySheetSituationPlay(13L, situation3, plays.get(23)), // play24
+                new PlaySheetSituationPlay(14L, situation3, plays.get(39)), // play40
 
                 // -------- 3rd & Short --------
+                new PlaySheetSituationPlay(18L, situation4, plays.get(17)), // play18
+                new PlaySheetSituationPlay(19L, situation4, plays.get(26)), // play27
+                new PlaySheetSituationPlay(20L, situation4, plays.get(31)), // play32
+                new PlaySheetSituationPlay(16L, situation4, plays.get(12)), // play13
+                new PlaySheetSituationPlay(17L, situation4, plays.get(13)), // play14
+                new PlaySheetSituationPlay(18L, situation4, plays.get(17)), // play18
+                new PlaySheetSituationPlay(18L, situation4, plays.get(17)), // play18
+                new PlaySheetSituationPlay(19L, situation4, plays.get(26)), // play27
+                new PlaySheetSituationPlay(20L, situation4, plays.get(31)), // play32
+                new PlaySheetSituationPlay(16L, situation4, plays.get(12)), // play13
+                new PlaySheetSituationPlay(17L, situation4, plays.get(13)), // play14
+                new PlaySheetSituationPlay(18L, situation4, plays.get(17)), // play18new PlaySheetSituationPlay(18L, situation4, plays.get(17)), // play18
+                new PlaySheetSituationPlay(19L, situation4, plays.get(26)), // play27
+                new PlaySheetSituationPlay(20L, situation4, plays.get(31)), // play32
+                new PlaySheetSituationPlay(16L, situation4, plays.get(12)), // play13
+                new PlaySheetSituationPlay(17L, situation4, plays.get(13)), // play14
+                new PlaySheetSituationPlay(18L, situation4, plays.get(17)), // play18new PlaySheetSituationPlay(18L, situation4, plays.get(17)), // play18
+                new PlaySheetSituationPlay(19L, situation4, plays.get(26)), // play27
+                new PlaySheetSituationPlay(20L, situation4, plays.get(31)), // play32
                 new PlaySheetSituationPlay(16L, situation4, plays.get(12)), // play13
                 new PlaySheetSituationPlay(17L, situation4, plays.get(13)), // play14
                 new PlaySheetSituationPlay(18L, situation4, plays.get(17)), // play18
                 new PlaySheetSituationPlay(19L, situation4, plays.get(26)), // play27
                 new PlaySheetSituationPlay(20L, situation4, plays.get(31)), // play32
+                new PlaySheetSituationPlay(16L, situation4, plays.get(12)), // play13
+                new PlaySheetSituationPlay(17L, situation4, plays.get(13)), // play14
+                new PlaySheetSituationPlay(18L, situation4, plays.get(17)), // play18new PlaySheetSituationPlay(19L, situation4, plays.get(26)), // play27
+                new PlaySheetSituationPlay(20L, situation4, plays.get(31)), // play32
+                new PlaySheetSituationPlay(16L, situation4, plays.get(12)), // play13
+                new PlaySheetSituationPlay(17L, situation4, plays.get(13)), // play14
+                new PlaySheetSituationPlay(18L, situation4, plays.get(17)), // play18
 
                 // -------- 3rd & Long --------
                 new PlaySheetSituationPlay(21L, situation5, plays.get(5)),  // play6
@@ -172,12 +310,78 @@ public class GeneratePlaySheet {
                 new PlaySheetSituationPlay(23L, situation5, plays.get(40)), // play41
                 new PlaySheetSituationPlay(24L, situation5, plays.get(46)), // play47
                 new PlaySheetSituationPlay(25L, situation5, plays.get(48)), // play49
+                new PlaySheetSituationPlay(21L, situation5, plays.get(5)),  // play6
+                new PlaySheetSituationPlay(22L, situation5, plays.get(38)), // play39
+                new PlaySheetSituationPlay(23L, situation5, plays.get(40)), // play41
+                new PlaySheetSituationPlay(24L, situation5, plays.get(46)), // play47
+                new PlaySheetSituationPlay(25L, situation5, plays.get(48)), // play49
+                new PlaySheetSituationPlay(21L, situation5, plays.get(5)),  // play6
+                new PlaySheetSituationPlay(22L, situation5, plays.get(38)), // play39
+                new PlaySheetSituationPlay(23L, situation5, plays.get(40)), // play41
+                new PlaySheetSituationPlay(24L, situation5, plays.get(46)), // play47
+                new PlaySheetSituationPlay(25L, situation5, plays.get(48)), // play49
+                new PlaySheetSituationPlay(21L, situation5, plays.get(5)),  // play6
+                new PlaySheetSituationPlay(22L, situation5, plays.get(38)), // play39
+                new PlaySheetSituationPlay(23L, situation5, plays.get(40)), // play41
+                new PlaySheetSituationPlay(24L, situation5, plays.get(46)), // play47
+                new PlaySheetSituationPlay(25L, situation5, plays.get(48)), // play49
+                new PlaySheetSituationPlay(21L, situation5, plays.get(5)),  // play6
+                new PlaySheetSituationPlay(22L, situation5, plays.get(38)), // play39
+                new PlaySheetSituationPlay(23L, situation5, plays.get(40)), // play41
+                new PlaySheetSituationPlay(24L, situation5, plays.get(46)), // play47
+                new PlaySheetSituationPlay(25L, situation5, plays.get(48)), // play49
+                new PlaySheetSituationPlay(21L, situation5, plays.get(5)),  // play6
+                new PlaySheetSituationPlay(22L, situation5, plays.get(38)), // play39
+                new PlaySheetSituationPlay(23L, situation5, plays.get(40)), // play41
+                new PlaySheetSituationPlay(24L, situation5, plays.get(46)), // play47
+                new PlaySheetSituationPlay(25L, situation5, plays.get(48)), // play49
+                new PlaySheetSituationPlay(21L, situation5, plays.get(5)),  // play6
+                new PlaySheetSituationPlay(22L, situation5, plays.get(38)), // play39
+                new PlaySheetSituationPlay(23L, situation5, plays.get(40)), // play41
+                new PlaySheetSituationPlay(24L, situation5, plays.get(46)), // play47
+
 
                 // -------- Low Red Zone --------
                 new PlaySheetSituationPlay(26L, situation6, plays.get(12)), // play13
                 new PlaySheetSituationPlay(27L, situation6, plays.get(17)), // play18
                 new PlaySheetSituationPlay(28L, situation6, plays.get(34)), // play35
                 new PlaySheetSituationPlay(29L, situation6, plays.get(49)), // play50
+                new PlaySheetSituationPlay(26L, situation6, plays.get(12)), // play13
+                new PlaySheetSituationPlay(27L, situation6, plays.get(17)), // play18
+                new PlaySheetSituationPlay(28L, situation6, plays.get(34)), // play35
+                new PlaySheetSituationPlay(29L, situation6, plays.get(49)), // play50
+                new PlaySheetSituationPlay(26L, situation6, plays.get(12)), // play13
+                new PlaySheetSituationPlay(27L, situation6, plays.get(17)), // play18
+                new PlaySheetSituationPlay(28L, situation6, plays.get(34)), // play35
+                new PlaySheetSituationPlay(29L, situation6, plays.get(49)), // play50
+                new PlaySheetSituationPlay(26L, situation6, plays.get(12)), // play13
+                new PlaySheetSituationPlay(27L, situation6, plays.get(17)), // play18
+                new PlaySheetSituationPlay(28L, situation6, plays.get(34)), // play35
+                new PlaySheetSituationPlay(28L, situation6, plays.get(34)), // play35
+                new PlaySheetSituationPlay(29L, situation6, plays.get(49)), // play50
+                new PlaySheetSituationPlay(26L, situation6, plays.get(12)), // play13
+                new PlaySheetSituationPlay(27L, situation6, plays.get(17)), // play18
+                new PlaySheetSituationPlay(28L, situation6, plays.get(34)), // play35
+                new PlaySheetSituationPlay(29L, situation6, plays.get(49)), // play50
+                new PlaySheetSituationPlay(26L, situation6, plays.get(12)), // play13
+                new PlaySheetSituationPlay(27L, situation6, plays.get(17)), // play18
+                new PlaySheetSituationPlay(28L, situation6, plays.get(34)), // play35
+                new PlaySheetSituationPlay(29L, situation6, plays.get(49)), // play50
+                new PlaySheetSituationPlay(26L, situation6, plays.get(12)), // play13
+                new PlaySheetSituationPlay(27L, situation6, plays.get(17)), // play18
+                new PlaySheetSituationPlay(28L, situation6, plays.get(34)), // play35new PlaySheetSituationPlay(28L, situation6, plays.get(34)), // play35
+                new PlaySheetSituationPlay(29L, situation6, plays.get(49)), // play50
+                new PlaySheetSituationPlay(26L, situation6, plays.get(12)), // play13
+                new PlaySheetSituationPlay(27L, situation6, plays.get(17)), // play18
+                new PlaySheetSituationPlay(28L, situation6, plays.get(34)), // play35
+                new PlaySheetSituationPlay(29L, situation6, plays.get(49)), // play50
+                new PlaySheetSituationPlay(26L, situation6, plays.get(12)), // play13
+                new PlaySheetSituationPlay(27L, situation6, plays.get(17)), // play18
+                new PlaySheetSituationPlay(28L, situation6, plays.get(34)), // play35
+                new PlaySheetSituationPlay(29L, situation6, plays.get(49)), // play50
+                new PlaySheetSituationPlay(26L, situation6, plays.get(12)), // play13
+                new PlaySheetSituationPlay(27L, situation6, plays.get(17)), // play18
+                new PlaySheetSituationPlay(28L, situation6, plays.get(34)), // play35
 
                 // -------- High Red Zone --------
                 new PlaySheetSituationPlay(30L, situation7, plays.get(14)), // play15
@@ -185,8 +389,34 @@ public class GeneratePlaySheet {
                 new PlaySheetSituationPlay(32L, situation7, plays.get(32)), // play33
                 new PlaySheetSituationPlay(33L, situation7, plays.get(43)), // play44
                 new PlaySheetSituationPlay(34L, situation7, plays.get(47)), // play48
+                new PlaySheetSituationPlay(30L, situation7, plays.get(14)), // play15
+                new PlaySheetSituationPlay(31L, situation7, plays.get(19)), // play20
+                new PlaySheetSituationPlay(32L, situation7, plays.get(32)), // play33
+                new PlaySheetSituationPlay(33L, situation7, plays.get(43)), // play44
+                new PlaySheetSituationPlay(34L, situation7, plays.get(47)), // play48
+
 
                 // -------- Backed Up --------
+                new PlaySheetSituationPlay(35L, situation8, plays.get(0)),  // play1
+                new PlaySheetSituationPlay(36L, situation8, plays.get(12)), // play13
+                new PlaySheetSituationPlay(37L, situation8, plays.get(20)), // play21
+                new PlaySheetSituationPlay(38L, situation8, plays.get(30)), // play31
+                new PlaySheetSituationPlay(35L, situation8, plays.get(0)),  // play1
+                new PlaySheetSituationPlay(36L, situation8, plays.get(12)), // play13
+                new PlaySheetSituationPlay(37L, situation8, plays.get(20)), // play21
+                new PlaySheetSituationPlay(38L, situation8, plays.get(30)), // play31
+                new PlaySheetSituationPlay(35L, situation8, plays.get(0)),  // play1
+                new PlaySheetSituationPlay(36L, situation8, plays.get(12)), // play13
+                new PlaySheetSituationPlay(37L, situation8, plays.get(20)), // play21
+                new PlaySheetSituationPlay(38L, situation8, plays.get(30)), // play31
+                new PlaySheetSituationPlay(35L, situation8, plays.get(0)),  // play1
+                new PlaySheetSituationPlay(36L, situation8, plays.get(12)), // play13
+                new PlaySheetSituationPlay(37L, situation8, plays.get(20)), // play21
+                new PlaySheetSituationPlay(38L, situation8, plays.get(30)), // play31
+                new PlaySheetSituationPlay(35L, situation8, plays.get(0)),  // play1
+                new PlaySheetSituationPlay(36L, situation8, plays.get(12)), // play13
+                new PlaySheetSituationPlay(37L, situation8, plays.get(20)), // play21
+                new PlaySheetSituationPlay(38L, situation8, plays.get(30)), // play31
                 new PlaySheetSituationPlay(35L, situation8, plays.get(0)),  // play1
                 new PlaySheetSituationPlay(36L, situation8, plays.get(12)), // play13
                 new PlaySheetSituationPlay(37L, situation8, plays.get(20)), // play21
@@ -198,11 +428,160 @@ public class GeneratePlaySheet {
                 new PlaySheetSituationPlay(41L, situation9, plays.get(23)), // play24
                 new PlaySheetSituationPlay(42L, situation9, plays.get(40)), // play41
                 new PlaySheetSituationPlay(43L, situation9, plays.get(45)), // play46
+                new PlaySheetSituationPlay(39L, situation9, plays.get(5)),  // play6
+                new PlaySheetSituationPlay(40L, situation9, plays.get(6)),  // play7
+                new PlaySheetSituationPlay(41L, situation9, plays.get(23)), // play24
+                new PlaySheetSituationPlay(42L, situation9, plays.get(40)), // play41
+                new PlaySheetSituationPlay(43L, situation9, plays.get(45)), // play46
+                new PlaySheetSituationPlay(39L, situation9, plays.get(5)),  // play6
+                new PlaySheetSituationPlay(40L, situation9, plays.get(6)),  // play7
+
 
                 // -------- Goal Line --------
                 new PlaySheetSituationPlay(44L, situation10, plays.get(17)), // play18
+                new PlaySheetSituationPlay(44L, situation10, plays.get(17)), // play18
                 new PlaySheetSituationPlay(45L, situation10, plays.get(12)), // play13
-                new PlaySheetSituationPlay(46L, situation10, plays.get(34))  // play35
+                new PlaySheetSituationPlay(44L, situation10, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation10, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation10, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation10, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation10, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation10, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation10, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation10, plays.get(12)), // play13
+                new PlaySheetSituationPlay(46L, situation10, plays.get(34)),  // play35
+
+                new PlaySheetSituationPlay(44L, situation11, plays.get(17)), // play18
+                new PlaySheetSituationPlay(44L, situation11, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation11, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation11, plays.get(17)), // play18
+                new PlaySheetSituationPlay(44L, situation11, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation11, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation11, plays.get(17)), // play18
+                new PlaySheetSituationPlay(44L, situation11, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation11, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation11, plays.get(17)), // play18
+                new PlaySheetSituationPlay(44L, situation11, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation11, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation11, plays.get(17)), // play18
+                new PlaySheetSituationPlay(44L, situation11, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation11, plays.get(12)), // play13
+
+                new PlaySheetSituationPlay(44L, situation12, plays.get(17)), // play18
+                new PlaySheetSituationPlay(44L, situation12, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation12, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation12, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation12, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation12, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation12, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation12, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation12, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation12, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation12, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation12, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation12, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation12, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation12, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation12, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation12, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation12, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation12, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation12, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation12, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation12, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation12, plays.get(12)), // play13
+                new PlaySheetSituationPlay(46L, situation12, plays.get(34)),  // play35
+
+                new PlaySheetSituationPlay(44L, situation13, plays.get(17)), // play18
+                new PlaySheetSituationPlay(44L, situation13, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation13, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation13, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation13, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation13, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation13, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation13, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation13, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation13, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation13, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation13, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation13, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation13, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation13, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation13, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation13, plays.get(12)), // play13
+                new PlaySheetSituationPlay(46L, situation13, plays.get(34)),  // play35
+
+                new PlaySheetSituationPlay(44L, situation14, plays.get(17)), // play18
+                new PlaySheetSituationPlay(44L, situation14, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation14, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation14, plays.get(17)), // play18
+                new PlaySheetSituationPlay(44L, situation14, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation14, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation14, plays.get(17)), // play18
+                new PlaySheetSituationPlay(44L, situation14, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation14, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation14, plays.get(17)), // play18
+                new PlaySheetSituationPlay(44L, situation14, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation14, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation14, plays.get(17)), // play18
+                new PlaySheetSituationPlay(44L, situation14, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation14, plays.get(12)), // play13
+
+                new PlaySheetSituationPlay(45L, situation14, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation14, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation14, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation14, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation14, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation14, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation14, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation14, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation14, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation14, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation14, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation14, plays.get(17)), // play18
+
+
+
+                new PlaySheetSituationPlay(45L, situation15, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation15, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation15, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation15, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation15, plays.get(12)), // play13
+                new PlaySheetSituationPlay(46L, situation15, plays.get(34)),  // play35
+                new PlaySheetSituationPlay(45L, situation15, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation15, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation15, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation15, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation15, plays.get(12)), // play13
+                new PlaySheetSituationPlay(46L, situation15, plays.get(34)),  // play35
+                new PlaySheetSituationPlay(45L, situation15, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation15, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation15, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation15, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation15, plays.get(12)), // play13
+                new PlaySheetSituationPlay(46L, situation15, plays.get(34)),  // play35
+                new PlaySheetSituationPlay(45L, situation15, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation15, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation15, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation15, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation15, plays.get(12)), // play13
+                new PlaySheetSituationPlay(46L, situation15, plays.get(34)),  // play35
+
+                new PlaySheetSituationPlay(44L, situation16, plays.get(17)), // play18
+                new PlaySheetSituationPlay(44L, situation16, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation16, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation16, plays.get(17)), // play18
+                new PlaySheetSituationPlay(44L, situation16, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation16, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation16, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation16, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation16, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation16, plays.get(12)), // play13
+                new PlaySheetSituationPlay(44L, situation16, plays.get(17)), // play18
+                new PlaySheetSituationPlay(45L, situation16, plays.get(12)), // play13
+                new PlaySheetSituationPlay(46L, situation16, plays.get(34))  // play35
+
+
 
         );
 
@@ -237,8 +616,27 @@ public class GeneratePlaySheet {
         situation10.getPlays().addAll(situationPlays.stream()
                 .filter(play -> play.getPlaySheetSituation().equals(situation10))
                 .collect(Collectors.toSet()));
+        situation11.getPlays().addAll(situationPlays.stream()
+                .filter(play -> play.getPlaySheetSituation().equals(situation11))
+                .collect(Collectors.toSet()));
+        situation12.getPlays().addAll(situationPlays.stream()
+                .filter(play -> play.getPlaySheetSituation().equals(situation12))
+                .collect(Collectors.toSet()));
+        situation13.getPlays().addAll(situationPlays.stream()
+                .filter(play -> play.getPlaySheetSituation().equals(situation13))
+                .collect(Collectors.toSet()));
+        situation14.getPlays().addAll(situationPlays.stream()
+                .filter(play -> play.getPlaySheetSituation().equals(situation14))
+                .collect(Collectors.toSet()));
+        situation15.getPlays().addAll(situationPlays.stream()
+                .filter(play -> play.getPlaySheetSituation().equals(situation15))
+                .collect(Collectors.toSet()));
+        situation16.getPlays().addAll(situationPlays.stream()
+                .filter(play -> play.getPlaySheetSituation().equals(situation16))
+                .collect(Collectors.toSet()));
 
-        GenerationDetails generationDetails = new GenerationDetails(30, true);
+
+        GenerationDetails generationDetails = new GenerationDetails(30, false);
         Result<byte[]> result = generatePlaySheet(generationDetails, playSheet);
 
         try{
@@ -296,17 +694,19 @@ public class GeneratePlaySheet {
                 maxRows = 25;
             }
 
-            maxRows = 24;
+            maxRows = 49;
             for(PlaySheetSituation situation : playSheet.getSituations()) {
 
                 if(!generationDetails.isWrapPlays()) {
-                    if((maxRows - (rowNum + 1)) < situation.getPlays().size() && colNum <= 22) {
+                    if((maxRows - (rowNum + 1)) < (situation.getPlays().size() - 1) && colNum <= 22) {
                                 colNum += spacing;
                                 rowNum = 0;
                     }
 
-                    if(rowNum == 0 && (maxRows - (rowNum + 1)) < situation.getPlays().size()) {
-                        result.addMessages("More plays that max rows, please turn off wrap plays or increase max rows", ResultType.INVALID);
+                    if(rowNum == 0 && (maxRows - (rowNum + 1)) < situation.getPlays().size() - 1) {
+                        result.addMessages("More plays in situation: "
+                                + situation.getSituationName() + " with ID: " + situation.getPlaySheetSituationId() +
+                                " than max rows, please turn off wrap plays or increase max rows", ResultType.INVALID);
                         return result;
                     }
                 } else {
@@ -353,6 +753,11 @@ public class GeneratePlaySheet {
                 style.setFillForegroundColor(IndexedColors.valueOf(situation.getSituationColor().toUpperCase()).getIndex());
                 style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
+                Font font = workbook.createFont();
+                font.setColor(IndexedColors.WHITE.getIndex());
+                font.setBold(true);
+
+                style.setFont(font);
                 column.setCellStyle(style);
                 column.setCellValue(situation.getSituationName());
                 currentSheet.autoSizeColumn(colNum);
@@ -368,17 +773,23 @@ public class GeneratePlaySheet {
                             colNum += spacing;
                         }
 
-                        if(currentSheet.getRow(rowNum) == null) {
-                            row = currentSheet.createRow(rowNum++);
-                        } else {
-                            row = currentSheet.getRow(rowNum++);
-                        }
 
-                        Cell formationName = row.createCell(colNum);
-                        formationName.setCellValue(play.getPlay().getFormation().getFormationName());
-                        Cell playName = row.createCell(colNum + 1);
-                        playName.setCellValue(play.getPlay().getPlayName());
                     }
+
+                    if(currentSheet.getRow(rowNum) == null) {
+                        row = currentSheet.createRow(rowNum++);
+                    } else {
+                        row = currentSheet.getRow(rowNum++);
+                    }
+
+                    Cell formationName = row.createCell(colNum);
+                    formationName.setCellValue(play.getPlay().getFormation().getFormationName());
+                    Cell playName = row.createCell(colNum + 1);
+                    playName.setCellValue(play.getPlay().getPlayName());
+                    currentSheet.autoSizeColumn(colNum);
+                    currentWidth = currentSheet.getColumnWidth(colNum);
+                    currentSheet.setColumnWidth(colNum, currentWidth + 1500);
+                    currentSheet.setColumnWidth(colNum + 1, currentWidth + 2000);
                 }
 
             }
