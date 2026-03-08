@@ -1,6 +1,7 @@
 package com.xno.xno_backend.services;
 
 import com.xno.xno_backend.models.DTOs.CreateDTOs.PlaySheetCreateDTO;
+import com.xno.xno_backend.models.DTOs.GenerationDetails;
 import com.xno.xno_backend.models.DTOs.ResponseDTOs.PlaySheetDetailResponseDTO;
 import com.xno.xno_backend.models.DTOs.ResponseDTOs.PlaySheetSummaryResponseDTO;
 import com.xno.xno_backend.models.DTOs.UpdateDTOs.PlaySheetUpdateDTO;
@@ -26,5 +27,5 @@ public interface PlaySheetService {
 
     void deletePlaySheet(Long playSheetId, Long userId);
 
-    Result<MultipartFile> generatePlaySheet(Long playSheetId, Long userId);
+    Result<byte[]> generatePlaySheet(Long playSheetId, Long userId, GenerationDetails generationDetails);
 }

@@ -9,7 +9,12 @@ import com.xno.xno_backend.models.UserDetailsImpl;
 import com.xno.xno_backend.repositories.AppRoleRepository;
 import com.xno.xno_backend.repositories.AppUserRepository;
 import com.xno.xno_backend.security.jwt.JwtUtils;
+import com.xno.xno_backend.security.requests.LoginRequest;
 import com.xno.xno_backend.security.requests.SignUpRequest;
+import com.xno.xno_backend.services.AppUserService;
+import com.xno.xno_backend.services.Result;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -26,13 +31,15 @@ import java.util.Set;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
+    private final AppUserService appUserService;
     private final JwtUtils jwtUtils;
     private final AppUserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AppRoleRepository appRoleRepository;
 
-    public AuthController(AuthenticationManager authenticationManager, JwtUtils jwtUtils, AppUserRepository userRepository, PasswordEncoder passwordEncoder, AppRoleRepository appRoleRepository) {
+    public AuthController(AuthenticationManager authenticationManager, AppUserService appUserService, JwtUtils jwtUtils, AppUserRepository userRepository, PasswordEncoder passwordEncoder, AppRoleRepository appRoleRepository) {
         this.authenticationManager = authenticationManager;
+        this.appUserService = appUserService;
         this.jwtUtils = jwtUtils;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -77,6 +84,18 @@ public class AuthController {
         user.setRoles(roles);
         userRepository.save(user);
         return ResponseEntity.ok(new MessageResponse("User registered successfully"));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        Result<UserInfoResponse> result = appUserService.authenticateUser(loginRequest);
+
+        if(!result.isSuccess()) {
+            return new ResponseEntity<>(result.getMessages(), HttpStatus.UNAUTHORIZED);
+        }
+
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, result.getPayload().getCookie().toString()).body(result.getPayload());
+
     }
 
     @GetMapping("/username")

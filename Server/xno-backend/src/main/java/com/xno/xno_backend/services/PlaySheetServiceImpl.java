@@ -3,15 +3,21 @@ package com.xno.xno_backend.services;
 import com.xno.xno_backend.models.*;
 import com.xno.xno_backend.models.DTOs.CreateDTOs.PlaySheetCreateDTO;
 import com.xno.xno_backend.models.DTOs.CreateDTOs.PlaySheetSituationCreateDTO;
+import com.xno.xno_backend.models.DTOs.GenerationDetails;
 import com.xno.xno_backend.models.DTOs.ResponseDTOs.*;
 import com.xno.xno_backend.models.DTOs.UpdateDTOs.PlaySheetSituationUpdateDTO;
 import com.xno.xno_backend.models.DTOs.UpdateDTOs.PlaySheetUpdateDTO;
 import com.xno.xno_backend.models.DTOs.UpdateDTOs.PlayUpdateDTO;
 import com.xno.xno_backend.repositories.*;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -382,8 +388,8 @@ public class PlaySheetServiceImpl implements PlaySheetService {
     }
 
     @Override
-    public Result<MultipartFile> generatePlaySheet(Long playSheetId, Long userId) {
-        Result<MultipartFile> result = new Result<>();
+    public Result<byte[]> generatePlaySheet(Long playSheetId, Long userId, GenerationDetails generationDetails) {
+        Result<byte[]> result = new Result<>();
         Optional<PlaySheet> optionalPlaySheet = playSheetRepository.findById(playSheetId);
 
         if(optionalPlaySheet.isEmpty()) {
@@ -399,9 +405,127 @@ public class PlaySheetServiceImpl implements PlaySheetService {
             return result;
         }
 
+        try(Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+
+            int sheetNum = 1;
+            Sheet currentSheet = workbook.createSheet(playSheet.getPlaySheetName() + " " + sheetNum);
+
+            int maxRows = generationDetails.getMaxRows() - 1;
+            int rowNum = 0;
+            int colNum = 0;
+            int spacing = 2;
+            if(maxRows < 20) {
+                result.addMessages("Max rows should be at least 20", ResultType.INVALID);
+                return result;
+            }
+
+            for(PlaySheetSituation situation : playSheet.getSituations()) {
+                if(!generationDetails.isWrapPlays()) {
+                    int availableRows = (maxRows - (rowNum + 1)) - (situation.getPlays().size() - 1);
+
+                    if(availableRows < 0 && colNum <= 22) {
+                        colNum += spacing;
+                        rowNum = 0;
+                        availableRows = (maxRows - (rowNum + 1)) - (situation.getPlays().size() - 1);
+                    }
+
+                    if(rowNum == 0 && availableRows < 0) {
+                        result.addMessages("More plays in situation: "
+                                + situation.getSituationName() + " with ID: " + situation.getPlaySheetSituationId() +
+                                " than max rows, please turn on wrap plays or increase max rows." + " Need " + Math.abs(availableRows) + " more rows", ResultType.INVALID);
+                        return result;
+                    }
+                } else {
+                    if(rowNum + 1 > maxRows && colNum <= 22) {
+                        rowNum = 0;
+                        colNum += spacing;
+                    }
+                    int currentColumnRowsLeft = maxRows - rowNum;
+                    int totalRowsLeft = (((26 - (colNum + spacing)) / 2) * (maxRows + 1)) + currentColumnRowsLeft;
+
+                    if(colNum == 0 && totalRowsLeft < situation.getPlays().size()) {
+                        result.addMessages("Situation Has too many plays to fit on one side of the Play Sheet", ResultType.INVALID);
+                        return result;
+                    }
+                    if(totalRowsLeft < situation.getPlays().size()) {
+                        rowNum = 0;
+                        colNum = 0;
+                        currentSheet = workbook.createSheet(playSheet.getPlaySheetName() + " " + ++sheetNum);
+                    }
+                }
+
+                if(colNum >= 24 && (maxRows - (rowNum + 1)) < situation.getPlays().size()) {
+                    rowNum = 0;
+                    colNum = 0;
+                    currentSheet = workbook.createSheet(playSheet.getPlaySheetName() + " " + ++sheetNum);
+                }
+                Row row;
+                if(currentSheet.getRow(rowNum) == null) {
+                    row = currentSheet.createRow(rowNum);
+                } else {
+                    row = currentSheet.getRow(rowNum);
+                }
+
+                Cell column = row.createCell(colNum);
+
+                CellRangeAddress cellAddresses = new CellRangeAddress(rowNum, rowNum, colNum, colNum + 1);
+                currentSheet.addMergedRegion(cellAddresses);
+
+                CellStyle style = workbook.createCellStyle();
+
+                style.setAlignment(HorizontalAlignment.CENTER);
+                style.setVerticalAlignment(VerticalAlignment.CENTER);
+
+                style.setFillForegroundColor(IndexedColors.valueOf(situation.getSituationColor().toUpperCase()).getIndex());
+                style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+                Font font = workbook.createFont();
+                font.setColor(IndexedColors.WHITE.getIndex());
+                font.setBold(true);
+
+                style.setFont(font);
+                column.setCellStyle(style);
+                column.setCellValue(situation.getSituationName());
+                currentSheet.autoSizeColumn(colNum);
+                int currentWidth = currentSheet.getColumnWidth(colNum);
+                currentSheet.setColumnWidth(colNum, currentWidth + 400);
+                currentSheet.setColumnWidth(colNum + 1, currentWidth + 400);
+                rowNum++;
+
+                for(PlaySheetSituationPlay play : situation.getPlays()) {
+                    if(generationDetails.isWrapPlays()) {
+                        if(rowNum > maxRows) {
+                            rowNum = 0;
+                            colNum += spacing;
+                        }
 
 
-        return null;
+                    }
+
+                    if(currentSheet.getRow(rowNum) == null) {
+                        row = currentSheet.createRow(rowNum++);
+                    } else {
+                        row = currentSheet.getRow(rowNum++);
+                    }
+
+                    Cell formationName = row.createCell(colNum);
+                    formationName.setCellValue(play.getPlay().getFormation().getFormationName());
+                    Cell playName = row.createCell(colNum + 1);
+                    playName.setCellValue(play.getPlay().getPlayName());
+                    currentSheet.autoSizeColumn(colNum);
+                    currentWidth = currentSheet.getColumnWidth(colNum);
+                    currentSheet.setColumnWidth(colNum, currentWidth + 1500);
+                    currentSheet.setColumnWidth(colNum + 1, currentWidth + 2000);
+                }
+            }
+
+            workbook.write(out);
+            result.setPayload(out.toByteArray());
+            return result;
+        } catch (IOException e) {
+            result.addMessages("Error Occurred", ResultType.INVALID);
+            return result;
+        }
     }
 
 
