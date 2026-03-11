@@ -1,11 +1,8 @@
 package com.xno.xno_backend.services;
 
-import com.xno.xno_backend.models.AppRole;
-import com.xno.xno_backend.models.AppUser;
+import com.xno.xno_backend.models.*;
 import com.xno.xno_backend.models.DTOs.InfoDTOs.MessageResponse;
 import com.xno.xno_backend.models.DTOs.InfoDTOs.UserInfoResponse;
-import com.xno.xno_backend.models.Role;
-import com.xno.xno_backend.models.UserDetailsImpl;
 import com.xno.xno_backend.repositories.AppRoleRepository;
 import com.xno.xno_backend.repositories.AppUserRepository;
 import com.xno.xno_backend.security.jwt.JwtUtils;
@@ -75,7 +72,7 @@ public class AppUserServiceImpl implements AppUserService{
     }
 
     @Override
-    public Result<?> registerUser(SignUpRequest signUpRequest) {
+    public Result<MessageResponse> registerUser(SignUpRequest signUpRequest) {
         Result<MessageResponse> result = new Result<>();
         if(appUserRepository.existsByUsername(signUpRequest.getUsername())) {
             result.addMessages("Username is already taken!", ResultType.INVALID);
@@ -97,17 +94,17 @@ public class AppUserServiceImpl implements AppUserService{
 
         if(strRoles == null) {
             AppRole userRole = appRoleRepository.findByRoleName(Role.ROLE_USER)
-                    .orElseThrow(() -> new NoSuchElementException("Error: Role is not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Error: Role " + Role.ROLE_USER.name() + " is not found"));
             roles.add(userRole);
         } else {
             strRoles.forEach(role -> {
                 if(role.equals("admin")) {
                     AppRole adminRole = appRoleRepository.findByRoleName(Role.ROLE_ADMIN)
-                            .orElseThrow(() -> new NoSuchElementException("Error: Role is not found"));
+                            .orElseThrow(() -> new ResourceNotFoundException("Error: Role " + Role.ROLE_ADMIN.name() + " is not found"));
                     roles.add(adminRole);
                 } else {
                     AppRole defaultRole = appRoleRepository.findByRoleName(Role.ROLE_USER)
-                            .orElseThrow(() -> new RuntimeException("Error: Role is not found"));
+                            .orElseThrow(() -> new ResourceNotFoundException("Error: Role " + Role.ROLE_USER.name() + " is not found"));
                     roles.add(defaultRole);
                 }
             });
@@ -115,6 +112,7 @@ public class AppUserServiceImpl implements AppUserService{
 
         appUser.setRoles(roles);
         appUserRepository.save(appUser);
+        result.addMessages("User Registered", ResultType.SUCCESS);
         return result;
     }
 

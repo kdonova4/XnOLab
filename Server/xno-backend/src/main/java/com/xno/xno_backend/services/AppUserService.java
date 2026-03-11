@@ -15,7 +15,7 @@ public interface AppUserService {
 
     ResponseCookie signOut();
 
-    Result<?> registerUser(SignUpRequest signUpRequest);
+    Result<MessageResponse> registerUser(SignUpRequest signUpRequest);
 
     Result<UserInfoResponse> authenticateUser(LoginRequest loginRequest);
 

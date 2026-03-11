@@ -8,6 +8,7 @@ import com.xno.xno_backend.models.DTOs.ResponseDTOs.PlaybookDetailResponseDTO;
 import com.xno.xno_backend.models.DTOs.ResponseDTOs.PlaybookSummaryResponseDTO;
 import com.xno.xno_backend.models.DTOs.UpdateDTOs.PlaybookUpdateDTO;
 import com.xno.xno_backend.models.Playbook;
+import com.xno.xno_backend.models.ResourceNotFoundException;
 import com.xno.xno_backend.repositories.AppUserRepository;
 import com.xno.xno_backend.repositories.PlaybookRepository;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,7 @@ public class PlaybookServiceImpl implements PlaybookService{
     @Override
     public PlaybookDetailResponseDTO getPlaybookDetails(Long playbookId, Long userId) {
         Playbook fullPlaybook = playbookRepository.loadPlaybookByPlaybookId(playbookId, userId).orElseThrow(
-                () -> new NoSuchElementException("Playbook Not Found With ID " + playbookId)
+                () -> new ResourceNotFoundException("Playbook", "playbookId", playbookId)
         );
 
         List<PlayResponseDTO> playResponseDTOS = fullPlaybook.getPlays().stream()

@@ -44,7 +44,7 @@ public class PlaySheetServiceImpl implements PlaySheetService {
     @Override
     public PlaySheetSummaryResponseDTO getPlaySheetSummaryById(Long playSheetId, Long userId) {
         PlaySheet playSheet = playSheetRepository.findByPlaySheetIdAndUser_AppUserId(playSheetId, userId)
-                .orElseThrow(() -> new NoSuchElementException(String.format("PlaySheet ID %d not found for User %d", playSheetId, userId)));
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("PlaySheet ID %d not found for User %d", playSheetId, userId)));
 
         PlaySheetSummaryResponseDTO playSheetSummaryResponseDTO =
                 new PlaySheetSummaryResponseDTO(
@@ -64,7 +64,7 @@ public class PlaySheetServiceImpl implements PlaySheetService {
     @Override
     public PlaySheetDetailResponseDTO loadPlaySheetDetailsById(Long playSheetId, Long userId) {
         PlaySheet playSheet = playSheetRepository.loadPlaySheetByPlaySheetIdAndUserId(playSheetId, userId).orElseThrow(
-                () -> new NoSuchElementException(String.format("PlaySheet ID %d not found for User %d", playSheetId, userId))
+                () -> new ResourceNotFoundException(String.format("PlaySheet ID %d not found for User %d", playSheetId, userId))
         );
 
         PlaySheetDetailResponseDTO detailResponseDTO = new PlaySheetDetailResponseDTO(

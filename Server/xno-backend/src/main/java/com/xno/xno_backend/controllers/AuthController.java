@@ -48,42 +48,13 @@ public class AuthController {
 
     @PostMapping("/sign-up")
     public ResponseEntity<?> registerUser(@RequestBody SignUpRequest signUpRequest) {
-        if(userRepository.existsByUsername(signUpRequest.getUsername())) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
+        Result<MessageResponse> result = appUserService.registerUser(signUpRequest);
+
+        if(!result.isSuccess()) {
+            return ErrorResponse.build(result);
         }
 
-        if(userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already in use!"));
-        }
-
-        AppUser user = new AppUser(signUpRequest.getUsername(),
-                signUpRequest.getEmail(),
-                passwordEncoder.encode(signUpRequest.getPassword()));
-
-        Set<String> strRoles = signUpRequest.getRoles();
-        Set<AppRole> roles = new HashSet<>();
-
-        if(strRoles == null) {
-            AppRole userRole = appRoleRepository.findByRoleName(Role.ROLE_USER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found"));
-            roles.add(userRole);
-        } else {
-            strRoles.forEach(role -> {
-                if (role.equals("admin")) {
-                    AppRole adminRole = appRoleRepository.findByRoleName(Role.ROLE_ADMIN)
-                            .orElseThrow(() -> new RuntimeException("Error: Role is not found"));
-                    roles.add(adminRole);
-                } else {
-                    AppRole defaultRole = appRoleRepository.findByRoleName(Role.ROLE_USER)
-                            .orElseThrow(() -> new RuntimeException("Error: Role is not found"));
-                    roles.add(defaultRole);
-                }
-            });
-        }
-
-        user.setRoles(roles);
-        userRepository.save(user);
-        return ResponseEntity.ok(new MessageResponse("User registered successfully"));
+        return ResponseEntity.ok().body(result.getPayload());
     }
 
     @PostMapping("/login")
@@ -91,7 +62,7 @@ public class AuthController {
         Result<UserInfoResponse> result = appUserService.authenticateUser(loginRequest);
 
         if(!result.isSuccess()) {
-            return new ResponseEntity<>(result.getMessages(), HttpStatus.UNAUTHORIZED);
+            return ErrorResponse.build(result);
         }
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, result.getPayload().getCookie().toString()).body(result.getPayload());
@@ -100,21 +71,17 @@ public class AuthController {
 
     @GetMapping("/username")
     public String currentUsername(Authentication authentication) {
-        if(authentication != null) {
-            return authentication.getName();
-        } else {
-            return "";
-        }
+        return appUserService.currentUsername(authentication);
     }
 
     @GetMapping("/user")
     public ResponseEntity<?> getUserDetails(Authentication authentication) {
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority()).toList();
+        Result<UserInfoResponse> result = appUserService.getUserDetails(authentication);
 
-        UserInfoResponse response = new UserInfoResponse(userDetails.getUserId(),
-                userDetails.getUsername(), roles);
+        if(!result.isSuccess()) {
+            return ErrorResponse.build(result);
+        }
 
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok().body(result.getPayload());
     }
 }
