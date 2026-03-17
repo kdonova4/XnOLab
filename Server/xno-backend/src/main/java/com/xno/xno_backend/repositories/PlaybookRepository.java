@@ -22,6 +22,8 @@ public interface PlaybookRepository extends JpaRepository<Playbook, Long> {
 
     boolean existsByUser_AppUserIdAndPlaybookName(Long userId, String playbookName);
 
+    boolean existsByPlaybookIdAndPlays_PlayName(Long playbookId, String playName);
+
     List<Playbook> findByPlaybookNameContainingIgnoreCaseAndUser_AppUserId(String name, Long userId);
 
     @Query("""

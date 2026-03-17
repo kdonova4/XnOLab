@@ -19,5 +19,7 @@ public interface PlayService {
 
     Result<PlayResponseDTO> updatePlay(PlayUpdateDTO play, MultipartFile file, Long userId);
 
+    Result<List<PlayResponseDTO>> copyPlays(List<Long> playIds, Long playbookId, Long userId);
+
     void deletePlay(Long playId, Long userId);
 }

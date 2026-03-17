@@ -1,5 +1,6 @@
 package com.xno.xno_backend.controllers;
 
+import com.xno.xno_backend.models.DTOs.CopyRequest;
 import com.xno.xno_backend.models.DTOs.CreateDTOs.PlayCreateDTO;
 import com.xno.xno_backend.models.DTOs.ResponseDTOs.PlayResponseDTO;
 import com.xno.xno_backend.models.DTOs.UpdateDTOs.PlayUpdateDTO;
@@ -73,6 +74,18 @@ public class PlayController {
         }
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/copy")
+    public ResponseEntity<?> copyPlays(@RequestBody CopyRequest copyRequest,
+                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Result<List<PlayResponseDTO>> result = playService.copyPlays(copyRequest.getPlayIds(), copyRequest.getPlaybookId(), userDetails.getUserId());
+
+        if(!result.isSuccess()) {
+            return ErrorResponse.build(result);
+        }
+
+        return new ResponseEntity<>(result.getPayload(), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{playId}")

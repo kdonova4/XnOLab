@@ -1,14 +1,11 @@
 package com.xno.xno_backend.services;
 
-import com.xno.xno_backend.models.AppUser;
+import com.xno.xno_backend.models.*;
 import com.xno.xno_backend.models.DTOs.CreateDTOs.PlayCreateDTO;
 import com.xno.xno_backend.models.DTOs.CreateDTOs.PlaybookCreateDTO;
 import com.xno.xno_backend.models.DTOs.ResponseDTOs.FormationResponseDTO;
 import com.xno.xno_backend.models.DTOs.ResponseDTOs.PlayResponseDTO;
 import com.xno.xno_backend.models.DTOs.UpdateDTOs.PlayUpdateDTO;
-import com.xno.xno_backend.models.Formation;
-import com.xno.xno_backend.models.Play;
-import com.xno.xno_backend.models.Playbook;
 import com.xno.xno_backend.repositories.AppUserRepository;
 import com.xno.xno_backend.repositories.FormationRepository;
 import com.xno.xno_backend.repositories.PlayRepository;
@@ -196,6 +193,51 @@ public class PlayServiceImpl implements PlayService {
         );
 
         result.setPayload(playResponseDTO);
+        return result;
+    }
+
+    @Override
+    public Result<List<PlayResponseDTO>> copyPlays(List<Long> playIds, Long playbookId, Long userId) {
+        Result<List<PlayResponseDTO>> result = new Result<>();
+
+        Playbook playbook = playbookRepository.findById(playbookId).orElseThrow(() -> new ResourceNotFoundException("Playbook ID " + playbookId + " Not Found"));
+
+        List<Play> plays = playIds.stream()
+                .map(playId -> {
+                    Play play = playRepository.findById(playId).orElseThrow(() -> new ResourceNotFoundException("Play ID " + playId + " Not Found"));
+                    if(!play.getUser().getAppUserId().equals(userId)) {
+                        result.addMessages("You do not own this play", ResultType.FORBIDDEN);
+                        return null;
+                    }
+                    else if(playbookRepository.existsByPlaybookIdAndPlays_PlayName(playbookId, play.getPlayName())) {
+                        result.addMessages("Play already exists within destination playbook", ResultType.INVALID);
+                        return null;
+                    }
+
+                    return play;
+                }).toList();
+
+        if(!result.isSuccess()) {
+            return result;
+        }
+
+        List<Play> newPlays = plays.stream()
+                .map(play -> {
+                    Play newPlay = new Play(play.getPlayName(), play.getPlayImageUrl(), play.getPlayPublicId(),
+                            play.getNotes(), play.getUser(), playbook, play.getFormation());
+
+                    newPlay = playRepository.save(newPlay);
+                    return newPlay;
+                }).toList();
+
+        List<PlayResponseDTO> responseDTOS = newPlays.stream()
+                .map(play -> new PlayResponseDTO(play.getPlayId(), play.getPlayName(), play.getPlayImageUrl(),
+                        play.getNotes(), new FormationResponseDTO(
+                                play.getFormation().getFormationId(), play.getFormation().getFormationName(),
+                                play.getFormation().getFormationImageUrl()
+                ))).toList();
+
+        result.setPayload(responseDTOS);
         return result;
     }
 
