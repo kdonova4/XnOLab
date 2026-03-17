@@ -64,7 +64,7 @@ public class PlayController {
 
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updatePlay(@ModelAttribute PlayUpdateDTO updateDTO,
-                                        @RequestParam("file") MultipartFile file,
+                                        @RequestParam(value = "file", required = false) MultipartFile file,
                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         Result<PlayResponseDTO> result = playService.updatePlay(updateDTO, file, userDetails.getUserId());
 

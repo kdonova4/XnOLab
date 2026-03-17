@@ -12,6 +12,7 @@ import com.xno.xno_backend.models.ResourceNotFoundException;
 import com.xno.xno_backend.repositories.AppUserRepository;
 import com.xno.xno_backend.repositories.PlaybookRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -115,6 +116,7 @@ public class PlaybookServiceImpl implements PlaybookService{
         return result;
     }
 
+    @Transactional
     @Override
     public void deletePlaybook(Long playbookId, Long userId) {
         playbookRepository.deleteByPlaybookIdAndUser_AppUserId(playbookId, userId);

@@ -14,6 +14,7 @@ import com.xno.xno_backend.repositories.FormationRepository;
 import com.xno.xno_backend.repositories.PlayRepository;
 import com.xno.xno_backend.repositories.PlaybookRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -169,7 +170,7 @@ public class PlayServiceImpl implements PlayService {
             return result;
         }
 
-        if(file != null) {
+        if(file != null && !file.isEmpty()) {
             Map uploadResult = imageService.uploadImage(file);
             String playImageUrl = uploadResult.get("secure_url").toString();
             String playPublicId = uploadResult.get("public_id").toString();
@@ -198,6 +199,7 @@ public class PlayServiceImpl implements PlayService {
         return result;
     }
 
+    @Transactional
     @Override
     public void deletePlay(Long playId, Long userId) {
         playRepository.deleteByPlayIdAndUser_AppUserId(playId, userId);
@@ -248,11 +250,6 @@ public class PlayServiceImpl implements PlayService {
         String name = playUpdateDTO.getPlayName();
         if(name == null || name.isBlank()) {
             result.addMessages("Play name cannot be null", ResultType.INVALID);
-        }
-
-        if(file == null || file.isEmpty()) {
-            result.addMessages("File cannot be null or empty", ResultType.INVALID);
-            return result;
         }
 
         String notes = playUpdateDTO.getPlayNotes();

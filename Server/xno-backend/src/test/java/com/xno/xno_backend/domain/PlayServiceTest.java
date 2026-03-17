@@ -301,21 +301,8 @@ public class PlayServiceTest {
         actual = playService.updatePlay(playUpdateDTO, file, user.getAppUserId());
         assertEquals(ResultType.INVALID, actual.getType());
 
-        // file is null and empty
+
         playUpdateDTO.setPlayName("new play");
-        actual = playService.updatePlay(playUpdateDTO, null, user.getAppUserId());
-        assertEquals(ResultType.INVALID, actual.getType());
-
-        MultipartFile newImage = new MockMultipartFile(
-                "File",
-                "test-image.png",
-                "image/png",
-                "".getBytes()
-        );
-        actual = playService.updatePlay(playUpdateDTO, newImage, user.getAppUserId());
-        assertEquals(ResultType.INVALID, actual.getType());
-
-
         playCreateDTO.setPlayNotes("a".repeat(1001));
         actual = playService.createPlay(playCreateDTO, file, user.getAppUserId());
         assertEquals(ResultType.INVALID, actual.getType());

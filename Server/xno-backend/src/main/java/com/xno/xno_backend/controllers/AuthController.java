@@ -15,6 +15,7 @@ import com.xno.xno_backend.services.AppUserService;
 import com.xno.xno_backend.services.Result;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -83,5 +84,11 @@ public class AuthController {
         }
 
         return ResponseEntity.ok().body(result.getPayload());
+    }
+
+    @PostMapping("/sign-out")
+    public ResponseEntity<?> signOutUser() {
+        ResponseCookie cookie = appUserService.signOut();
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(new MessageResponse("Successfully Signed Out"));
     }
 }

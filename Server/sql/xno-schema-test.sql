@@ -1,6 +1,6 @@
-drop schema if exists xno cascade;
-create schema xno;
-set search_path to xno;
+drop schema if exists xno_test cascade;
+create schema xno_test;
+set search_path to xno_test;
 
 create table app_user (
 	app_user_id bigserial primary key,
@@ -343,28 +343,7 @@ select * from playbook;
 select * from play
 where play_id = 48;
 
-CREATE OR REPLACE PROCEDURE xno.reset_xno_database()
-LANGUAGE plpgsql
--- This ensures the procedure always looks in xno first
-SET search_path = xno, public 
-AS $$
-BEGIN
-    TRUNCATE TABLE playsheet_situation_play, playsheet_situation, play, 
-                   formation, playsheet, playbook
-    RESTART IDENTITY CASCADE;
 
-	
-	
-	DELETE FROM app_user_role WHERE app_user_id = 2;
-    DELETE FROM app_user WHERE app_user_id = 2;
-	
-
-    -- Note: sequences are also namespaced; ensure this matches the schema
-    PERFORM setval('app_user_app_user_id_seq', 
-                   COALESCE((SELECT MAX(app_user_id) FROM app_user), 0) + 1, 
-                   false);
-END;
-$$;
 
 
 

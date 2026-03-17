@@ -19,5 +19,5 @@ public interface AppUserService {
 
     Result<UserInfoResponse> authenticateUser(LoginRequest loginRequest);
 
-
+    void deleteUser(Long userId);
 }

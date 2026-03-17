@@ -29,6 +29,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>("Access Denied: You do not have permission.", HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception ex) throws Exception {
         if(ex instanceof HttpMessageNotReadableException || ex instanceof HttpMediaTypeNotSupportedException) {
@@ -37,4 +42,6 @@ public class GlobalExceptionHandler {
 
         return ErrorResponse.build("Something went wrong on our end. You request failed :(");
     }
+
+
 }

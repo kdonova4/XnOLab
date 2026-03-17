@@ -12,7 +12,7 @@ public class AppConfig {
     @Value("${CLOUD_NAME}")
     private String cloudName;
 
-    @Value("${API_KEY")
+    @Value("${API_KEY}")
     private String apiKey;
 
     @Value("${API_SECRET}")

@@ -8,6 +8,7 @@ import com.xno.xno_backend.models.Formation;
 import com.xno.xno_backend.repositories.AppUserRepository;
 import com.xno.xno_backend.repositories.FormationRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -107,7 +108,7 @@ public class FormationServiceImpl implements FormationService{
 
         Formation existing = optional.get();
 
-        if(file != null) {
+        if(file != null && !file.isEmpty()) {
 
 
             Map uploadResult = imageService.uploadImage(file);
@@ -130,6 +131,7 @@ public class FormationServiceImpl implements FormationService{
         return result;
     }
 
+    @Transactional
     @Override
     public void deleteFormation(Long formationId, Long userId) {
         formationRepository.deleteByFormationIdAndUser_AppUserId(formationId, userId);
@@ -210,7 +212,7 @@ public class FormationServiceImpl implements FormationService{
         Formation formation = formationRepository.findById(formationUpdateDTO.getFormationId()).get();
 
         if(formation.getPlays() != null) {
-            if(!formation.getPlays().isEmpty() && file != null) {
+            if(!formation.getPlays().isEmpty() && file != null && !file.isEmpty()) {
                 result.addMessages("Cannot edit formation image in use by plays", ResultType.INVALID);
                 return result;
             }

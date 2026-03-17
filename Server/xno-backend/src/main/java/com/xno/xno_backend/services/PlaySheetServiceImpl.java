@@ -548,6 +548,12 @@ public class PlaySheetServiceImpl implements PlaySheetService {
             return result;
         }
 
+        Optional<PlaySheet> playSheet = playSheetRepository.findByPlaySheetName(name);
+        if(playSheet.isPresent()) {
+            result.addMessages("PlaySheet name cannot be duplicated", ResultType.INVALID);
+            return result;
+        }
+
         if(playSheetCreateDTO.getSituations().isEmpty()) {
             result.addMessages("Cannot create PlaySheet with 0 situations", ResultType.INVALID);
             return result;
@@ -587,6 +593,12 @@ public class PlaySheetServiceImpl implements PlaySheetService {
         String name = playSheetUpdateDTO.getPlaySheetName();
         if(name == null || name.isBlank()) {
             result.addMessages("PlaySheet name cannot be null or blank", ResultType.INVALID);
+            return result;
+        }
+
+        Optional<PlaySheet> playSheet = playSheetRepository.findByPlaySheetName(name);
+        if(playSheet.isPresent() && !playSheet.get().getPlaySheetId().equals(playSheetUpdateDTO.getPlaySheetId())) {
+            result.addMessages("PlaySheet name cannot be duplicated", ResultType.INVALID);
             return result;
         }
 

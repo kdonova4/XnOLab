@@ -142,4 +142,9 @@ public class AppUserServiceImpl implements AppUserService{
 
         return result;
     }
+
+    @Override
+    public void deleteUser(Long userId) {
+        appUserRepository.deleteById(userId);
+    }
 }

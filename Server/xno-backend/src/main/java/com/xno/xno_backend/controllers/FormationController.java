@@ -55,7 +55,7 @@ public class FormationController {
 
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateFormation(@ModelAttribute FormationUpdateDTO updateDTO,
-                                             @RequestParam("file") MultipartFile file,
+                                             @RequestParam(value = "file", required = false) MultipartFile file,
                                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
         Result<FormationResponseDTO> result = formationService.updateFormation(updateDTO, file, userDetails.getUserId());
 
