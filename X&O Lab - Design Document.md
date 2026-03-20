@@ -789,3 +789,93 @@ NOT_FOUND
 #### GlobalExceptionHandler
 
 #### ErrorResponse
+
+
+## Frontend Design
+
+### Pages Needed
+- Login Page
+- Register Page
+- Home Page
+- Playbook Library
+- Play Library
+- Play Viewer
+- Formation Viewer
+- PlaySheet Create/Update Form
+- PlaySheet Library
+- Playbook Create/Update Form
+- Play Create/Update Form
+- Formation Create/Update Form
+- Play/Formation Creator
+
+### Other Components
+- AuthContext Hook
+- NavBar
+
+### Types
+- Create Requests
+    - PlaybookCreateRequest
+    - PlayCreateRequest
+    - FormationCreateRequest
+    - PlaySheetCreateRequest
+    - PlaySheetGenerateRequest
+- Update Requests
+    - PlayUpdateRequest
+    - FormationUpdateRequest
+    - PlaybookUpdateRequest
+    - PlaySheetUpdateRequest
+- Responses
+    - PlayResponse
+    - MessageResponse
+    - UserInfoResponse
+    - FormationResponse
+    - PlaybookSummaryResponse
+    - PlaybookDetailResponse
+    - PlaySheetSummaryResponse
+    - PlaySheetDetailResponse
+    - PlaySheetSituationResponse
+    - PlaySheetSituationPlayResponse
+- Auth
+    - RegisterRequest
+    - Credentials
+- Misc
+    - CopyRequest
+
+### API
+- AuthAPI
+    - login(credentials: Credentials): Promise< UserInfoResponse>
+    - register(credentials: RegisterRequest): Promise< MessageResponse>
+    - getUsername(): Promise< String>
+    - getUser(): Promise< UserInfoResponse>
+- PlayAPI
+    - searchPlaysByName(name: string): Promise<PlayResponse[]>
+    - getPlaysByPlaybook(playbookId: number): Promise<PlayResponse[]>
+    - getPlaysByFormation(formationId: number): Promise<PlayResponse[]>
+    - createPlay(play: PlayCreateRequest, file: File): Promise< PlayResponse>
+    - updatePlay(play: PlayUpdateRequest, file: File): Promise< PlayResponse>
+    - copyPlays(copyRequest: CopyRequest): Promise<PlayResponse[]>
+    - deletePlay(playId: number): Promise< void>
+- FormationAPI
+    - getAllFormationsByUser(): Promise<FormationResponse[]>
+    - searchByFormationName(name: string): Promise<FormationResponse[]>
+    - createFormation(formation: FormationCreateRequest, file: File): Promise< FormationResponse>
+    - updateFormation(formation: FormationUpdateRequest, file: File): Promise< FormationResponse>
+    - deleteFormation(formationId: number): Promise< void>
+-  PlaybookAPI
+    - getPlaybookDetails(playbookId: number): Promise< PlaybookDetailResponse>
+    - getPlaybooksByUser(): Promise<PlaybookSummaryResponse[]>
+    - createPlaybook(playbook: PlaybookCreateRequest): Promise< PlaybookSummaryResponse>
+    - updatePlaybook(playbook: PlaybookUpdateRequest): Promise< PlaybookSummaryResponse>
+    - deletePlaybook(playbookId: number): Promise< void>
+- PlaySheetAPI
+    - getPlaySheetsByUser(): Promise<PlaySheetSummaryResponse[]>
+    - getPlaySheetsByPlaybook(playbookId: number): Promise<PlaySheetSummaryResponse[]>
+    - searchByPlaySheetName(name: string): Promise<PlaySheetSummaryResponse[]>
+    - getPlaySheetDetailsById(playSheetId: number): Promise< PlaySheetDetailResponse>
+    - getPlaySheetSummaryById(playSheetId: number): Promise< PlaySheetSummaryResponse>
+    - createPlaySheet(playSheet: PlaySheetCreateRequest): Promise< PlaySheetSummaryResponse>
+    - updatePlaySheet(playSheet: PlaySheetUpdateRequest): Promise< PlaySHeetSummaryResponse>
+    - generatePlaySheet(playSheetId: number): Promise< Blob>
+    - deletePlaySheet(playSheetId: number): Promise< void>
+    
+
