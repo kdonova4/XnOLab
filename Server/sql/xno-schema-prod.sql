@@ -94,7 +94,8 @@ SELECT setval(
 );
 
 insert into app_user_role (app_user_id, app_role_id)
-values (1, 1);
+values (1, 1),
+(1, 2);
 
 insert into playbook (playbook_id, playbook_name, app_user_id)
 values (1, 'West Coast Offense', 1);

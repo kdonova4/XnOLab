@@ -3,9 +3,26 @@ import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
+import type { LoginRequest } from './types/Auth/LoginRequest'
+import { login } from './api/AuthAPI'
 
 function App() {
   const [count, setCount] = useState(0)
+  const user: LoginRequest = {
+    username: "kdonova4",
+    password: "password1234"
+  }
+
+  const handleLogin = async () => {
+
+    try {
+      const data = await login(user);
+      console.log(data);
+    } catch (error) {
+      console.error(error)
+    }
+    
+  }
 
   return (
     <>
@@ -23,7 +40,7 @@ function App() {
         </div>
         <button
           className="counter"
-          onClick={() => setCount((count) => count + 1)}
+          onClick={handleLogin}
         >
           Count is {count}
         </button>
