@@ -1,6 +1,6 @@
 import axios from "axios"
 import type { FormationResponse } from "../types/Response/FormationResponse"
-import { handleError } from "./errorHandler"
+import { handleError } from "./ErrorHandler"
 import { getAxiosConfig } from "./axiosConfig"
 import type { FormationCreateRequest } from "../types/Create/FormationCreateRequest"
 import type { FormationUpdateRequest } from "../types/Update/FormationUpdateRequest"

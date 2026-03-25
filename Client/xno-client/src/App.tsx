@@ -1,138 +1,58 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
-import type { LoginRequest } from './types/Auth/LoginRequest'
-import { login } from './api/AuthAPI'
+import { Container } from "@mui/material";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { SnackbarProvider } from "notistack";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import HomePage from "./components/other/HomePage";
+import RegisterPage from "./components/auth/RegisterPage";
+import LoginPage from "./components/auth/LoginPage";
+import FormationForm from "./components/formation/FormationForm";
+import PlayCopyForm from "./components/play/PlayCopyForm";
+import PlayForm from "./components/play/PlayLibrary";
+import PlaybookLibrary from "./components/playbook/PlaybookLibrary";
+import PlaybookViewer from "./components/playbook/PlaybookViewer";
+import PlaybookForm from "./components/playbook/PlaybookForm";
+import PlaySheetForm from "./components/playsheet/PlaySheetForm";
+import PlaySheetLibrary from "./components/playsheet/PlaySheetLibrary";
+import PlaySheetViewer from "./components/playsheet/PlaySheetViewer";
+import { AuthProvider } from "./components/hooks/AuthContext";
 
 function App() {
-  const [count, setCount] = useState(0)
-  const user: LoginRequest = {
-    username: "kdonova4",
-    password: "password1234"
-  }
-
-  const handleLogin = async () => {
-
-    try {
-      const data = await login(user);
-      console.log(data);
-    } catch (error) {
-      console.error(error)
-    }
-    
-  }
+  const queryClient = new QueryClient();
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={handleLogin}
-        >
-          Count is {count}
-        </button>
-      </section>
+      <Router>
+        <Container maxWidth="xl">
+          <SnackbarProvider maxSnack={5} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}>
+            <QueryClientProvider client={queryClient}>
+              <AuthProvider>
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
 
-      <div className="ticks"></div>
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/register" element={<RegisterPage />} />
+                  <Route path="/formation/create" element={<FormationForm />} />
+                  <Route path="/formation/edit/:id" element={<FormationForm />} />
+                  <Route path="/copy/:destinationPlaybookId" element={<PlayCopyForm />} />
+                  <Route path="/play/create" element={<PlayForm />} />
+                  <Route path="/play/edit/:id" element={<PlayForm />} />
+                  <Route path="/playbooks" element={<PlaybookLibrary />} />
+                  <Route path="/playbook/:id" element={<PlaybookViewer />} />
+                  <Route path="/playbook/create" element={<PlaybookForm />} />
+                  <Route path="/playbook/edit/:id" element={<PlaybookForm />} />
+                  <Route path="/playsheet/create" element={<PlaySheetForm />} />
+                  <Route path="/playsheet/edit/:id" element={<PlaySheetForm />} />
+                  <Route path="/playsheets" element={<PlaySheetLibrary />} />
+                  <Route path="/playsheet/:id" element={<PlaySheetViewer />} />
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+                </Routes>
+              </AuthProvider>
+            </QueryClientProvider>
+          </SnackbarProvider>
+        </Container>
+      </Router>
     </>
   )
 }
 
-export default App
+export default App;

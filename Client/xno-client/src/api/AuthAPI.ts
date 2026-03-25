@@ -4,7 +4,7 @@ import type { UserInfoResponse } from "../types/Auth/UserInfoResponse"
 import type { SignUpRequest } from "../types/Auth/SignUpRequest"
 import type { MessageResponse } from "../types/Response/MessageResponse"
 import { getAxiosConfig } from "./axiosConfig"
-import { handleError } from "./errorHandler"
+import { handleError } from "./ErrorHandler"
 
 const url = `${import.meta.env.VITE_API_URL}/auth`
 
@@ -35,7 +35,7 @@ export const register = async (credentials: SignUpRequest): Promise<MessageRespo
     }
 }
 
-export const getUsername = async (): Promise<String> => {
+export const getUsername = async (): Promise<string> => {
     try {
         const response = await axios.get(`${url}/username`, getAxiosConfig());
         return response.data;
@@ -50,5 +50,14 @@ export const getUserDetails = async (): Promise<UserInfoResponse> => {
         return response.data;
     } catch (error: any) {
         throw handleError(error);
+    }
+}
+
+export const logout = async (): Promise<MessageResponse> => {
+    try {
+        const response = await axios.post(`${url}/sign-out`, getAxiosConfig());
+        return response.data;
+    } catch (error: any) {
+        throw handleError(error);        
     }
 }

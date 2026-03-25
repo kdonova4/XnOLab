@@ -1,6 +1,6 @@
 import axios from "axios"
 import type { PlaybookDetailResponse } from "../types/Response/PlaybookDetailResponse"
-import { handleError } from "./errorHandler"
+import { handleError } from "./ErrorHandler"
 import type { PlaybookSummaryResponse } from "../types/Response/PlaybookSummaryResponse"
 import { getAxiosConfig } from "./axiosConfig"
 import type { PlaybookCreateRequest } from "../types/Create/PlaybookCreateRequest"

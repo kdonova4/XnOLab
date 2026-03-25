@@ -126,7 +126,7 @@ public class AppUserServiceImpl implements AppUserService{
                     new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
             );
         } catch (AuthenticationException e) {
-            result.addMessages("Bad Credentials", ResultType.UNAUTHORIZED);
+            result.addMessages("Username or Password is incorrect. Please Try Again.", ResultType.UNAUTHORIZED);
             return result;
         }
 

@@ -1,6 +1,6 @@
 import axios from "axios"
 import type { PlayResponse } from "../types/Response/PlayResponse"
-import { handleError } from "./errorHandler"
+import { handleError } from "./ErrorHandler"
 import { getAxiosConfig } from "./axiosConfig"
 import type { PlayCreateRequest } from "../types/Create/PlayCreateRequest"
 import type { PlayUpdateRequest } from "../types/Update/PlayUpdateRequest"
