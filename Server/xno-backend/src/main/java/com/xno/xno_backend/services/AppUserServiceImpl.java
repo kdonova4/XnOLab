@@ -112,7 +112,7 @@ public class AppUserServiceImpl implements AppUserService{
 
         appUser.setRoles(roles);
         appUserRepository.save(appUser);
-        result.addMessages("User Registered", ResultType.SUCCESS);
+        result.setPayload(new MessageResponse("User Registered Successfully"));
         return result;
     }
 

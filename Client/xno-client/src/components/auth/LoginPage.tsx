@@ -1,8 +1,8 @@
 import { useState } from "react";
 import type { LoginRequest } from "../../types/Auth/LoginRequest";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/AuthContext";
 import { enqueueSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
 
@@ -10,9 +10,9 @@ function LoginPage() {
         username: "",
         password: ""
     })
+    const navigate = useNavigate();
     
     const { loginUser, loading } = useAuth();
-    const navigate = useNavigate();
     
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCredentials({
@@ -38,22 +38,27 @@ function LoginPage() {
                 <form onSubmit={handleSubmit}>
                     <h2>Enter Username</h2>
                     <input
+                    name="username"
                     type="text"
                     value={credentials.username}
-                    onChange={(e) => setCredentials((prev) => ({...prev, username: e.target.value}))}
+                    onChange={handleChange}
                     placeholder="Enter Username"
                     required
                     />
                     <input
-                    type="text"
+                    name="password"
+                    type="password"
                     value={credentials.password}
-                    onChange={(e) => setCredentials((prev) => ({...prev, password: e.target.value}))}
+                    onChange={handleChange}
                     placeholder="Enter Password"
                     required
                     />
                     <button type="submit" disabled={loading} className="bg-blue-600 text-white px-3 py-1 rounded">
                     {loading ? "Logging In..." : "Login"}
                 </button>
+                <button onClick={() => navigate("/register")} className="bg-blue-600 text-white px-3 py-1 rounded">
+                            Go Register
+                        </button>
                 </form>
             </div>
         </>
