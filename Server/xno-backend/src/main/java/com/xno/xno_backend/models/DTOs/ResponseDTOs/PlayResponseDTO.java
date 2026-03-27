@@ -13,4 +13,5 @@ public class PlayResponseDTO {
     private String playImageUrl;
     private String playNotes;
     private FormationResponseDTO formationResponse;
+    private PlaybookSummaryResponseDTO playbookResponse;
 }

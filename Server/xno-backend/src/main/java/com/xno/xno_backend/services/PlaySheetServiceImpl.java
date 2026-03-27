@@ -93,7 +93,12 @@ public class PlaySheetServiceImpl implements PlaySheetService {
                                                                 psp.getPlay().getFormation().getFormationId(),
                                                                 psp.getPlay().getFormation().getFormationName(),
                                                                 psp.getPlay().getFormation().getFormationImageUrl()
+                                                        ),
+                                                        new PlaybookSummaryResponseDTO(
+                                                                psp.getPlay().getPlaybook().getPlaybookId(),
+                                                                psp.getPlay().getPlaybook().getPlaybookName()
                                                         )
+
                                                 )
                                         )).toList()
                         )

@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface PlayService {
 
+    PlayResponseDTO getPlayById(Long playId, Long userId);
+
     List<PlayResponseDTO> searchPlaysByName(String name, Long userId);
 
     List<PlayResponseDTO> getPlaysByPlaybook(Long playbookId, Long userId);

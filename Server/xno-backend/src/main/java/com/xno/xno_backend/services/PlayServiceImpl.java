@@ -5,6 +5,7 @@ import com.xno.xno_backend.models.DTOs.CreateDTOs.PlayCreateDTO;
 import com.xno.xno_backend.models.DTOs.CreateDTOs.PlaybookCreateDTO;
 import com.xno.xno_backend.models.DTOs.ResponseDTOs.FormationResponseDTO;
 import com.xno.xno_backend.models.DTOs.ResponseDTOs.PlayResponseDTO;
+import com.xno.xno_backend.models.DTOs.ResponseDTOs.PlaybookSummaryResponseDTO;
 import com.xno.xno_backend.models.DTOs.UpdateDTOs.PlayUpdateDTO;
 import com.xno.xno_backend.repositories.AppUserRepository;
 import com.xno.xno_backend.repositories.FormationRepository;
@@ -14,8 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -35,6 +38,17 @@ public class PlayServiceImpl implements PlayService {
         this.imageService = imageService;
     }
 
+
+    @Override
+    public PlayResponseDTO getPlayById(Long playId, Long userId) {
+        Play play = playRepository.findByPlayIdAndUser_AppUserId(playId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Play ID" + playId + " Not Found For User " + userId));
+
+        return new PlayResponseDTO(play.getPlayId(), play.getPlayName(), play.getPlayImageUrl(), play.getNotes(),
+                new FormationResponseDTO(play.getFormation().getFormationId(), play.getFormation().getFormationName(), play.getFormation().getFormationImageUrl()),
+                new PlaybookSummaryResponseDTO(play.getPlaybook().getPlaybookId(), play.getPlaybook().getPlaybookName()));
+    }
+
     @Override
     public List<PlayResponseDTO> searchPlaysByName(String name, Long userId) {
         List<Play> plays = playRepository.findByPlayNameContainingIgnoreCaseAndUser_AppUserId(name, userId);
@@ -49,6 +63,10 @@ public class PlayServiceImpl implements PlayService {
                                 play.getFormation().getFormationId(),
                                 play.getFormation().getFormationName(),
                                 play.getFormation().getFormationImageUrl()
+                        ),
+                        new PlaybookSummaryResponseDTO(
+                                play.getPlaybook().getPlaybookId(),
+                                play.getPlaybook().getPlaybookName()
                         )
                 )).toList();
 
@@ -69,6 +87,10 @@ public class PlayServiceImpl implements PlayService {
                                 play.getFormation().getFormationId(),
                                 play.getFormation().getFormationName(),
                                 play.getFormation().getFormationImageUrl()
+                        ),
+                        new PlaybookSummaryResponseDTO(
+                                play.getPlaybook().getPlaybookId(),
+                                play.getPlaybook().getPlaybookName()
                         )
                 )).toList();
 
@@ -89,6 +111,10 @@ public class PlayServiceImpl implements PlayService {
                                 play.getFormation().getFormationId(),
                                 play.getFormation().getFormationName(),
                                 play.getFormation().getFormationImageUrl()
+                        ),
+                        new PlaybookSummaryResponseDTO(
+                                play.getPlaybook().getPlaybookId(),
+                                play.getPlaybook().getPlaybookName()
                         )
                 )).toList();
 
@@ -139,7 +165,11 @@ public class PlayServiceImpl implements PlayService {
                 savedPlay.getPlayId(), savedPlay.getPlayName(),
                 savedPlay.getPlayImageUrl(), savedPlay.getNotes(),
                 new FormationResponseDTO(optionalFormation.get().getFormationId(),
-                        optionalFormation.get().getFormationName(), optionalFormation.get().getFormationImageUrl())
+                        optionalFormation.get().getFormationName(), optionalFormation.get().getFormationImageUrl()),
+                new PlaybookSummaryResponseDTO(
+                        savedPlay.getPlaybook().getPlaybookId(),
+                        savedPlay.getPlaybook().getPlaybookName()
+                )
         );
         result.setPayload(playResponseDTO);
         return result;
@@ -189,7 +219,11 @@ public class PlayServiceImpl implements PlayService {
                 savedPlay.getNotes(),
                 new FormationResponseDTO(savedPlay.getFormation().getFormationId(),
                         savedPlay.getFormation().getFormationName(),
-                        savedPlay.getFormation().getFormationImageUrl())
+                        savedPlay.getFormation().getFormationImageUrl()),
+                new PlaybookSummaryResponseDTO(
+                        savedPlay.getPlaybook().getPlaybookId(),
+                        savedPlay.getPlaybook().getPlaybookName()
+                )
         );
 
         result.setPayload(playResponseDTO);
@@ -234,8 +268,12 @@ public class PlayServiceImpl implements PlayService {
                 .map(play -> new PlayResponseDTO(play.getPlayId(), play.getPlayName(), play.getPlayImageUrl(),
                         play.getNotes(), new FormationResponseDTO(
                                 play.getFormation().getFormationId(), play.getFormation().getFormationName(),
-                                play.getFormation().getFormationImageUrl()
-                ))).toList();
+                                play.getFormation().getFormationImageUrl()),
+                        new PlaybookSummaryResponseDTO(
+                                play.getPlaybook().getPlaybookId(),
+                                play.getPlaybook().getPlaybookName()
+                        )
+                )).toList();
 
         result.setPayload(responseDTOS);
         return result;
@@ -308,8 +346,12 @@ public class PlayServiceImpl implements PlayService {
             return result;
         }
         Play play = optionalPlay.get();
+        Optional<Play> optionalDuplicate = playRepository.findByPlayNameAndUser_AppUserIdAndPlaybook_PlaybookId(playUpdateDTO.getPlayName(), userId, play.getPlaybook().getPlaybookId());
+        if(optionalDuplicate.isEmpty()) {
+            return result;
+        }
 
-        if(playRepository.findByPlayNameAndUser_AppUserIdAndPlaybook_PlaybookId(playUpdateDTO.getPlayName(), userId, play.getPlaybook().getPlaybookId()).isPresent()) {
+        if(!Objects.equals(optionalDuplicate.get().getPlayId(), play.getPlayId())) {
             result.addMessages("Play name cannot be duplicated within a playbook", ResultType.INVALID);
             return result;
         }

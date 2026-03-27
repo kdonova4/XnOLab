@@ -1,4 +1,5 @@
 import type { FormationResponse } from "./FormationResponse";
+import type { PlaybookSummaryResponse } from "./PlaybookSummaryResponse";
 
 export interface PlayResponse {
     playId: number;
@@ -6,4 +7,5 @@ export interface PlayResponse {
     playImageUrl: string;
     playNotes: string;
     formationResponse: FormationResponse
+    playbookResponse: PlaybookSummaryResponse
 }

@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface FormationService {
 
+    FormationResponseDTO getFormationById(Long formationId, Long userId);
+
     List<FormationResponseDTO> getAllFormationsByUser(Long userId);
 
     List<FormationResponseDTO> searchByFormationName(String formationName, Long userId);

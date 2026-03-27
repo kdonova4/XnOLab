@@ -7,7 +7,7 @@ import RegisterPage from "./components/auth/RegisterPage";
 import LoginPage from "./components/auth/LoginPage";
 import FormationForm from "./components/formation/FormationForm";
 import PlayCopyForm from "./components/play/PlayCopyForm";
-import PlayForm from "./components/play/PlayLibrary";
+import PlayForm from "./components/play/PlayForm";
 import PlaybookLibrary from "./components/playbook/PlaybookLibrary";
 import PlaybookViewer from "./components/playbook/PlaybookViewer";
 import PlaybookForm from "./components/playbook/PlaybookForm";
@@ -34,8 +34,8 @@ function App() {
                   <Route path="/formation/create" element={<FormationForm />} />
                   <Route path="/formation/edit/:id" element={<FormationForm />} />
                   <Route path="/copy/:destinationPlaybookId" element={<PlayCopyForm />} />
-                  <Route path="/play/create" element={<PlayForm />} />
-                  <Route path="/play/edit/:id" element={<PlayForm />} />
+                  <Route path="/play/:playbookId/create" element={<PlayForm />} />
+                  <Route path="/play/edit/:playId" element={<PlayForm />} />
                   <Route path="/playbooks" element={<PlaybookLibrary />} />
                   <Route path="/playbook/:id" element={<PlaybookViewer />} />
                   <Route path="/playbook/create" element={<PlaybookForm />} />

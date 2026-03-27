@@ -5,6 +5,7 @@ import com.xno.xno_backend.models.DTOs.CreateDTOs.FormationCreateDTO;
 import com.xno.xno_backend.models.DTOs.ResponseDTOs.FormationResponseDTO;
 import com.xno.xno_backend.models.DTOs.UpdateDTOs.FormationUpdateDTO;
 import com.xno.xno_backend.models.Formation;
+import com.xno.xno_backend.models.ResourceNotFoundException;
 import com.xno.xno_backend.repositories.AppUserRepository;
 import com.xno.xno_backend.repositories.FormationRepository;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,15 @@ public class FormationServiceImpl implements FormationService{
         this.formationRepository = formationRepository;
         this.appUserRepository = appUserRepository;
         this.imageService = imageService;
+    }
+
+
+    @Override
+    public FormationResponseDTO getFormationById(Long formationId, Long userId) {
+        Formation formation = formationRepository.findByFormationIdAndUser_AppUserId(formationId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Formation " + formationId + " With User ID " + userId + " Not Found"));
+
+        return new FormationResponseDTO(formation.getFormationId(), formation.getFormationName(), formation.getFormationImageUrl());
     }
 
     @Override

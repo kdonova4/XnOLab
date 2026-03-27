@@ -12,6 +12,8 @@ public interface PlayRepository extends JpaRepository<Play, Long> {
 
     Optional<Play> findByPlayName(String playName);
 
+    Optional<Play> findByPlayIdAndUser_AppUserId(Long playId, Long userId);
+
     List<Play> findByPlayNameContainingIgnoreCaseAndUser_AppUserId(String name, Long userId);
 
     Optional<Play> findByPlayNameAndUser_AppUserIdAndPlaybook_PlaybookId(String playName, Long userId, Long playbookId);

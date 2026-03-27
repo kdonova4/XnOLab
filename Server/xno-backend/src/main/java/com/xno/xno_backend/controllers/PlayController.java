@@ -26,6 +26,14 @@ public class PlayController {
         this.playService = playService;
     }
 
+    @GetMapping("/play/{playId}")
+    public ResponseEntity<PlayResponseDTO> getPlayById(@PathVariable Long playId,
+                                                       @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        PlayResponseDTO playResponseDTO = playService.getPlayById(playId, userDetails.getUserId());
+
+        return ResponseEntity.ok(playResponseDTO);
+    }
+
     @GetMapping("/search/{playName}")
     public ResponseEntity<List<PlayResponseDTO>> searchPlaysByName(@PathVariable String playName,
                                                                    @AuthenticationPrincipal UserDetailsImpl userDetails) {

@@ -25,6 +25,14 @@ public class FormationController {
         this.formationService = formationService;
     }
 
+    @GetMapping("/formation/{formationId}")
+    public ResponseEntity<FormationResponseDTO> getFormationById(@PathVariable Long formationId,
+                                                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        FormationResponseDTO formation = formationService.getFormationById(formationId, userDetails.getUserId());
+
+        return ResponseEntity.ok(formation);
+    }
+
     @GetMapping("/user")
     public ResponseEntity<List<FormationResponseDTO>> getAllFormationsByUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         List<FormationResponseDTO> responseDTOS = formationService.getAllFormationsByUser(userDetails.getUserId());

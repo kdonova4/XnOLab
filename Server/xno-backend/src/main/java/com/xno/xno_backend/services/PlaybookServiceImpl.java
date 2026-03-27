@@ -42,7 +42,11 @@ public class PlaybookServiceImpl implements PlaybookService{
                         play.getPlayImageUrl(),
                         play.getNotes(),
                         new FormationResponseDTO(play.getFormation().getFormationId(),
-                                play.getFormation().getFormationName(), play.getFormation().getFormationImageUrl())
+                                play.getFormation().getFormationName(), play.getFormation().getFormationImageUrl()),
+                        new PlaybookSummaryResponseDTO(
+                                play.getPlaybook().getPlaybookId(),
+                                play.getPlaybook().getPlaybookName()
+                        )
                 )).toList();
 
         PlaybookDetailResponseDTO playbookDetailResponseDTO = new PlaybookDetailResponseDTO(fullPlaybook.getPlaybookId(),

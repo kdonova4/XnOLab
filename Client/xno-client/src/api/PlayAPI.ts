@@ -2,11 +2,20 @@ import axios from "axios"
 import type { PlayResponse } from "../types/Response/PlayResponse"
 import { handleError } from "./ErrorHandler"
 import { getAxiosConfig } from "./axiosConfig"
-import type { PlayCreateRequest } from "../types/Create/PlayCreateRequest"
-import type { PlayUpdateRequest } from "../types/Update/PlayUpdateRequest"
 import type { CopyRequest } from "../types/Misc/CopyRequest"
+import type { CreatePlayInput } from "../types/Create/CreatePlayInput"
+import type { UpdatePlayInput } from "../types/Update/UpdatePlayInput"
 
 const url = `${import.meta.env.VITE_API_URL}/plays`
+
+export const getPlayById = async (playId: number): Promise<PlayResponse> => {
+    try {
+        const response = await axios.get(`${url}/play/${playId}`, getAxiosConfig());
+        return response.data;
+    } catch (error: any) {
+        throw handleError(error);
+    }
+}
 
 export const searchPlaysByName = async (name: string): Promise<PlayResponse[]> => {
     try {
@@ -35,7 +44,10 @@ export const getPlaysByFormation = async (formationId: number): Promise<PlayResp
     }
 }
 
-export const createPlay = async (play: PlayCreateRequest, file: File): Promise<PlayResponse> => {
+export const createPlay = async (input: CreatePlayInput): Promise<PlayResponse> => {
+    
+    const { play, file } = input;
+    
     try {
         const formData = new FormData();
         formData.append("playName", play.playName)
@@ -54,13 +66,17 @@ export const createPlay = async (play: PlayCreateRequest, file: File): Promise<P
     }
 }
 
-export const updatePlay = async (play: PlayUpdateRequest, file: File): Promise<PlayResponse> => {
+export const updatePlay = async (input: UpdatePlayInput): Promise<PlayResponse> => {
+    const { play, file } = input;
+    
     try {
      const formData = new FormData();
      formData.append("playName", play.playName);
      formData.append("playNotes", play.playNotes);
      formData.append("playId", play.playId.toString());
-     formData.append("file", file);
+     if(file) {
+        formData.append("file", file);
+     }
 
      const response = await axios.put(`${url}`, formData, {
         withCredentials: true

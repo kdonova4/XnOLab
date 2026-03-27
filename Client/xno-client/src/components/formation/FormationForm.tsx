@@ -1,26 +1,31 @@
 import { useEffect, useState } from "react";
-import type { FormationCreateRequest } from "../../types/Create/FormationCreateRequest";
 import type { FormationResponse } from "../../types/Response/FormationResponse";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createFormation } from "../../api/FormationAPI";
+import { createFormation, getFormationById, updateFormation } from "../../api/FormationAPI";
 import { enqueueSnackbar } from "notistack";
 import type { CreateFormationInput } from "../../types/Create/CreateFormationInput";
 import heroImg from "../../assets/hero.png";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import type { UpdateFormationInput } from "../../types/Update/UpdateFormationInput";
+import type { Formation } from "../../types/Formation";
 
-const FORMATION_DEFAULT: FormationCreateRequest = {
-    formationName: ''
+const FORMATION_DEFAULT: Formation = {
+    formationId: 0,
+    formationName: '',
+    formationImageUrl: ''
 }
 
 function FormationForm() {
 
-    const [formation, setFormation] = useState<FormationCreateRequest>(FORMATION_DEFAULT);
+    const [formation, setFormation] = useState<Formation>(FORMATION_DEFAULT);
     const [image, setImage] = useState<File | null>(null);
+    const [imageUrl, setImageUrl] = useState<string>("");
     const { id } = useParams();
+    const navigate = useNavigate();
 
 
     const queryClient = useQueryClient();
-    const { mutate, isPending } = useMutation<FormationResponse, Error, CreateFormationInput>({
+    const createMutation = useMutation<FormationResponse, Error, CreateFormationInput>({
         mutationFn: createFormation,
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ['formations'] })
@@ -33,6 +38,20 @@ function FormationForm() {
         }
     })
 
+    const updateMutation = useMutation<FormationResponse, Error, UpdateFormationInput>({
+        mutationFn: updateFormation,
+        onSuccess: (_, variables) => {
+            queryClient.invalidateQueries({ queryKey: ['formations'] })
+            enqueueSnackbar(`${variables.formation.formationName} Formation Updated`, { variant: "success" });
+        },
+        onError: (error) => {
+            const message = error instanceof Error ? error.message : "Something went wrong"
+            enqueueSnackbar(message, { variant: "error" })
+        }
+    })
+
+    const isPending = createMutation.isPending || updateMutation.isPending;
+
 
     useEffect(() => {
         const loadDefaultImage = async () => {
@@ -44,6 +63,29 @@ function FormationForm() {
             });
 
             setImage(file);
+
+
+            if (id) {
+                try {
+                    const response = await getFormationById(Number(id));
+                    const existingFormation: Formation = {
+                        formationId: response.formationId,
+                        formationName: response.formationName,
+                        formationImageUrl: response.formationImageUrl
+                    }
+                    setFormation(existingFormation);
+
+
+                    // const imageResponse = await fetch(response.formationImageUrl);
+                    // const blob = await imageResponse.blob();
+                    // const file = new File([blob], "existing.png", { type: blob.type });
+                    setImageUrl(response.formationImageUrl);
+                } catch (error) {
+                    const message = error instanceof Error ? error.message : "Something went wrong"
+                    enqueueSnackbar(message, { variant: "error" })
+                    navigate("/");
+                }
+            }
         };
 
         loadDefaultImage();
@@ -56,7 +98,7 @@ function FormationForm() {
     }
 
     const handleCreate = async () => {
-        
+
         if (!image) {
             enqueueSnackbar("Please Create The Formation", { variant: "warning" })
             return;
@@ -66,24 +108,54 @@ function FormationForm() {
             file: image
         }
 
-        mutate(createRequest);
+        createMutation.mutate(createRequest);
     }
 
-    return (
-        <>
-            <div>
-                <input
-                    name="formationName"
-                    type="text"
-                    value={formation.formationName}
-                    onChange={handleChange}
-                    required
-                />
-                <button onClick={handleCreate} disabled={isPending}>{isPending ? "Creating..." : "Create Formation"}</button>
+    const handleUpdate = async () => {
 
-            </div>
-        </>
-    )
+
+        const updateRequest: UpdateFormationInput = {
+            formation: formation,
+            ...(image && { file: image})
+        }
+
+        updateMutation.mutate(updateRequest);
+    }
+
+    if (id) {
+        return (
+            <>
+                <div>
+                    <input
+                        name="formationName"
+                        type="text"
+                        value={formation.formationName}
+                        onChange={handleChange}
+                        required
+                    />
+                    <img src={imageUrl}/>
+                    <button onClick={handleUpdate} disabled={isPending}>{isPending ? "Updating..." : "Update Formation"}</button>
+
+                </div>
+            </>
+        )
+    } else {
+        return (
+            <>
+                <div>
+                    <input
+                        name="formationName"
+                        type="text"
+                        value={formation.formationName}
+                        onChange={handleChange}
+                        required
+                    />
+                    <button onClick={handleCreate} disabled={isPending}>{isPending ? "Creating..." : "Create Formation"}</button>
+
+                </div>
+            </>
+        )
+    }
 }
 
 export default FormationForm;
