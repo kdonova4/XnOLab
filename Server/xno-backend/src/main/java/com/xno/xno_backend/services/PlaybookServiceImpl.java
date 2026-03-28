@@ -30,6 +30,14 @@ public class PlaybookServiceImpl implements PlaybookService{
     }
 
     @Override
+    public PlaybookSummaryResponseDTO getPlaybookSummaryById(Long playbookId, Long userId) {
+        Playbook playbook = playbookRepository.findByPlaybookIdAndUser_AppUserId(playbookId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Playbook " + playbookId + " With User ID " + userId + " Not Found"));
+
+        return new PlaybookSummaryResponseDTO(playbook.getPlaybookId(), playbook.getPlaybookName());
+    }
+
+    @Override
     public PlaybookDetailResponseDTO getPlaybookDetails(Long playbookId, Long userId) {
         Playbook fullPlaybook = playbookRepository.loadPlaybookByPlaybookId(playbookId, userId).orElseThrow(
                 () -> new ResourceNotFoundException("Playbook", "playbookId", playbookId)

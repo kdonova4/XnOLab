@@ -343,6 +343,7 @@ select * from formation;
 select * from playbook;
 select * from play
 where play_id = 48;
+select * from play;
 
 CREATE OR REPLACE PROCEDURE xno.reset_xno_database()
 LANGUAGE plpgsql

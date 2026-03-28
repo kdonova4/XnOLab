@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface PlaybookService {
 
+    PlaybookSummaryResponseDTO getPlaybookSummaryById(Long playbookId, Long userId);
+
     PlaybookDetailResponseDTO getPlaybookDetails(Long playbookId, Long userId);
 
     List<PlaybookSummaryResponseDTO> getAllPlaybooksByUser(Long userId);

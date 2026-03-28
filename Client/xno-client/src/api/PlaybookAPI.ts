@@ -8,6 +8,15 @@ import type { PlaybookUpdateRequest } from "../types/Update/PlaybookUpdateReques
 
 const url = `${import.meta.env.VITE_API_URL}/playbooks`
 
+export const getPlaybookSummaryById = async (playbookId: number): Promise<PlaybookSummaryResponse> => {
+    try {
+        const response = await axios.get(`${url}/playbook/summary/${playbookId}`, getAxiosConfig());
+        return response.data;
+    } catch (error: any) {
+        throw handleError(error);
+    }
+}
+
 export const getPlaybookDetails = async (playbookId: number): Promise<PlaybookDetailResponse> => {
     try {
         const response = await axios.get(`${url}/details/${playbookId}`, getAxiosConfig());

@@ -55,7 +55,7 @@ function PlayForm() {
         }
     })
 
-    const isPending = createMutation.isPending;
+    const isPending = createMutation.isPending || updateMutation.isPending;
 
     useEffect(() => {
         console.log("LOADING")
@@ -69,7 +69,7 @@ function PlayForm() {
 
             setImage(file);
 
-setPlay({
+            setPlay({
                 ...play, playbookId: Number(playbookId)
             })
             if (playId) {
@@ -102,7 +102,7 @@ setPlay({
                 } catch (error) {
                     const message = error instanceof Error ? error.message : "Something went wrong"
                     enqueueSnackbar(message, { variant: "error" })
-                
+
                 }
             }
         };
@@ -111,52 +111,52 @@ setPlay({
     }, [playId]);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-            setPlay({
-                ...play, [event.target.name]: event.target.value
-            });
-        }
-          const handleTextAreaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setPlay({
-      ...play, [event.target.name]: event.target.value
-    });
-  }
-    
-        const handleCreate = async () => {
-    
-            if (!image) {
-                enqueueSnackbar("Please Create The Play", { variant: "warning" })
-                return;
-            }
+        setPlay({
+            ...play, [event.target.name]: event.target.value
+        });
+    }
+    const handleTextAreaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setPlay({
+            ...play, [event.target.name]: event.target.value
+        });
+    }
 
-            
+    const handleCreate = async () => {
 
-            const createRequest: CreatePlayInput = {
-                play: play,
-                file: image
-            }
-    
-            createMutation.mutate(createRequest);
-        }
-    
-        const handleUpdate = async () => {
-    
-    
-            const updateRequest: UpdatePlayInput = {
-                play: play,
-                ...(image && { file: image})
-            }
-    
-            updateMutation.mutate(updateRequest);
+        if (!image) {
+            enqueueSnackbar("Please Create The Play", { variant: "warning" })
+            return;
         }
 
-        const handleFormationClick = (formationId: number) => {
-            setPlay({
-                ...play, formationId: formationId
-            });
+
+
+        const createRequest: CreatePlayInput = {
+            play: play,
+            file: image
         }
 
-        if(playId) {
-           return (
+        createMutation.mutate(createRequest);
+    }
+
+    const handleUpdate = async () => {
+
+
+        const updateRequest: UpdatePlayInput = {
+            play: play,
+            ...(image && { file: image })
+        }
+
+        updateMutation.mutate(updateRequest);
+    }
+
+    const handleFormationClick = (formationId: number) => {
+        setPlay({
+            ...play, formationId: formationId
+        });
+    }
+
+    if (playId) {
+        return (
             <>
                 <div>
                     <input
@@ -173,7 +173,7 @@ setPlay({
                         onChange={handleChange}
                         required
                     />
-                    <img src={imageUrl}/>
+                    <img src={imageUrl} />
                     <button onClick={handleUpdate} disabled={isPending}>{isPending ? "Updating..." : "Update Play"}</button>
 
                 </div>
@@ -214,7 +214,7 @@ setPlay({
         )
     }
 
-    
+
 }
 
 export default PlayForm;

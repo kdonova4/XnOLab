@@ -24,6 +24,14 @@ public class PlaybookController {
         this.playbookService = playbookService;
     }
 
+    @GetMapping("/playbook/summary/{playbookId}")
+    public ResponseEntity<PlaybookSummaryResponseDTO> getPlaybookSummaryById(@PathVariable Long playbookId,
+                                                                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        PlaybookSummaryResponseDTO playbookSummaryResponseDTO = playbookService.getPlaybookSummaryById(playbookId, userDetails.getUserId());
+
+        return ResponseEntity.ok(playbookSummaryResponseDTO);
+    }
+
     @GetMapping("/playbook/details/{playbookId}")
     public ResponseEntity<PlaybookDetailResponseDTO> getPlaybookDetails(@PathVariable Long playbookId,
                                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
