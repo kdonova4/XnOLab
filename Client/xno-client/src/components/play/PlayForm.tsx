@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Play } from "../../types/Play";
 import { useNavigate, useParams } from "react-router-dom";
-import { QueryClient, useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { PlayResponse } from "../../types/Response/PlayResponse";
 import type { CreatePlayInput } from "../../types/Create/CreatePlayInput";
 import { createPlay, getPlayById, updatePlay } from "../../api/PlayAPI";
@@ -29,7 +29,7 @@ function PlayForm() {
     const { playbookId, playId } = useParams();
     const navigate = useNavigate();
 
-    const queryClient = new QueryClient();
+    const queryClient = useQueryClient();
     const createMutation = useMutation<PlayResponse, Error, CreatePlayInput>({
         mutationFn: createPlay,
         onSuccess: (_, variables) => {

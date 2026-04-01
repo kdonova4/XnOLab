@@ -15,6 +15,7 @@ import PlaySheetForm from "./components/playsheet/PlaySheetForm";
 import PlaySheetLibrary from "./components/playsheet/PlaySheetLibrary";
 import PlaySheetViewer from "./components/playsheet/PlaySheetViewer";
 import { AuthProvider } from "./components/hooks/AuthContext";
+import FormationLibrary from "./components/formation/FormationLibrary";
 
 function App() {
   const queryClient = new QueryClient();
@@ -33,11 +34,12 @@ function App() {
                   <Route path="/register" element={<RegisterPage />} />
                   <Route path="/formation/create" element={<FormationForm />} />
                   <Route path="/formation/edit/:id" element={<FormationForm />} />
+                  <Route path="/formations" element={<FormationLibrary />} />
                   <Route path="/copy/:destinationPlaybookId" element={<PlayCopyForm />} />
                   <Route path="/play/:playbookId/create" element={<PlayForm />} />
                   <Route path="/play/edit/:playId" element={<PlayForm />} />
                   <Route path="/playbooks" element={<PlaybookLibrary />} />
-                  <Route path="/playbook/:id" element={<PlaybookViewer />} />
+                  <Route path="/playbook/:playbookId" element={<PlaybookViewer />} />
                   <Route path="/playbook/create" element={<PlaybookForm />} />
                   <Route path="/playbook/edit/:id" element={<PlaybookForm />} />
                   <Route path="/playsheet/create" element={<PlaySheetForm />} />

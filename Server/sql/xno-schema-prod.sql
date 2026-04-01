@@ -62,7 +62,7 @@ create table playsheet (
 	app_user_id bigint not null,
 	playbook_id bigint not null,
 	foreign key (app_user_id) references app_user(app_user_id) on delete cascade,
-	foreign key (playbook_id) references playbook(playbook_id)
+	foreign key (playbook_id) references playbook(playbook_id) on delete cascade
 );
 
 create table playsheet_situation (

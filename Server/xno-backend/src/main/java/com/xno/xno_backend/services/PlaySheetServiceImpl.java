@@ -14,6 +14,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
@@ -387,6 +388,7 @@ public class PlaySheetServiceImpl implements PlaySheetService {
         return result;
     }
 
+    @Transactional
     @Override
     public void deletePlaySheet(Long playSheetId, Long userId) {
         playSheetRepository.deleteByPlaySheetIdAndUser_AppUserId(playSheetId, userId);

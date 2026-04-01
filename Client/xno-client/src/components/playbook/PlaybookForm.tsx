@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Playbook } from "../../types/Playbook";
-import { QueryClient, useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import type { PlaybookSummaryResponse } from "../../types/Response/PlaybookSummaryResponse";
 import type { PlaybookCreateRequest } from "../../types/Create/PlaybookCreateRequest";
@@ -19,7 +19,7 @@ function PlaybookForm() {
     const { id } = useParams();
     const navigate = useNavigate();
 
-    const queryClient = new QueryClient();
+    const queryClient = useQueryClient();
 
     const createMutation = useMutation<PlaybookSummaryResponse, Error, PlaybookCreateRequest>({
         mutationFn: createPlaybook,
