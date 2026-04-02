@@ -42,7 +42,7 @@ function App() {
                   <Route path="/playbook/:playbookId" element={<PlaybookViewer />} />
                   <Route path="/playbook/create" element={<PlaybookForm />} />
                   <Route path="/playbook/edit/:id" element={<PlaybookForm />} />
-                  <Route path="/playsheet/create" element={<PlaySheetForm />} />
+                  <Route path="/playsheet/:playbookId/create" element={<PlaySheetForm />} />
                   <Route path="/playsheet/edit/:id" element={<PlaySheetForm />} />
                   <Route path="/playsheets" element={<PlaySheetLibrary />} />
                   <Route path="/playsheet/:id" element={<PlaySheetViewer />} />
