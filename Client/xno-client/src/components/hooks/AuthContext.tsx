@@ -1,4 +1,4 @@
-import { createContext, use, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { LoginRequest } from "../../types/Auth/LoginRequest";
 import type { UserInfoResponse } from "../../types/Auth/UserInfoResponse";
 import { useNavigate } from "react-router-dom";
@@ -42,7 +42,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     const logoutUser = async () => {
         try {
-            const response = await logout();
+         await logout();
         } catch {
             
         } finally {

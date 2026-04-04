@@ -292,7 +292,7 @@ public class PlaySheetServiceImpl implements PlaySheetService {
         // Loop through the playSheetUpdateDTO situations
         for(PlaySheetSituationUpdateDTO situation : playSheetUpdateDTO.getSituations()) {
             //  -> if the playSheetSituationId is null, create the situation, assign the PlaySheet to the situation
-            if(situation.getPlaySheetSituationId() == null) { // NEW SITUATION
+            if(situation.getPlaySheetSituationId() == null || situation.getPlaySheetSituationId() == 0) { // NEW SITUATION
                 PlaySheetSituation playSheetSituation = new PlaySheetSituation(
                         situation.getSituationName(),
                         situation.getSituationColor(),
@@ -421,7 +421,7 @@ public class PlaySheetServiceImpl implements PlaySheetService {
             int rowNum = 0;
             int colNum = 0;
             int spacing = 2;
-            if(maxRows < 20) {
+            if(maxRows + 1 < 20) {
                 result.addMessages("Max rows should be at least 20", ResultType.INVALID);
                 return result;
             }

@@ -1,7 +1,7 @@
 export const handleError = (error: any): Error => {
     if (error.response?.data) {
         const data = error.response.data;
-
+        console.log(error.response.data)
         // If data is an array (like validation errors)
         if (Array.isArray(data) && data.length > 0) {
             return new Error(data[0]);

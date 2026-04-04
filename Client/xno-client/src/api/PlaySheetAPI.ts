@@ -4,8 +4,8 @@ import { getAxiosConfig } from "./axiosConfig";
 import type { PlaySheetDetailResponse } from "../types/Response/PlaySheetDetailResponse";
 import type { PlaySheetCreateRequest } from "../types/Create/PlaySheetCreateRequest";
 import type { PlaySheetUpdateRequest } from "../types/Update/PlaySheetUpdateRequest";
-import type { GenerationDetails } from "../types/Misc/GenerationDetails";
 import { handleError } from "./ErrorHandler";
+import type { GenerateRequest } from "../types/Misc/GenerateRequest";
 
 const url = `${import.meta.env.VITE_API_URL}/playsheets`
 
@@ -38,7 +38,7 @@ export const searchByPlaySheetName = async (playSheetName: string): Promise<Play
 
 export const getPlaySheetDetailsById = async (playSheetId: number): Promise<PlaySheetDetailResponse> => {
     try {
-        const response = await axios.get(`${url}/details/${playSheetId}`, getAxiosConfig());
+        const response = await axios.get(`${url}/playsheet/details/${playSheetId}`, getAxiosConfig());
         return response.data;
     } catch (error: any) {
         throw handleError(error);
@@ -47,7 +47,7 @@ export const getPlaySheetDetailsById = async (playSheetId: number): Promise<Play
 
 export const getPlaySheetSummaryById = async (playSheetId: number): Promise<PlaySheetSummaryResponse> => {
     try {
-        const response = await axios.get(`${url}/summary/${playSheetId}`, getAxiosConfig());
+        const response = await axios.get(`${url}/playsheet/summary/${playSheetId}`, getAxiosConfig());
         return response.data;
     } catch (error: any) {
         throw handleError(error);
@@ -72,18 +72,38 @@ export const updatePlaySheet = async (playSheet: PlaySheetUpdateRequest): Promis
     }
 }
 
-export const generatePlaySheet = async (playSheetId: number, generationDetails: GenerationDetails): Promise<Blob> => {
+export const generatePlaySheet = async (generateRequest: GenerateRequest): Promise<{ blob: Blob; filename: string}> => {
+    const { playSheetId, generationDetails } = generateRequest;
+    
     try {
         const response = await axios.post(`${url}/download/${playSheetId}`, generationDetails, {
             ...getAxiosConfig(),
-            responseType: "blob"
+            responseType: 'blob',
+            validateStatus: (status) => status < 500, // treat 400 as success to read JSON
         });
-        return response.data;
-    } catch (error: any) {
-        throw handleError(error);
-    }
-}
 
+        // If response is actually JSON (error), parse it
+        if (response.data.type === 'application/json') {
+            const text = await response.data.text();
+            const parsed = JSON.parse(text);
+            throw new Error(Array.isArray(parsed) ? parsed[0] : parsed.message || 'Something went wrong');
+        }
+
+        // Try to get filename from Content-Disposition header
+    const disposition = response.headers['content-disposition'];
+    let filename = 'playsheet.pdf'; // default
+    if (disposition) {
+        const match = disposition.match(/filename="?(.+)"?/);
+        if (match && match[1]) {
+            filename = match[1];
+        }
+    }
+
+    return { blob: response.data, filename };
+    } catch (error: any) {
+        throw new Error(error.message || 'Something went wrong');
+    }
+};
 export const deletePlaySheet = async (playSheetId: number): Promise<void> => {
     try {
         await axios.delete(`${url}/${playSheetId}`, getAxiosConfig());
