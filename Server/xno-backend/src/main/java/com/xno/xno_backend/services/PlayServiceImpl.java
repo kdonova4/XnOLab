@@ -236,6 +236,10 @@ public class PlayServiceImpl implements PlayService {
 
         Playbook playbook = playbookRepository.findById(playbookId).orElseThrow(() -> new ResourceNotFoundException("Playbook ID " + playbookId + " Not Found"));
 
+        if(playIds.isEmpty()) {
+            result.addMessages("Play List Was Empty", ResultType.INVALID);
+        }
+
         List<Play> plays = playIds.stream()
                 .map(playId -> {
                     Play play = playRepository.findById(playId).orElseThrow(() -> new ResourceNotFoundException("Play ID " + playId + " Not Found"));
@@ -259,7 +263,7 @@ public class PlayServiceImpl implements PlayService {
                 .map(play -> {
                     Play newPlay = new Play(play.getPlayName(), play.getPlayImageUrl(), play.getPlayPublicId(),
                             play.getNotes(), play.getUser(), playbook, play.getFormation());
-
+                    newPlay.setPlayId(null);
                     newPlay = playRepository.save(newPlay);
                     return newPlay;
                 }).toList();

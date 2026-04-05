@@ -369,4 +369,24 @@ END;
 $$;
 
 
-
+insert into play (play_id, play_name, play_image_url, play_public_id, notes, formation_id, playbook_id, app_user_id) values
+(51,'Inside Zone 2','url1','id','Zone run middle',1,2,1),
+(52,'Outside Zone2','url2','id','Stretch run outside',1,2,1),
+(53,'Read Option Right2','url3','id','QB reads DE',1,2,1),
+(54,'Read Option Left2','url4','id','QB reads DE backside',1,2,1),
+(55,'QB Draw2','url5','id','Delayed QB run',1,2,1),
+(56,'Four Verticals2','url6','id','Vertical passing concept',1,2,1),
+(57,'Mesh Concept2','url7','id','Crossing routes',1,2,1),
+(58,'Stick Concept2','url8','id','Quick game stick',1,2,1),
+(59,'Slants2','url9','id','Quick slant concept',1,2,1),
+(60,'HB Screen3','url10','id','Running back screen',1,3,1),
+(61,'Inside Zone3','url1','id','Zone run middle',1,3,1),
+(62,'Outside Zone3','url2','id','Stretch run outside',1,3,1),
+(63,'Read Option Right3','url3','id','QB reads DE',1,3,1),
+(64,'Read Option Left3','url4','id','QB reads DE backside',1,3,1),
+(65,'QB Draw3','url5','id','Delayed QB run',1,3,1),
+(66,'Four Verticals3','url6','id','Vertical passing concept',1,3,1),
+(67,'Mesh Concept3','url7','id','Crossing routes',1,3,1),
+(68,'Stick Concept3','url8','id','Quick game stick',1,3,1),
+(69,'Slants3','url93','id','Quick slant concept',1,3,1),
+(70,'HB Screen3','url10','id','Running back screen',1,3,1);

@@ -37,12 +37,12 @@ function PlayLibrary({ playbookId }: PlayLibraryProps) {
 
     const filteredPlays = useMemo(() => {
         if (!data) return [];
-
+        
         return data.filter(play => {
             if (selectedFormationId && play.formationResponse.formationId !== selectedFormationId) {
                 return false;
             }
-
+            
             if (!play.playName.toLowerCase().includes(searchQuery.toLowerCase())) {
                 return false;
             }
