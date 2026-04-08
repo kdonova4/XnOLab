@@ -23,10 +23,12 @@ const PLAY_DEFAULT: Play = {
 
 function PlayForm() {
 
+    const [formationImageUrl, setFormationImageUrl] = useState<string>("");
     const [play, setPlay] = useState<Play>(PLAY_DEFAULT);
     const [image, setImage] = useState<File | null>(null);
     const [imageUrl, setImageUrl] = useState<string>("");
     const [formations, setFormations] = useState<FormationResponse[]>([])
+    const [updatingImage, setUpdatingImage] = useState(false);
     const { playbookId, playId } = useParams();
     const navigate = useNavigate();
 
@@ -39,6 +41,7 @@ function PlayForm() {
             queryClient.invalidateQueries({ queryKey: ["plays"] })
             enqueueSnackbar(`${variables.play.playName} Play Created`, { variant: "success" });
             setPlay(PLAY_DEFAULT);
+            navigate(`/playbook/${playbookId}`)
         },
         onError: (error) => {
             const message = error instanceof Error ? error.message : "Something went wrong"
@@ -87,7 +90,7 @@ function PlayForm() {
                         playbookId: response.playbookResponse.playbookId
                     }
                     setPlay(existingPlay);
-
+                    setFormationImageUrl(response.formationResponse.formationImageUrl);
 
                     // const imageResponse = await fetch(response.formationImageUrl);
                     // const blob = await imageResponse.blob();
@@ -127,12 +130,12 @@ function PlayForm() {
     }
 
     const handleCreate = async () => {
-        if(!canvasRef.current) {
+        if (!canvasRef.current) {
             console.log("NO CANVAS")
             return;
         };
         const blob = await canvasRef.current.getImage();
-        if(!blob) {
+        if (!blob) {
             console.log("NO BLOB")
             return
         };
@@ -155,23 +158,73 @@ function PlayForm() {
     const handleUpdate = async () => {
 
 
-        const updateRequest: UpdatePlayInput = {
-            play: play,
-            ...(image && { file: image })
+        if (updatingImage) {
+            if (!canvasRef.current) {
+                console.log("NO CANVAS")
+                return;
+            };
+            const blob = await canvasRef.current.getImage();
+            if (!blob) {
+                console.log("NO BLOB")
+                return
+            };
+            if (!image) {
+                enqueueSnackbar("Please Create The Play", { variant: "warning" })
+                return;
+            }
+
+            const file = new File([blob], play.playName + ".png", { type: blob.type })
+
+            const updateRequest: UpdatePlayInput = {
+                play: play,
+                file: file
+            }
+
+            updateMutation.mutate(updateRequest);
+
+        } else {
+            const updateRequest: UpdatePlayInput = {
+                play: play,
+            }
+            updateMutation.mutate(updateRequest);
         }
 
-        updateMutation.mutate(updateRequest);
+
+
+
     }
 
-    const handleFormationClick = (formationId: number) => {
+    const handleFormationClick = (formation: FormationResponse) => {
         setPlay({
-            ...play, formationId: formationId
+            ...play, formationId: formation.formationId
         });
+        setFormationImageUrl(formation.formationImageUrl)
+    }
+
+    const handleNewImage = () => {
+        setUpdatingImage(true);
+    }
+
+    const handleCancel = () => {
+        setUpdatingImage(false);
     }
 
     if (playId) {
         return (
             <>
+                <p>{updatingImage}</p>
+                {!updatingImage && (
+                    <button onClick={handleNewImage}>Create New Image</button>
+                )}
+
+                {updatingImage && (
+                    <div>
+                        <Canvas ref={canvasRef} imageUrl={formationImageUrl} />
+                        <button onClick={handleCancel}>Cancel</button>
+                    </div>
+
+
+                )}
                 <div>
                     <input
                         name="playName"
@@ -180,11 +233,10 @@ function PlayForm() {
                         onChange={handleChange}
                         required
                     />
-                    <input
+                    <textarea
                         name="playNotes"
-                        type="textarea"
                         value={play.playNotes}
-                        onChange={handleChange}
+                        onChange={handleTextAreaChange}
                         required
                     />
                     <img src={imageUrl} />
@@ -196,7 +248,8 @@ function PlayForm() {
     } else {
         return (
             <>
-                <Canvas ref={canvasRef} />
+                <p>{updatingImage}</p>
+                <Canvas ref={canvasRef} imageUrl={formationImageUrl}/>
                 <div>
                     <input
                         name="playName"
@@ -217,7 +270,7 @@ function PlayForm() {
                     <p>{play.playbookId}</p>
                     <div>
                         {formations.map((formation) => (
-                            <li key={formation.formationId} onClick={() => handleFormationClick(formation.formationId)}>
+                            <li key={formation.formationId} onClick={() => handleFormationClick(formation)}>
                                 {formation.formationName}
                             </li>
                         ))}

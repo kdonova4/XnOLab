@@ -1,10 +1,8 @@
-import { Box, Modal, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import type { PlayResponse } from "../../types/Response/PlayResponse";
 
 type PlayViewerProps = {
     play: PlayResponse | null;
-    open: boolean;
-    handleClose: () => void;
 }
 
 const style = {
@@ -19,7 +17,7 @@ const style = {
     p: 4,
 };
 
-function PlayViewer({ open, handleClose, play }: PlayViewerProps) {
+function PlayViewer({ play }: PlayViewerProps) {
 
 
 
@@ -28,12 +26,7 @@ function PlayViewer({ open, handleClose, play }: PlayViewerProps) {
     if (play) {
         return (
             <>
-                <Modal
-                    open={open}
-                    onClose={handleClose}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                >
+                
                     <Box sx={style}>
                         <Typography color="black" id="modal-modal-title" variant="h6" component="h2">
                             {play.playName}
@@ -52,7 +45,7 @@ function PlayViewer({ open, handleClose, play }: PlayViewerProps) {
                         </Stack>
 
                     </Box>
-                </Modal>
+                
 
 
             </>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { FormationResponse } from "../../types/Response/FormationResponse";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFormation, getFormationById, updateFormation } from "../../api/FormationAPI";
@@ -8,6 +8,7 @@ import heroImg from "../../assets/hero.png";
 import { useNavigate, useParams } from "react-router-dom";
 import type { UpdateFormationInput } from "../../types/Update/UpdateFormationInput";
 import type { Formation } from "../../types/Formation";
+import Canvas from "../other/Canvas";
 
 const FORMATION_DEFAULT: Formation = {
     formationId: 0,
@@ -22,6 +23,9 @@ function FormationForm() {
     const [imageUrl, setImageUrl] = useState<string>("");
     const { id } = useParams();
     const navigate = useNavigate();
+    const [isUpdatingImage, setIsUpdatingImage] = useState(false);
+
+    const canvasRef = useRef<{ getImage: () => Promise<Blob | null> }>(null);
 
 
     const queryClient = useQueryClient();
@@ -99,13 +103,25 @@ function FormationForm() {
 
     const handleCreate = async () => {
 
+        if (!canvasRef.current) {
+            console.log("NO CANVAS")
+            return;
+        };
+        const blob = await canvasRef.current.getImage();
+        if (!blob) {
+            console.log("NO BLOB")
+            return
+        };
         if (!image) {
             enqueueSnackbar("Please Create The Formation", { variant: "warning" })
             return;
         }
+
+        const file = new File([blob], formation.formationName + ".png", { type: blob.type })
+
         const createRequest: CreateFormationInput = {
             formation: formation,
-            file: image
+            file: file
         }
 
         createMutation.mutate(createRequest);
@@ -114,17 +130,61 @@ function FormationForm() {
     const handleUpdate = async () => {
 
 
-        const updateRequest: UpdateFormationInput = {
-            formation: formation,
-            ...(image && { file: image})
-        }
+        if (isUpdatingImage) {
+            if (!canvasRef.current) {
+                console.log("NO CANVAS")
+                return;
+            };
 
-        updateMutation.mutate(updateRequest);
+            const blob = await canvasRef.current.getImage();
+
+            if (!blob) {
+                console.log("NO BLOB")
+                return
+            };
+
+            if (!image) {
+                enqueueSnackbar("Please Create The Play", { variant: "warning" })
+                return;
+            }
+
+            const file = new File([blob], formation.formationName + ".png", { type: blob.type })
+            const updateRequest: UpdateFormationInput = {
+                formation: formation,
+                file: file
+            }
+
+            updateMutation.mutate(updateRequest);
+        } else {
+            const updateRequest: UpdateFormationInput = {
+                formation: formation,
+            }
+            updateMutation.mutate(updateRequest);
+        }
+    }
+
+    const handleNewImage = () => {
+        setIsUpdatingImage(true);
+    }
+
+    const handleCancel = () => {
+        setIsUpdatingImage(false);
     }
 
     if (id) {
         return (
             <>
+                {isUpdatingImage && (
+                    <div>
+                        <Canvas ref={canvasRef} />
+                        <button onClick={handleCancel}>Cancel</button>
+                    </div>
+
+                )}
+
+                {!isUpdatingImage && (
+                    <button onClick={handleNewImage}>Create New Formation Image</button>
+                )}
                 <div>
                     <input
                         name="formationName"
@@ -133,7 +193,7 @@ function FormationForm() {
                         onChange={handleChange}
                         required
                     />
-                    <img src={imageUrl}/>
+                    <img src={imageUrl} />
                     <button onClick={handleUpdate} disabled={isPending}>{isPending ? "Updating..." : "Update Formation"}</button>
 
                 </div>
@@ -142,6 +202,7 @@ function FormationForm() {
     } else {
         return (
             <>
+                <Canvas ref={canvasRef} />
                 <div>
                     <input
                         name="formationName"

@@ -4,7 +4,11 @@ type CanvasHandle = {
     getImage: () => Promise<Blob | null>
 }
 
-const Canvas = forwardRef<CanvasHandle>((props, ref) => {
+type CanvasProps = {
+    imageUrl?: string;
+}
+
+const Canvas = forwardRef<CanvasHandle, CanvasProps>((props, ref) => {
     // Ref to access the canvas DOM element
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -36,7 +40,18 @@ const Canvas = forwardRef<CanvasHandle>((props, ref) => {
         const ctx = canvas.getContext("2d");
         // 4. If no context, return
         if (!ctx) return;
-
+        if(props.imageUrl) {
+            console.log("IMAGE URL IS" + props.imageUrl)
+            const bg = new Image();
+            bg.crossOrigin = "anonymous"
+            bg.src = props.imageUrl;
+            bg.onload = () => {
+                ctx.drawImage(bg, 0, 0, canvas.width, canvas.height)
+            }
+        } else {
+            ctx.fillStyle = "#1a7e01"; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
         // 5. Set drawing styles:
         //    - lineWidth
         ctx.lineWidth = drawSize;
@@ -44,9 +59,9 @@ const Canvas = forwardRef<CanvasHandle>((props, ref) => {
         ctx.lineCap = "round"
         //    - strokeStyle
         ctx.strokeStyle = "black"
-        ctx.fillStyle = "#1a7e01";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-    }, []);
+        
+        console.log("Drawing")
+    }, [props.imageUrl]);
 
 
 
@@ -154,9 +169,19 @@ const Canvas = forwardRef<CanvasHandle>((props, ref) => {
         if (!ctx) return;
         // 3. Clear entire canvas:
         //    ctx.clearRect(0, 0, canvas.width, canvas.height)
-        ctx.clearRect(0, 0, canvas.width, canvas.height)
-        ctx.fillStyle = "#1a7e01"
-        ctx.fillRect(0, 0, canvas.width, canvas.height)
+        setSnapshots(prevSnapshots => [...prevSnapshots, ctx.getImageData(0, 0, canvas.width, canvas.height)])
+        if(props.imageUrl) {
+            console.log("IMAGE URL IS" + props.imageUrl)
+            const bg = new Image();
+            bg.crossOrigin = "anonymous"
+            bg.src = props.imageUrl;
+            bg.onload = () => {
+                ctx.drawImage(bg, 0, 0, canvas.width, canvas.height)
+            }
+        } else {
+            ctx.fillStyle = "#1a7e01"; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
         ctx.beginPath()
     };
 

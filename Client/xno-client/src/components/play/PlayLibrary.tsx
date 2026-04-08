@@ -18,7 +18,8 @@ function PlayLibrary({ playbookId }: PlayLibraryProps) {
 
     const queryClient = useQueryClient();
     const navigate = useNavigate();
-    const [open, setOpen] = useState(false);
+    const [formationViewOpen, setFormationViewOpen] = useState(false);
+    const [playViewOpen, setPlayViewOpen] = useState(false);
     const [viewedFormation, setViewedFormation] = useState<FormationResponse>()
     const [selectedPlay, setSelectedPlay] = useState<PlayResponse | null>(null);
     const [selectedFormationId, setSelectedFormationId] = useState<number | null>(null)
@@ -75,18 +76,22 @@ function PlayLibrary({ playbookId }: PlayLibraryProps) {
         }
     }
 
-    const handleOpen = (formation: FormationResponse) => {
-        setOpen(true);
+    const handleFormationOpen = (formation: FormationResponse) => {
+        setFormationViewOpen(true);
         setViewedFormation(formation)
     }
 
-    const handleOpenPlay = (play: PlayResponse) => {
+    const handlePlayOpen = (play: PlayResponse) => {
         setSelectedPlay(play)
-        setOpen(true);
+        setPlayViewOpen(true);
     }
 
-    const handleClose = () => {
-        setOpen(false);
+    const handleFormationClose = () => {
+        setFormationViewOpen(false);
+    }
+
+    const handlePlayClose = () => {
+        setPlayViewOpen(false)
     }
 
     if (isSuccess) {
@@ -117,30 +122,38 @@ function PlayLibrary({ playbookId }: PlayLibraryProps) {
                     <div>
                         {filteredPlays.map((play) => (
                             <div key={play.playId}>
-                                <p onClick={() => handleOpenPlay(play)}>Name: {play.playName}</p>
+                                <p onClick={() => handlePlayOpen(play)}>Name: {play.playName}</p>
                                 {play.playNotes && (
                                     <p>Notes: {play.playNotes}</p>
                                 )}
 
                                 <img src={play.playImageUrl} />
-                                <p onClick={() => handleOpen(play.formationResponse)}>{play.formationResponse.formationName}</p>
+                                <p onClick={() => handleFormationOpen(play.formationResponse)}>{play.formationResponse.formationName}</p>
                                 <button onClick={() => navigate(`/play/edit/${play.playId}`)}>Edit</button>
                                 <button onClick={() => handleDelete(play.playId)}>Delete</button>
                             </div>
                         ))}
                     </div>
                     <Modal
-                        open={open}
-                        onClose={handleClose}
+                        open={formationViewOpen}
+                        onClose={handleFormationClose}
                         aria-labelledby="modal-modal-title"
                         aria-describedby="modal-modal-description"
                     >
                         
-                        <FormationViewer handleClose={handleClose} formation={viewedFormation}></FormationViewer>
+                        <FormationViewer formation={viewedFormation}></FormationViewer>
                         
                         
                     </Modal>
-                    <PlayViewer play={selectedPlay} open={open} handleClose={handleClose}/>
+                    <Modal
+                    open={playViewOpen}
+                    onClose={handlePlayClose}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                    <PlayViewer play={selectedPlay} />
+                </Modal>
+                    
                 </>
             )
         } else if (data.length === 0) {
