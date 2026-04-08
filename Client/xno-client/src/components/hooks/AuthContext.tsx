@@ -10,6 +10,7 @@ interface AuthContextType {
     loginUser: (credentials: LoginRequest) => Promise<void>;
     logoutUser: () => Promise<void>;
     refreshUser: () => Promise<void>;
+    isAuthenticated: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -21,14 +22,18 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [appUser, setAppUser] = useState<UserInfoResponse | null>(null);
     const [loading, setLoading] = useState(true);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
     const navigate = useNavigate();
 
     const refreshUser = async () => {
         try {
             const user = await getUserDetails();
             setAppUser(user)
+            setIsAuthenticated(true)
         } catch {
             setAppUser(null);
+            
+            setIsAuthenticated(false)
         } finally {
             setLoading(false);
         }
@@ -37,6 +42,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const loginUser = async (credentials: LoginRequest) => {
         const user = await login(credentials);
         setAppUser(user);
+        setIsAuthenticated(true)
         navigate("/");
     }
 
@@ -47,6 +53,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             
         } finally {
             setAppUser(null);
+            setIsAuthenticated(false)
             navigate("/");
         }
     }
@@ -56,7 +63,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }, [])
 
     return (
-        <AuthContext.Provider value={{ appUser, loading, loginUser, logoutUser, refreshUser }}>
+        <AuthContext.Provider value={{ appUser, loading, loginUser, logoutUser, refreshUser, isAuthenticated }}>
             {children}
         </AuthContext.Provider>
     )

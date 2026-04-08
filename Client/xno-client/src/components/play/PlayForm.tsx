@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Play } from "../../types/Play";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -10,6 +10,7 @@ import heroImg from "../../assets/hero.png";
 import type { UpdatePlayInput } from "../../types/Update/UpdatePlayInput";
 import { getAllFormationsByUser } from "../../api/FormationAPI";
 import type { FormationResponse } from "../../types/Response/FormationResponse";
+import Canvas from "../other/Canvas";
 
 const PLAY_DEFAULT: Play = {
     playId: 0,
@@ -28,6 +29,8 @@ function PlayForm() {
     const [formations, setFormations] = useState<FormationResponse[]>([])
     const { playbookId, playId } = useParams();
     const navigate = useNavigate();
+
+    const canvasRef = useRef<{ getImage: () => Promise<Blob | null> }>(null);
 
     const queryClient = useQueryClient();
     const createMutation = useMutation<PlayResponse, Error, CreatePlayInput>({
@@ -110,6 +113,8 @@ function PlayForm() {
         loadDefaultImage();
     }, [playId]);
 
+
+
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPlay({
             ...play, [event.target.name]: event.target.value
@@ -122,17 +127,26 @@ function PlayForm() {
     }
 
     const handleCreate = async () => {
-
+        if(!canvasRef.current) {
+            console.log("NO CANVAS")
+            return;
+        };
+        const blob = await canvasRef.current.getImage();
+        if(!blob) {
+            console.log("NO BLOB")
+            return
+        };
         if (!image) {
             enqueueSnackbar("Please Create The Play", { variant: "warning" })
             return;
         }
 
+        const file = new File([blob], play.playName + ".png", { type: blob.type })
 
 
         const createRequest: CreatePlayInput = {
             play: play,
-            file: image
+            file: file
         }
 
         createMutation.mutate(createRequest);
@@ -182,6 +196,7 @@ function PlayForm() {
     } else {
         return (
             <>
+                <Canvas ref={canvasRef} />
                 <div>
                     <input
                         name="playName"

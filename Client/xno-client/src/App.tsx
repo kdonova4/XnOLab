@@ -6,20 +6,20 @@ import HomePage from "./components/other/HomePage";
 import RegisterPage from "./components/auth/RegisterPage";
 import LoginPage from "./components/auth/LoginPage";
 import FormationForm from "./components/formation/FormationForm";
-import PlayCopyForm from "./components/play/PlayCopyForm";
 import PlayForm from "./components/play/PlayForm";
 import PlaybookLibrary from "./components/playbook/PlaybookLibrary";
 import PlaybookViewer from "./components/playbook/PlaybookViewer";
 import PlaybookForm from "./components/playbook/PlaybookForm";
 import PlaySheetForm from "./components/playsheet/PlaySheetForm";
 import PlaySheetLibrary from "./components/playsheet/PlaySheetLibrary";
-import PlaySheetViewer from "./components/playsheet/PlaySheetViewer";
 import { AuthProvider } from "./components/hooks/AuthContext";
 import FormationLibrary from "./components/formation/FormationLibrary";
+import ProtectedRoute from "./components/other/ProtectedRoute";
+
+
 
 function App() {
   const queryClient = new QueryClient();
-
   return (
     <>
       <Router>
@@ -32,20 +32,54 @@ function App() {
 
                   <Route path="/login" element={<LoginPage />} />
                   <Route path="/register" element={<RegisterPage />} />
-                  <Route path="/formation/create" element={<FormationForm />} />
-                  <Route path="/formation/edit/:id" element={<FormationForm />} />
-                  <Route path="/formations" element={<FormationLibrary />} />
-                  <Route path="/copy/:destinationPlaybookId" element={<PlayCopyForm />} />
-                  <Route path="/play/:playbookId/create" element={<PlayForm />} />
-                  <Route path="/play/edit/:playId" element={<PlayForm />} />
-                  <Route path="/playbooks" element={<PlaybookLibrary />} />
-                  <Route path="/playbook/:playbookId" element={<PlaybookViewer />} />
-                  <Route path="/playbook/create" element={<PlaybookForm />} />
-                  <Route path="/playbook/edit/:id" element={<PlaybookForm />} />
-                  <Route path="/playsheet/:playbookId/create" element={<PlaySheetForm />} />
-                  <Route path="/playsheet/edit/:id" element={<PlaySheetForm />} />
-                  <Route path="/playsheets" element={<PlaySheetLibrary />} />
-                  <Route path="/playsheet/:id" element={<PlaySheetViewer />} />
+                  <Route path="/formation/create" element={
+                    <ProtectedRoute>
+                      <FormationForm />
+                    </ProtectedRoute>} />
+                  <Route path="/formation/edit/:id" element={
+                    <ProtectedRoute>
+                      <FormationForm />
+                    </ProtectedRoute>} />
+                  <Route path="/formations" element={
+                    <ProtectedRoute>
+                      <FormationLibrary />
+                    </ProtectedRoute>} />
+                  <Route path="/play/:playbookId/create" element={
+                    <ProtectedRoute>
+                      <PlayForm />
+                    </ProtectedRoute>} />
+                  <Route path="/play/edit/:playId" element={
+                    <ProtectedRoute>
+                      <PlayForm />
+                    </ProtectedRoute>} />
+                  <Route path="/playbooks" element={
+                    <ProtectedRoute>
+                      <PlaybookLibrary />
+                    </ProtectedRoute>} />
+                  <Route path="/playbook/:playbookId" element={
+                    <ProtectedRoute>
+                      <PlaybookViewer />
+                    </ProtectedRoute>} />
+                  <Route path="/playbook/create" element={
+                    <ProtectedRoute>
+                      <PlaybookForm />
+                    </ProtectedRoute>} />
+                  <Route path="/playbook/edit/:id" element={
+                    <ProtectedRoute>
+                      <PlaybookForm />
+                    </ProtectedRoute>} />
+                  <Route path="/playsheet/:playbookId/create" element={
+                    <ProtectedRoute>
+                      <PlaySheetForm />
+                    </ProtectedRoute>} />
+                  <Route path="/playsheet/edit/:id" element={
+                    <ProtectedRoute>
+                      <PlaySheetForm />
+                    </ProtectedRoute>} />
+                  <Route path="/playsheets" element={
+                    <ProtectedRoute>
+                      <PlaySheetLibrary />
+                    </ProtectedRoute>} />
 
                 </Routes>
               </AuthProvider>
