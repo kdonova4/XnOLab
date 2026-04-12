@@ -3,7 +3,7 @@ import { deletePlaySheet, getPlaySheetsByUser } from "../../api/PlaySheetAPI";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
-import { Modal } from "@mui/material";
+import { Container, Modal } from "@mui/material";
 import GenerationDetailsForm from "./GenerationDetailsForm";
 import type { PlaySheetSummaryResponse } from "../../types/Response/PlaySheetSummaryResponse";
 
@@ -74,6 +74,7 @@ function PlaySheetLibrary() {
         } else {
             return (
                 <>
+                <Container className="container">
                     <div>
                         <input
                             name="searchQuery"
@@ -106,6 +107,8 @@ function PlaySheetLibrary() {
                         <GenerationDetailsForm playSheet={playSheet}/>
                     </Modal>
                     </div>
+                </Container>
+                    
                     
                 </>
             )

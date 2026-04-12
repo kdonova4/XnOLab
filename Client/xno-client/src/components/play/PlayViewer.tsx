@@ -26,26 +26,23 @@ function PlayViewer({ play }: PlayViewerProps) {
     if (play) {
         return (
             <>
-                
-                    <Box sx={style}>
-                        <Typography color="black" id="modal-modal-title" variant="h6" component="h2">
-                            {play.playName}
-                        </Typography>
-                        <Typography color="black">
-                            {play.playNotes}
-                        </Typography>
 
+                <Box sx={style}>
+                    <Typography color="black" id="modal-modal-title" variant="h6" component="h2">
+                        {play.playName}
+                    </Typography>
+                    <Typography color="black">
+                        {play.playNotes}
+                    </Typography>
+
+                    <Stack>
                         <Stack>
-
-                            <Stack>
-                                <img src={play.playImageUrl}></img>
-                            </Stack>
-
-
+                            <img src={play.playImageUrl}></img>
                         </Stack>
+                    </Stack>
 
-                    </Box>
-                
+                </Box>
+
 
 
             </>

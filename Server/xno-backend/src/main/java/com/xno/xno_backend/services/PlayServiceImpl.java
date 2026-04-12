@@ -202,7 +202,7 @@ public class PlayServiceImpl implements PlayService {
             String playImageUrl = uploadResult.get("secure_url").toString();
             String playPublicId = uploadResult.get("public_id").toString();
 
-            if(playRepository.countByPlayImageUrlAndIdNot(existing.getPlayImageUrl(), existing.getPlayId()) == 0) {
+            if(playRepository.countByPlayImageUrlAndPlayIdNot(existing.getPlayImageUrl(), existing.getPlayId()) == 0) {
                 imageService.deleteImage(existing.getPlayPublicId());
             }
             existing.setPlayImageUrl(playImageUrl);

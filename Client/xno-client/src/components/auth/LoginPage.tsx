@@ -3,6 +3,9 @@ import type { LoginRequest } from "../../types/Auth/LoginRequest";
 import { useAuth } from "../hooks/AuthContext";
 import { enqueueSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
+import { Box, Button, Card, Container, Divider, FormControl, IconButton, InputAdornment, InputLabel, Link, OutlinedInput, Stack, TextField, Typography } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { LoadingButton } from "@mui/lab";
 
 function LoginPage() {
 
@@ -10,10 +13,22 @@ function LoginPage() {
         username: "",
         password: ""
     })
+    const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    
-    const { loginUser, loading } = useAuth();
-    
+
+    const { loginUser } = useAuth();
+
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+    };
+
+    const handleMouseUpPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+    };
+
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCredentials({
             ...credentials, [event.target.name]: event.target.value
@@ -25,42 +40,187 @@ function LoginPage() {
 
 
         try {
+            setLoading(true);
             await loginUser(credentials);
             enqueueSnackbar("Login Successful", { variant: "success" })
-        } catch(e) {
+        } catch (e) {
             const message = e instanceof Error ? e.message : "Something went wrong";
             enqueueSnackbar(message, { variant: "error" })
+            setLoading(false);
+        } finally {
+            setLoading(false);
         }
     }
-    return(
+    return (
         <>
-            <div>
-                <form onSubmit={handleSubmit}>
-                    <h2>Enter Username</h2>
-                    <input
-                    name="username"
-                    type="text"
-                    value={credentials.username}
-                    onChange={handleChange}
-                    placeholder="Enter Username"
-                    required
-                    />
-                    <input
-                    name="password"
-                    type="password"
-                    value={credentials.password}
-                    onChange={handleChange}
-                    placeholder="Enter Password"
-                    required
-                    />
-                    <button type="submit" disabled={loading} className="bg-blue-600 text-white px-3 py-1 rounded">
-                    {loading ? "Logging In..." : "Login"}
-                </button>
-                <button onClick={() => navigate("/register")} className="bg-blue-600 text-white px-3 py-1 rounded">
-                            Go Register
-                        </button>
-                </form>
-            </div>
+
+            <Container className="container">
+                <Box sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+
+                }}>
+                    <Card variant="outlined" sx={{ minWidth: '30%', backgroundColor: '#181a1b', color: 'white' }}>
+                        <Box sx={{ p: 2 }}>
+                            <Stack
+
+                                sx={{ justifyContent: 'space-between', alignItems: 'center' }}
+                            >
+                                <Typography gutterBottom variant="h5" component="div">
+                                    Login
+                                </Typography>
+
+                            </Stack>
+                        </Box>
+                        <Divider sx={{ borderColor: 'gray' }} />
+
+                        <Box
+                            component="form"
+                            onSubmit={handleSubmit}
+                            sx={{ p: 2 }}
+                        >
+                            <Stack spacing={1} sx={{ alignItems: 'center' }} gap={2}>
+
+                                <FormControl sx={{ m: 1, width: '35ch', color: 'white' }} variant="outlined">
+                                    <TextField
+                                        slotProps={{
+                                            inputLabel: {
+                                                sx: {
+                                                    color: "white",
+                                                    "&.Mui-focused": {
+                                                        color: "white",
+                                                    },
+                                                },
+                                            },
+                                        }}
+                                        sx={{
+                                            "& .MuiOutlinedInput-root": {
+                                                "& fieldset": {
+                                                    borderColor: "gray",
+                                                },
+                                                "&:hover fieldset": {
+                                                    borderColor: "white",
+                                                },
+                                                "&.Mui-focused fieldset": {
+                                                    borderColor: "white",
+                                                },
+                                            },
+                                            "& .MuiInputBase-input": {
+                                                color: "white",
+                                            },
+                                        }}
+                                        id="username-input"
+                                        label="Username"
+                                        name="username"
+                                        value={credentials.username}
+                                        onChange={handleChange}
+                                    />
+                                </FormControl>
+
+                                <FormControl
+
+                                    sx={{
+                                        m: 1,
+                                        width: "35ch",
+
+                                        "& .MuiInputLabel-root": {
+                                            color: "white",
+                                        },
+
+                                        // 👇 THIS is the missing piece
+                                        "& .MuiInputLabel-root.Mui-focused": {
+                                            color: "white !important",
+                                        },
+
+                                        "& .MuiOutlinedInput-input": {
+                                            color: "white",
+                                        },
+
+                                        "& .MuiOutlinedInput-root": {
+                                            "& fieldset": {
+                                                borderColor: "gray",
+                                            },
+                                            "&:hover fieldset": {
+                                                borderColor: "white",
+                                            },
+                                            "&.Mui-focused fieldset": {
+                                                borderColor: "white",
+                                            },
+                                        },
+
+                                        "& .MuiSvgIcon-root": {
+                                            color: "white",
+                                        },
+                                    }}
+                                    variant="outlined"
+                                >
+                                    <InputLabel htmlFor="outlined-adornment-password">
+                                        Password
+                                    </InputLabel>
+
+                                    <OutlinedInput
+
+                                        name="password"
+                                        id="outlined-adornment-password"
+                                        type={showPassword ? 'text' : 'password'}
+                                        value={credentials.password}
+                                        onChange={handleChange}
+                                        required
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    onClick={handleClickShowPassword}
+                                                    onMouseDown={handleMouseDownPassword}
+                                                    onMouseUp={handleMouseUpPassword}
+                                                    edge="end"
+                                                >
+                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        }
+                                        label="Password"
+                                    />
+                                </FormControl>
+
+<LoadingButton
+  type="submit"
+  variant="contained"
+  loading={loading}
+  sx={{
+    backgroundColor: "green",
+    color: "white",
+
+    "&:hover": {
+      backgroundColor: "darkgreen",
+    },
+
+    // keep button visible in loading state
+    "&.Mui-disabled": {
+      backgroundColor: "darkgreen",
+      color: "transparent",   // 👈 hides text completely
+      opacity: .7,
+    },
+
+    // hide label completely
+    "& .MuiLoadingButton-label": {
+      visibility: loading ? "hidden" : "visible",
+    },
+  }}
+>
+  Login
+</LoadingButton>
+
+                                <Typography sx={{ color: 'white' }}>
+                                    or <Link href="/register">Sign-Up</Link>
+                                </Typography>
+
+                            </Stack>
+                        </Box>
+                    </Card>
+                </Box>
+
+            </Container>
         </>
     )
 }

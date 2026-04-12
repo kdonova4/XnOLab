@@ -12,7 +12,7 @@ public interface PlayRepository extends JpaRepository<Play, Long> {
 
     Optional<Play> findByPlayName(String playName);
 
-    Long countByPlayImageUrlAndIdNot(String imageUrl, Long playId);
+    Long countByPlayImageUrlAndPlayIdNot(String imageUrl, Long playId);
 
     Optional<Play> findByPlayIdAndUser_AppUserId(Long playId, Long userId);
 

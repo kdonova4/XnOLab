@@ -3,7 +3,6 @@ import type { FormationResponse } from "../../types/Response/FormationResponse";
 
 type FormationViewerProps = {
     formation: FormationResponse | undefined,
-    handleClose: () => void
 }
 
 const style = {
@@ -30,14 +29,10 @@ function FormationViewer({ formation }: FormationViewerProps) {
                         {formation.formationName}
                     </Typography>
                     <Stack>
-
                         <Stack>
                             <img src={formation.formationImageUrl}></img>
                         </Stack>
-
-
                     </Stack>
-
                 </Box>
             </>
         )

@@ -11,6 +11,7 @@ import type { UpdatePlayInput } from "../../types/Update/UpdatePlayInput";
 import { getAllFormationsByUser } from "../../api/FormationAPI";
 import type { FormationResponse } from "../../types/Response/FormationResponse";
 import Canvas from "../other/Canvas";
+import { Container } from "@mui/material";
 
 const PLAY_DEFAULT: Play = {
     playId: 0,
@@ -212,8 +213,8 @@ function PlayForm() {
     if (playId) {
         return (
             <>
-                <p>{updatingImage}</p>
-                {!updatingImage && (
+                <Container className="container">
+{!updatingImage && (
                     <button onClick={handleNewImage}>Create New Image</button>
                 )}
 
@@ -243,13 +244,15 @@ function PlayForm() {
                     <button onClick={handleUpdate} disabled={isPending}>{isPending ? "Updating..." : "Update Play"}</button>
 
                 </div>
+                </Container>
+                
             </>
         )
     } else {
         return (
             <>
-                <p>{updatingImage}</p>
-                <Canvas ref={canvasRef} imageUrl={formationImageUrl}/>
+                <Container className="container">
+<Canvas ref={canvasRef} imageUrl={formationImageUrl}/>
                 <div>
                     <input
                         name="playName"
@@ -278,6 +281,8 @@ function PlayForm() {
                     <button onClick={handleCreate} disabled={isPending}>{isPending ? "Creating..." : "Create Play"}</button>
 
                 </div>
+                </Container>
+                
             </>
         )
     }

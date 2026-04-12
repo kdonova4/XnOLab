@@ -7,6 +7,7 @@ import type { PlaybookCreateRequest } from "../../types/Create/PlaybookCreateReq
 import { createPlaybook, getPlaybookSummaryById, updatePlaybook } from "../../api/PlaybookAPI";
 import { enqueueSnackbar } from "notistack";
 import type { PlaybookUpdateRequest } from "../../types/Update/PlaybookUpdateRequest";
+import { Container } from "@mui/material";
 
 const PLAYBOOK_DEFAULT: Playbook = {
     playbookId: 0,
@@ -71,13 +72,13 @@ function PlaybookForm() {
         fetchPlaybook();
     }, [id]);
 
-const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPlaybook({
             ...playbook, [event.target.name]: event.target.value
         });
     }
-    
-    
+
+
 
     const handleCreate = async () => {
 
@@ -101,36 +102,42 @@ const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         updateMutation.mutate(updateRequest);
     }
 
-    if(id) {
+    if (id) {
         return (
             <>
-                <div>
-                    <input
-                        name="playbookName"
-                        type="text"
-                        value={playbook.playbookName}
-                        onChange={handleChange}
-                        required
-                    />
-                    <button onClick={handleUpdate} disabled={isPending}>{isPending ? "Updating..." : "Update Playbook"}</button>
+                <Container className="container">
+                    <div>
+                        <input
+                            name="playbookName"
+                            type="text"
+                            value={playbook.playbookName}
+                            onChange={handleChange}
+                            required
+                        />
+                        <button onClick={handleUpdate} disabled={isPending}>{isPending ? "Updating..." : "Update Playbook"}</button>
 
-                </div>
+                    </div>
+                </Container>
+
             </>
         )
     } else {
         return (
             <>
-                <div>
-                    <input
-                        name="playbookName"
-                        type="text"
-                        value={playbook.playbookName}
-                        onChange={handleChange}
-                        required
-                    />
-                    <button onClick={handleCreate} disabled={isPending}>{isPending ? "Creating..." : "Create Playbook"}</button>
+                <Container className="container">
+                    <div>
+                        <input
+                            name="playbookName"
+                            type="text"
+                            value={playbook.playbookName}
+                            onChange={handleChange}
+                            required
+                        />
+                        <button onClick={handleCreate} disabled={isPending}>{isPending ? "Creating..." : "Create Playbook"}</button>
 
-                </div>
+                    </div>
+                </Container>
+
             </>
         )
     }

@@ -3,6 +3,7 @@ import { deleteFormation, getAllFormationsByUser } from "../../api/FormationAPI"
 import { enqueueSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Container } from "@mui/material";
 
 function FormationLibrary() {
 
@@ -61,7 +62,8 @@ function FormationLibrary() {
         } else {
             return (
                 <>
-                <div>
+                <Container className="container">
+<div>
                     <input
                         name="searchQuery"
                         type="text"
@@ -82,6 +84,8 @@ function FormationLibrary() {
 
                         ))}
                     </div>
+                </Container>
+                
                 </>
             )
         }

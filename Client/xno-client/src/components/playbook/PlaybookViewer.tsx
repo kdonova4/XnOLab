@@ -4,7 +4,7 @@ import { getPlaybookSummaryById } from "../../api/PlaybookAPI";
 import { useEffect, useState } from "react";
 import { enqueueSnackbar } from "notistack";
 import PlayLibrary from "../play/PlayLibrary";
-import { Modal } from "@mui/material";
+import { Container, Modal } from "@mui/material";
 import PlayCopyForm from "../play/PlayCopyForm";
 
 function PlaybookViewer() {
@@ -39,6 +39,7 @@ function PlaybookViewer() {
         } else {
             return (
                 <>
+                <Container className="container">
                     <div>
                         <h1>{data.playbookName}</h1>
                     </div>
@@ -52,6 +53,8 @@ function PlaybookViewer() {
                         aria-describedby="modal-modal-description">
                             <PlayCopyForm playbookId={Number(playbookId)} handleClose={handleClose}/>
                     </Modal>
+                </Container>
+                    
                 </>
             )
         }

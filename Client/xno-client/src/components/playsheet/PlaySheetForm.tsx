@@ -8,7 +8,7 @@ import type { PlaySheetCreateRequest } from "../../types/Create/PlaySheetCreateR
 import { createPlaySheet, getPlaySheetDetailsById, updatePlaySheet } from "../../api/PlaySheetAPI";
 import { enqueueSnackbar } from "notistack";
 import type { PlaySheetSituation } from "../../types/PlaySheetSituation";
-import { Stack } from "@mui/material";
+import { Container, Stack } from "@mui/material";
 import type { PlaySheetSituationCreateRequest } from "../../types/Create/PlaySheetSituationCreateRequest";
 import type { PlaySheetUpdateRequest } from "../../types/Update/PlaySheetUpdateRequest";
 import type { PlaySheetSituationUpdateRequest } from "../../types/Update/PlaySheetSituationUpdateRequest";
@@ -285,6 +285,7 @@ function PlaySheetForm() {
             if (id) {
                 return (
                     <>
+                    <Container className="container">
                         <div>
                             <p>{selectedSitaution}</p>
                             <input
@@ -341,12 +342,15 @@ function PlaySheetForm() {
 
 
                         </div>
+                    </Container>
+                        
                     </>
                 )
             } else {
                 return (
                     <>
-                        <div>
+                    <Container className="container">
+<div>
                             <p>{selectedSitaution}</p>
                             <input
                                 name="playSheetName"
@@ -402,6 +406,8 @@ function PlaySheetForm() {
 
 
                         </div>
+                    </Container>
+                        
                     </>
                 )
             }
