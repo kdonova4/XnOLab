@@ -183,33 +183,33 @@ function LoginPage() {
                                     />
                                 </FormControl>
 
-<LoadingButton
-  type="submit"
-  variant="contained"
-  loading={loading}
-  sx={{
-    backgroundColor: "green",
-    color: "white",
+                                <LoadingButton
+                                    type="submit"
+                                    variant="contained"
+                                    loading={loading}
+                                    sx={{
+                                        backgroundColor: "green",
+                                        color: "white",
 
-    "&:hover": {
-      backgroundColor: "darkgreen",
-    },
+                                        "&:hover": {
+                                            backgroundColor: "darkgreen",
+                                        },
 
-    // keep button visible in loading state
-    "&.Mui-disabled": {
-      backgroundColor: "darkgreen",
-      color: "transparent",   // 👈 hides text completely
-      opacity: .7,
-    },
+                                        // keep button visible in loading state
+                                        "&.Mui-disabled": {
+                                            backgroundColor: "darkgreen",
+                                            color: "transparent",   // 👈 hides text completely
+                                            opacity: .7,
+                                        },
 
-    // hide label completely
-    "& .MuiLoadingButton-label": {
-      visibility: loading ? "hidden" : "visible",
-    },
-  }}
->
-  Login
-</LoadingButton>
+                                        // hide label completely
+                                        "& .MuiLoadingButton-label": {
+                                            visibility: loading ? "hidden" : "visible",
+                                        },
+                                    }}
+                                >
+                                    Login
+                                </LoadingButton>
 
                                 <Typography sx={{ color: 'white' }}>
                                     or <Link href="/register">Sign-Up</Link>

@@ -11,7 +11,8 @@ import type { UpdatePlayInput } from "../../types/Update/UpdatePlayInput";
 import { getAllFormationsByUser } from "../../api/FormationAPI";
 import type { FormationResponse } from "../../types/Response/FormationResponse";
 import Canvas from "../other/Canvas";
-import { Container } from "@mui/material";
+import { Box, Button, Container, FormControl, InputLabel, MenuItem, Select, Stack, TextField } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 
 const PLAY_DEFAULT: Play = {
     playId: 0,
@@ -22,8 +23,21 @@ const PLAY_DEFAULT: Play = {
     playbookId: 0
 }
 
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 900,
+    bgcolor: '#181a1b',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
+
 function PlayForm() {
 
+    const [selectedFormationId, setSelectedFormationId] = useState<number>(0);
     const [formationImageUrl, setFormationImageUrl] = useState<string>("");
     const [play, setPlay] = useState<Play>(PLAY_DEFAULT);
     const [image, setImage] = useState<File | null>(null);
@@ -195,11 +209,14 @@ function PlayForm() {
 
     }
 
-    const handleFormationClick = (formation: FormationResponse) => {
+    const handleFormationChange = (formationId: number) => {
+        setSelectedFormationId(formationId)
         setPlay({
-            ...play, formationId: formation.formationId
+            ...play, formationId: formationId
         });
-        setFormationImageUrl(formation.formationImageUrl)
+        const currentForm = formations.find((form) => form.formationId === formationId);
+        if(!currentForm) return;
+        setFormationImageUrl(currentForm.formationImageUrl)
     }
 
     const handleNewImage = () => {
@@ -214,75 +231,211 @@ function PlayForm() {
         return (
             <>
                 <Container className="container">
-{!updatingImage && (
-                    <button onClick={handleNewImage}>Create New Image</button>
-                )}
+                    {!updatingImage && (
+                        <button onClick={handleNewImage}>Create New Image</button>
+                    )}
 
-                {updatingImage && (
+                    {updatingImage && (
+                        <div>
+                            <Canvas ref={canvasRef} imageUrl={formationImageUrl} />
+                            <button onClick={handleCancel}>Cancel</button>
+                        </div>
+
+
+                    )}
                     <div>
-                        <Canvas ref={canvasRef} imageUrl={formationImageUrl} />
-                        <button onClick={handleCancel}>Cancel</button>
+                        <input
+                            name="playName"
+                            type="text"
+                            value={play.playName}
+                            onChange={handleChange}
+                            required
+                        />
+                        <textarea
+                            name="playNotes"
+                            value={play.playNotes}
+                            onChange={handleTextAreaChange}
+                            required
+                        />
+                        <img src={imageUrl} />
+                        <button onClick={handleUpdate} disabled={isPending}>{isPending ? "Updating..." : "Update Play"}</button>
+
                     </div>
-
-
-                )}
-                <div>
-                    <input
-                        name="playName"
-                        type="text"
-                        value={play.playName}
-                        onChange={handleChange}
-                        required
-                    />
-                    <textarea
-                        name="playNotes"
-                        value={play.playNotes}
-                        onChange={handleTextAreaChange}
-                        required
-                    />
-                    <img src={imageUrl} />
-                    <button onClick={handleUpdate} disabled={isPending}>{isPending ? "Updating..." : "Update Play"}</button>
-
-                </div>
                 </Container>
-                
+
             </>
         )
     } else {
         return (
             <>
                 <Container className="container">
-<Canvas ref={canvasRef} imageUrl={formationImageUrl}/>
-                <div>
-                    <input
-                        name="playName"
-                        type="text"
-                        placeholder="Play Name"
-                        value={play.playName}
-                        onChange={handleChange}
-                        required
-                    />
-                    <textarea
-                        name="playNotes"
-                        placeholder="Notes Here..."
-                        value={play.playNotes}
-                        onChange={handleTextAreaChange}
-                        required
-                    />
-                    <p>{play.formationId}</p>
-                    <p>{play.playbookId}</p>
-                    <div>
-                        {formations.map((formation) => (
-                            <li key={formation.formationId} onClick={() => handleFormationClick(formation)}>
-                                {formation.formationName}
-                            </li>
-                        ))}
-                    </div>
-                    <button onClick={handleCreate} disabled={isPending}>{isPending ? "Creating..." : "Create Play"}</button>
+                    <Box sx={style}>
+                        <Canvas ref={canvasRef} imageUrl={formationImageUrl} />
+                        <div>
+                            <h1>Play Details</h1>
+                            <Stack direction="column" gap={2} p={2}>
+                                <FormControl sx={{ m: 1, width: '35ch', color: 'white' }} variant="outlined">
+                                    <TextField
+                                        slotProps={{
+                                            inputLabel: {
+                                                sx: {
+                                                    color: "white",
+                                                    "&.Mui-focused": {
+                                                        color: "white",
+                                                    },
+                                                },
+                                            },
+                                        }}
+                                        sx={{
+                                            "& .MuiOutlinedInput-root": {
+                                                "& fieldset": {
+                                                    borderColor: "green",
+                                                },
+                                                "&:hover fieldset": {
+                                                    borderColor: "lightgreen",
+                                                },
+                                                "&.Mui-focused fieldset": {
+                                                    borderColor: "white",
+                                                },
+                                            },
+                                            "& .MuiInputBase-input": {
+                                                color: "white",
+                                            },
+                                        }}
+                                        id="playName-input"
+                                        label="Play Name"
+                                        name="playName"
+                                        value={play.playName}
+                                        onChange={handleChange}
+                                    />
+                                </FormControl>
+                                <FormControl sx={{ m: 1, width: '35ch', color: 'white' }} variant="outlined">
+                                    <TextField
+                                        slotProps={{
+                                            inputLabel: {
+                                                sx: {
+                                                    color: "white",
+                                                    "&.Mui-focused": {
+                                                        color: "white",
+                                                    },
+                                                },
+                                            },
+                                        }}
+                                        sx={{
+                                            "& .MuiOutlinedInput-root": {
+                                                "& fieldset": {
+                                                    borderColor: "green",
+                                                },
+                                                "&:hover fieldset": {
+                                                    borderColor: "lightgreen",
+                                                },
+                                                "&.Mui-focused fieldset": {
+                                                    borderColor: "white",
+                                                },
+                                            },
+                                            "& .MuiInputBase-input": {
+                                                color: "white",
+                                            },
+                                        }}
+                                        id="playNotes-input"
+                                        label="Play Notes"
+                                        name="playNotes"
+                                        multiline
+                                        maxRows={8}
+                                        value={play.playNotes}
+                                        onChange={handleChange}
+                                    />
+                                </FormControl>
+                                <FormControl variant="standard" sx={{
+                                    maxWidth: 250,
+                                    m: 1,
 
-                </div>
+                                    // default underline
+                                    '& .MuiInput-underline:before': {
+                                        borderBottomColor: 'darkgreen',
+                                    },
+
+                                    // hover underline
+                                    '& .MuiInput-underline:hover:not(.Mui-disabled):before': {
+                                        borderBottomColor: 'lightgreen',
+                                    },
+
+                                    // focused underline (THIS is the main one you want)
+                                    '& .MuiInput-underline:after': {
+                                        borderBottomColor: 'lightgreen',
+                                    },
+                                    '& .MuiInputLabel-root.Mui-focused': {
+                                        color: 'white',
+                                    },
+                                    '& .MuiInputLabel-root': {
+                                        color: 'white',
+                                    },
+                                }}>
+                                    <InputLabel id="demo-simple-select-standard-label">Select Formation</InputLabel>
+                                    <Select
+                                        labelId="demo-simple-select-standard-label"
+                                        id="demo-simple-select-standard"
+                                        value={selectedFormationId}
+                                        onChange={(e) => handleFormationChange(e.target.value)}
+                                        label="Filter By Formation"
+                                        sx={{
+                                                    color: 'white', // selected value text
+                                                    '& .MuiSvgIcon-root': {
+                                                        color: 'white', // dropdown arrow
+                                                    },
+                                                }}
+                                    >
+                                        <MenuItem value={0}>
+                                            None
+                                        </MenuItem>
+                                        {formations.map((formation) => (
+                                            <MenuItem key={formation.formationId} value={formation.formationId}>{formation.formationName}</MenuItem>
+                                        ))}
+
+                                    </Select>
+                                </FormControl>
+                            </Stack>
+
+                            <Box display='flex' justifyContent='center'>
+                                
+                                
+                                <LoadingButton
+                                    variant="contained"
+                                    type="submit"
+                                    onClick={handleCreate}
+                                    loading={isPending}
+                                    sx={{
+                                        backgroundColor: "green",
+                                        color: "black",
+
+                                        "&:hover": {
+                                            backgroundColor: "darkgreen",
+                                        },
+
+                                        // keep button visible in loading state
+                                        "&.Mui-disabled": {
+                                            backgroundColor: "darkgreen",
+                                            color: "transparent",   // 👈 hides text completely
+                                            opacity: .7,
+                                        },
+
+                                        // hide label completely
+                                        "& .MuiLoadingButton-label": {
+                                            visibility: isPending ? "hidden" : "visible",
+                                        },
+                                    }}
+                                >
+                                    Create
+                                </LoadingButton>
+                                
+                            </Box>
+                            
+
+                        </div>
+                    </Box>
+
                 </Container>
-                
+
             </>
         )
     }

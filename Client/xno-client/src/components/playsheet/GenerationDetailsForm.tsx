@@ -1,11 +1,12 @@
 import { useState } from "react";
 import type { GenerationDetails } from "../../types/Misc/GenerationDetails";
-import { Box, Checkbox, Stack, Typography } from "@mui/material";
+import { Box, Button, Checkbox, Stack, Typography } from "@mui/material";
 import { generatePlaySheet } from "../../api/PlaySheetAPI";
 import { useMutation } from "@tanstack/react-query";
 import type { GenerateRequest } from "../../types/Misc/GenerateRequest";
 import { enqueueSnackbar } from "notistack";
 import type { PlaySheetSummaryResponse } from "../../types/Response/PlaySheetSummaryResponse";
+import NumberField from "../../types/Misc/NumberField";
 
 const DEFAULT_GENERATION_DETAILS: GenerationDetails = {
     maxRows: 20,
@@ -19,17 +20,19 @@ const style = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 400,
-    bgcolor: 'background.paper',
+    bgcolor: '#181a1b',
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
+    
 };
 
 type GenerationDetailsFormProps = {
     playSheet: PlaySheetSummaryResponse | null | undefined
+    handleClose: () => void;
 }
 
-function GenerationDetailsForm({ playSheet }: GenerationDetailsFormProps) {
+function GenerationDetailsForm({ playSheet, handleClose }: GenerationDetailsFormProps) {
 
     const [genDetails, setGenDetails] = useState<GenerationDetails>(DEFAULT_GENERATION_DETAILS)
 
@@ -58,7 +61,7 @@ function GenerationDetailsForm({ playSheet }: GenerationDetailsFormProps) {
         a.click();
         a.remove();
         window.URL.revokeObjectURL(url);
-
+        handleClose()
         enqueueSnackbar(`Downloaded ${newFilename}.xlsx`, { variant: 'success' });
     },
     onError: (error) => {
@@ -82,33 +85,41 @@ function GenerationDetailsForm({ playSheet }: GenerationDetailsFormProps) {
 
         
             <Box sx={style}>
-                <Typography color="black" id="modal-modal-title" variant="h6" component="h2">
+                <Typography id="modal-modal-title" variant="h6" component="h2">
                     Enter Generation Details
                 </Typography>
                 <Stack>
-                    <Stack color={"black"} flexDirection={"row"} alignItems={"center"} gap={1}>
+                    <Stack p={1} flexDirection={"row"} alignItems={"center"} gap={1}>
                         <p>Max Rows: </p>
-                        <input
-                        name="maxRows"
-                        type="number"
-                        placeholder="Max Rows"
-                        min={20}
-                        value={genDetails.maxRows}
-                        onChange={handleChange}
-                        required
-                    />
+                        <NumberField defaultValue={20} min={20} onValueChange={(val) => setGenDetails(prev => ({
+                            ...prev, 
+                            maxRows: val ?? prev.maxRows
+                        }))} />
+                        
                     </Stack>
                     
 
-                    <Stack color={"black"} flexDirection={"row"} alignItems={"center"}>
+                    <Stack p={1} flexDirection={"row"} alignItems={"center"}>
                         <p>Wrap Plays: </p>
-                        <Checkbox
+                        <Checkbox sx={{ color: 'white', '&.Mui-checked': { color: 'green' },}}
                             name="wrapPlays"
                             value={genDetails.wrapPlays}
                             onChange={handleChange}
                         ></Checkbox>
                     </Stack>
-                    <button onClick={handleGenerate}>Generate</button>
+                    <Button sx={{
+                                        m: 1,
+                                        backgroundColor: 'green',
+                                        color: 'black',
+
+                                        '&:hover': {
+                                            backgroundColor: 'lightgreen', // hover color
+                                        },
+
+                                        '&:active': {
+                                            backgroundColor: 'darkgreen', // click/pressed color
+                                        },
+                                    }} variant="contained" onClick={handleGenerate}>Generate</Button>
         
                 </Stack>
 

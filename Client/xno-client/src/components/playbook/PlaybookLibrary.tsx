@@ -113,7 +113,6 @@ function PlaybookLibrary() {
             const confirmed = window.confirm("Are You Sure? Deleting This Playbook Will Delete All Associated Plays.")
             if (confirmed) {
                 mutate(playbookId)
-
             }
             handleClosePlaybookmenu()
         } catch (error) {
@@ -123,61 +122,60 @@ function PlaybookLibrary() {
     }
 
     if (isSuccess) {
-        if (!data || data.length === 0) {
-            return <p>No Playbooks</p>
-        } else {
-            return (
-                <>
-                    <Container className="container">
-                        <Typography variant="h3" p={2}>
-                            Your Playbooks
-                        </Typography>
-                        <Stack>
-                            <Box sx={{ backgroundColor: 'darkgreen', borderTopRightRadius: '40px', borderTopLeftRadius: '40px' }}>
-                                <Stack
-                                    direction="row"
-                                    p={2}
-                                    width="100%"
-                                    justifyContent="space-between"
-                                    alignItems="center"
-                                    sx={{ boxSizing: "border-box" }}
-                                >
-                                    <Search>
-                                        <SearchIconWrapper>
-                                            <SearchIcon />
-                                        </SearchIconWrapper>
 
-                                        <StyledInputBase
-                                            name="searchQuery"
-                                            placeholder="Filter By Name"
-                                            inputProps={{ 'aria-label': 'search' }}
-                                            value={searchQuery}
-                                            onChange={(e) => setSearchQuery(e.target.value)}
-                                        />
-                                    </Search>
+        return (
+            <>
+                <Container className="container">
+                    <Typography variant="h3" p={2}>
+                        Your Playbooks
+                    </Typography>
+                    <Stack>
+                        <Box sx={{ backgroundColor: 'darkgreen', borderTopRightRadius: '40px', borderTopLeftRadius: '40px' }}>
+                            <Stack
+                                direction="row"
+                                p={2}
+                                width="100%"
+                                justifyContent="space-between"
+                                alignItems="center"
+                                sx={{ boxSizing: "border-box" }}
+                            >
+                                <Search>
+                                    <SearchIconWrapper>
+                                        <SearchIcon />
+                                    </SearchIconWrapper>
 
-                                    <Fab
-                                        variant="extended"
-                                        sx={{
-                                            backgroundColor: 'green',
-                                            color: 'black',
+                                    <StyledInputBase
+                                        name="searchQuery"
+                                        placeholder="Filter By Name"
+                                        inputProps={{ 'aria-label': 'search' }}
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                    />
+                                </Search>
 
-                                            '&:hover': {
-                                                backgroundColor: 'lightgreen', // hover color
-                                            },
+                                <Fab
+                                    variant="extended"
+                                    sx={{
+                                        backgroundColor: 'green',
+                                        color: 'black',
 
-                                            '&:active': {
-                                                backgroundColor: 'darkgreen', // click/pressed color
-                                            },
-                                        }}
-                                    >
-                                        <AddIcon sx={{ mr: 1 }} />
-                                        Create New
-                                    </Fab>
-                                </Stack>
-                            </Box>
-                            <Box sx={{ backgroundColor: '#181a1b', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', borderBottomRightRadius: '20px', borderBottomLeftRadius: '20px' }}>
-                                {filteredPlaybooks.map((playbook) => (
+                                        '&:hover': {
+                                            backgroundColor: 'lightgreen', // hover color
+                                        },
+
+                                        '&:active': {
+                                            backgroundColor: 'darkgreen', // click/pressed color
+                                        },
+                                    }}
+                                    onClick={() => navigate("/playbook/create")}>
+                                    <AddIcon sx={{ mr: 1 }} />
+                                    Create New
+                                </Fab>
+                            </Stack>
+                        </Box>
+                        <Box sx={{ backgroundColor: '#181a1b', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', borderBottomRightRadius: '20px', borderBottomLeftRadius: '20px' }}>
+                            {data && data.length > 0 && (
+                                filteredPlaybooks.map((playbook) => (
                                     <Card key={playbook.playbookId} sx={{
                                         width: '20%', margin: 2, backgroundColor: 'green', transition: 'background-color 0.3s ease',
                                         '&:hover': {
@@ -185,8 +183,9 @@ function PlaybookLibrary() {
                                         },
                                     }}>
                                         <Stack sx={{ width: '100%', justifyContent: 'space-between', alignItems: 'center' }} direction="row">
-                                            <Typography sx={{ cursor: 'pointer', width: '100%' }} onClick={() => navigate(`/playbook/${playbook.playbookId}`)} overflow="hidden" textOverflow="ellipsis" noWrap p={1} variant="h6">{playbook.playbookName}</Typography>
-
+                                            <Tooltip sx={{ alignContent: 'flex-end' }} title="View Plays">
+                                                <Typography sx={{ cursor: 'pointer', width: '100%' }} onClick={() => navigate(`/playbook/${playbook.playbookId}`)} overflow="hidden" textOverflow="ellipsis" noWrap p={1} variant="h6">{playbook.playbookName}</Typography>
+                                            </Tooltip>
                                             <Tooltip sx={{ alignContent: 'flex-end', }} title="Open Settings">
                                                 <IconButton onClick={(e) => handleOpenPlaybookMenu(e, playbook.playbookId)} sx={{ p: 0 }}>
                                                     <MoreVertIcon fontSize="large" sx={{ color: 'black' }} />
@@ -203,34 +202,37 @@ function PlaybookLibrary() {
                                             </Menu>
                                         </Stack>
                                     </Card>
-                                ))}
+                                ))
+                            )}
 
 
 
 
-                                <Card sx={{ width: '20%', margin: 2, backgroundColor: 'rgba(187, 187, 187, 0.27)' }}>
-                                    <Button sx={{
-                                        width: '100%', height: '100%', color: 'black', backgroundColor: 'darkgreen',
 
-                                        '&:hover': {
-                                            backgroundColor: 'lightgreen', // hover color
-                                        },
 
-                                        '&:active': {
-                                            backgroundColor: 'darkgreen', // click/pressed color
-                                        },
-                                        '& .MuiButton-label': {
-                                            color: 'black',
-                                        },
-                                    }} onClick={() => navigate("/playbook/create")}>Create New</Button>
-                                </Card>
-                            </Box>
-                        </Stack>
+                            <Card sx={{ width: '20%', margin: 2, backgroundColor: 'rgba(187, 187, 187, 0.27)' }}>
+                                <Button sx={{
+                                    width: '100%', height: '100%', color: 'black', backgroundColor: 'darkgreen',
 
-                    </Container>
-                </>
-            )
-        }
+                                    '&:hover': {
+                                        backgroundColor: 'lightgreen', // hover color
+                                    },
+
+                                    '&:active': {
+                                        backgroundColor: 'darkgreen', // click/pressed color
+                                    },
+                                    '& .MuiButton-label': {
+                                        color: 'black',
+                                    },
+                                }} onClick={() => navigate("/playbook/create")}>Create New</Button>
+                            </Card>
+                        </Box>
+                    </Stack>
+
+                </Container>
+            </>
+        )
+
     }
 }
 

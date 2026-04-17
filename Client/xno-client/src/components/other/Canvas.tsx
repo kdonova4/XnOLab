@@ -1,4 +1,9 @@
+import { Box, Fab, Slider, Stack } from "@mui/material";
 import { useRef, useEffect, useState, forwardRef, useImperativeHandle } from "react";
+import ModeIcon from '@mui/icons-material/Mode';
+import ClearIcon from '@mui/icons-material/Clear';
+import AutoFixNormalIcon from '@mui/icons-material/AutoFixNormal';
+import ReplayIcon from '@mui/icons-material/Replay';
 
 type CanvasHandle = {
     getImage: () => Promise<Blob | null>
@@ -22,10 +27,10 @@ const Canvas = forwardRef<CanvasHandle, CanvasProps>((props, ref) => {
         getImage: () => {
             return new Promise<Blob | null>((resolve) => {
                 const canvas = canvasRef.current;
-                if(!canvas) return resolve(null)
-                    canvas.toBlob((blob) => {
-                resolve(blob);
-            }, "image/png");
+                if (!canvas) return resolve(null)
+                canvas.toBlob((blob) => {
+                    resolve(blob);
+                }, "image/png");
             });
         },
     }));
@@ -40,7 +45,7 @@ const Canvas = forwardRef<CanvasHandle, CanvasProps>((props, ref) => {
         const ctx = canvas.getContext("2d");
         // 4. If no context, return
         if (!ctx) return;
-        if(props.imageUrl) {
+        if (props.imageUrl) {
             console.log("IMAGE URL IS" + props.imageUrl)
             const bg = new Image();
             bg.crossOrigin = "anonymous"
@@ -49,7 +54,7 @@ const Canvas = forwardRef<CanvasHandle, CanvasProps>((props, ref) => {
                 ctx.drawImage(bg, 0, 0, canvas.width, canvas.height)
             }
         } else {
-            ctx.fillStyle = "#1a7e01"; 
+            ctx.fillStyle = "#1a7e01";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
         // 5. Set drawing styles:
@@ -59,7 +64,7 @@ const Canvas = forwardRef<CanvasHandle, CanvasProps>((props, ref) => {
         ctx.lineCap = "round"
         //    - strokeStyle
         ctx.strokeStyle = "black"
-        
+
         console.log("Drawing")
     }, [props.imageUrl]);
 
@@ -170,7 +175,7 @@ const Canvas = forwardRef<CanvasHandle, CanvasProps>((props, ref) => {
         // 3. Clear entire canvas:
         //    ctx.clearRect(0, 0, canvas.width, canvas.height)
         setSnapshots(prevSnapshots => [...prevSnapshots, ctx.getImageData(0, 0, canvas.width, canvas.height)])
-        if(props.imageUrl) {
+        if (props.imageUrl) {
             console.log("IMAGE URL IS" + props.imageUrl)
             const bg = new Image();
             bg.crossOrigin = "anonymous"
@@ -179,7 +184,7 @@ const Canvas = forwardRef<CanvasHandle, CanvasProps>((props, ref) => {
                 ctx.drawImage(bg, 0, 0, canvas.width, canvas.height)
             }
         } else {
-            ctx.fillStyle = "#1a7e01"; 
+            ctx.fillStyle = "#1a7e01";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
         ctx.beginPath()
@@ -190,58 +195,168 @@ const Canvas = forwardRef<CanvasHandle, CanvasProps>((props, ref) => {
 
     return (
         <>
-            <canvas
-                ref={canvasRef}
-                width={600}
-                height={400}
-                style={{ border: "1px solid black" }}
+            <Box
+                sx={{
+                    position: 'relative',
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                }}
+            >
+                {/* CANVAS (true center) */}
+                <canvas
+                    ref={canvasRef}
+                    width={600}
+                    height={400}
+                    style={{ border: "1px solid black", cursor: 'crosshair' }}
+                    onMouseDown={handleMouseDown}
+                    onMouseMove={handleMouseMove}
+                    onMouseUp={handleMouseUp}
+                    onMouseLeave={handleMouseUp}
+                />
 
-                // 1. On mouse down → start drawing
-                onMouseDown={handleMouseDown}
+                {/* SIDE BUTTONS (do NOT affect layout) */}
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        right: 80,
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 2,
+                    }}
+                >
 
-                // 2. On mouse move → draw if active
-                onMouseMove={handleMouseMove}
+                    <Fab sx={{
+                        outline: '4px solid grey',
+                        backgroundColor: 'black',
+                        filter: drawColor === 'black' ? 'brightness(1.9)' : 'brightness(1)',
+                        color: 'black',
 
-                // 3. On mouse up → stop drawing
-                onMouseUp={handleMouseUp}
+                        '&:hover': {
+                            backgroundColor: 'black',
+                            filter: 'brightness(1.5)'
+                        },
 
-                // 4. If mouse leaves canvas → also stop drawing
-                onMouseLeave={handleMouseUp}
-            />
+                        '&:active': {
+                            backgroundColor: 'black',
+                            filter: 'brightness(1.9)'
+                        },
+                    }} size="small" onClick={() => setDrawColor('black')}></Fab>
+                    <Fab sx={{
+                        outline: '4px solid grey',
+                        backgroundColor: 'red',
+                        filter: drawColor === 'red' ? 'brightness(1.9)' : 'brightness(1)',
+                        color: 'black',
 
+                        '&:hover': {
+                            backgroundColor: 'red',
+                            filter: 'brightness(1.5)'
+                        },
+
+                        '&:active': {
+                            backgroundColor: 'red',
+                            filter: 'brightness(1.9)'
+                        },
+                    }} size="small" onClick={() => setDrawColor('red')}></Fab>
+                    <Fab sx={{
+                        outline: '4px solid grey',
+                        backgroundColor: 'blue',
+                        filter: drawColor === 'blue' ? 'brightness(1.9)' : 'brightness(1)',
+                        color: 'black',
+
+                        '&:hover': {
+                            backgroundColor: 'blue',
+                            filter: 'brightness(1.5)'
+                        },
+
+                        '&:active': {
+                            backgroundColor: 'blue',
+                            filter: 'brightness(1.9)'
+                        },
+                    }} size="small" onClick={() => setDrawColor('blue')}></Fab>
+                    <Fab sx={{
+                        outline: '4px solid grey',
+                        backgroundColor: 'white',
+                        filter: drawColor === 'white' ? 'brightness(1.9)' : 'brightness(1)',
+                        color: 'black',
+
+                        '&:hover': {
+                            backgroundColor: 'white',
+                            filter: 'brightness(1.5)'
+                        },
+
+                        '&:active': {
+                            backgroundColor: 'white',
+                            filter: 'brightness(1.9)'
+                        },
+                    }} size="small" onClick={() => setDrawColor('white')}></Fab>
+                    <Fab size="small" onClick={() => setDrawColor("#1a7e01")} sx={{
+                        outline: '4px solid grey', '&:hover': {
+                            backgroundColor: 'white',
+                            filter: 'brightness(1.5)'
+                        },
+                        filter: drawColor === '#1a7e01' ? 'brightness(1.9)' : 'brightness(1)',
+
+                        '&:active': {
+                            backgroundColor: 'white',
+                            filter: 'brightness(1.9)'
+                        },
+                    }}><AutoFixNormalIcon /></Fab>
+
+                </Box>
+            </Box>
+
+            <Box mt={1} display='flex' justifyContent='center'>
+                <Stack direction="row" gap={10}>
+                    <Stack spacing={3} direction="row" sx={{ alignItems: 'center', mb: 1 }}>
+                        <ModeIcon />
+                        <Slider sx={{
+                            width: 100,
+                            color: 'green', // base track color
+
+                            // THUMB (the circle)
+                            '& .MuiSlider-thumb': {
+                                backgroundColor: 'green',
+                            },
+
+                            // HOVER on thumb
+                            '& .MuiSlider-thumb:hover': {
+                                boxShadow: '0 0 0 8px rgba(0, 128, 0, 0.2)',
+                            },
+
+                            // ACTIVE / CLICKED (while dragging or pressing)
+                            '& .MuiSlider-thumb.Mui-active': {
+                                boxShadow: '0 0 0 12px rgba(0, 128, 0, 0.3)',
+                            },
+
+                            // FOCUS (keyboard click / accessibility)
+                            '& .MuiSlider-thumb.Mui-focusVisible': {
+                                boxShadow: '0 0 0 8px rgba(0, 128, 0, 0.25)',
+                            },
+
+                            // TRACK (left side of slider)
+                            '& .MuiSlider-track': {
+                                backgroundColor: 'green',
+                            },
+
+                            // RAIL (background line)
+                            '& .MuiSlider-rail': {
+                                opacity: 0.3,
+                                backgroundColor: 'darkgreen',
+                            },
+                        }} aria-label="Volume" value={drawSize} onChange={(_e, val) => setDrawSize(val)} defaultValue={drawSize} max={20} min={3} />
+                        <ModeIcon fontSize="large" />
+                    </Stack>
+                    <Fab size="small" onClick={handleClear}><ClearIcon /></Fab>
+                    <Fab size="small" onClick={handleUndo}><ReplayIcon /></Fab>
+                </Stack>
+            </Box>
             <br />
-            <select
-                id="drawColor"
-                name="drawColorChange"
-                value={drawColor ?? ""}
-                onChange={(e) => setDrawColor(e.target.value)}
-            >
-                <option value={"rgb(0, 0, 0)"}>Black</option>
-                <option value={"rgb(255, 0, 0)"}>Red</option>
-                <option value={"rgb(0, 4, 255)"}>Blue</option>
-                <option value={"rgb(255, 255, 255)"}>White</option>
-                <option value={"#1a7e01"}>Eraser</option>
-
-            </select>
-
-            <select
-                id="drawSize"
-                name="drawSizeChange"
-                value={drawSize ?? ""}
-                onChange={(e) => setDrawSize(Number(e.target.value))}
-            >
-                <option>3</option>
-                <option>5</option>
-                <option>8</option>
-                <option>12</option>
-                <option>15</option>
 
 
-            </select>
 
-            {/* Button to clear the canvas */}
-            <button onClick={handleClear}>Clear</button>
-            <button onClick={handleUndo}>Undo</button>
         </>
     );
 })
