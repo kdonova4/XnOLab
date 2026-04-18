@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { SignUpRequest } from "../../types/Auth/SignUpRequest";
 import { enqueueSnackbar } from "notistack";
 import { register } from "../../api/AuthAPI";
-import { Box, Button, Card, Container, Divider, FormControl, IconButton, InputAdornment, InputLabel, Link, OutlinedInput, Stack, TextField, Typography } from "@mui/material";
+import { Box, Card, Container, Divider, FormControl, IconButton, InputAdornment, InputLabel, Link, OutlinedInput, Stack, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
@@ -55,7 +55,7 @@ function RegisterPage() {
 
     return (
         <>
-        <Container className="container">
+            <Container className="container">
                 <Box sx={{
                     display: 'flex',
                     justifyContent: 'center',
@@ -74,7 +74,7 @@ function RegisterPage() {
 
                             </Stack>
                         </Box>
-                        <Divider sx={{ borderColor: 'gray'}} />
+                        <Divider sx={{ borderColor: 'gray' }} />
 
                         <Box
                             component="form"
@@ -221,37 +221,37 @@ function RegisterPage() {
                                 </FormControl>
 
 
-                                
 
-                                
 
-<LoadingButton
-  type="submit"
-  variant="contained"
-  loading={loading}
-  sx={{
-    backgroundColor: "green",
-    color: "white",
 
-    "&:hover": {
-      backgroundColor: "darkgreen",
-    },
 
-    // keep button visible in loading state
-    "&.Mui-disabled": {
-      backgroundColor: "darkgreen",
-      color: "transparent",   // 👈 hides text completely
-      opacity: .7,
-    },
+                                <LoadingButton
+                                    type="submit"
+                                    variant="contained"
+                                    loading={loading}
+                                    sx={{
+                                        backgroundColor: "green",
+                                        color: "white",
 
-    // hide label completely
-    "& .MuiLoadingButton-label": {
-      visibility: loading ? "hidden" : "visible",
-    },
-  }}
->
-  Sign-up
-</LoadingButton>
+                                        "&:hover": {
+                                            backgroundColor: "darkgreen",
+                                        },
+
+                                        // keep button visible in loading state
+                                        "&.Mui-disabled": {
+                                            backgroundColor: "darkgreen",
+                                            color: "transparent",   // 👈 hides text completely
+                                            opacity: .7,
+                                        },
+
+                                        // hide label completely
+                                        "& .MuiLoadingButton-label": {
+                                            visibility: loading ? "hidden" : "visible",
+                                        },
+                                    }}
+                                >
+                                    Sign-up
+                                </LoadingButton>
 
                                 <Typography sx={{ color: 'white' }}>
                                     Or <Link href="/login">Login</Link>
@@ -266,8 +266,8 @@ function RegisterPage() {
 
 
 
-            
-            
+
+
         </>
     )
 }

@@ -3,7 +3,7 @@ import { deleteFormation, getAllFormationsByUser } from "../../api/FormationAPI"
 import { enqueueSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { alpha, Box, Button, Card, CardMedia, Container, Fab, IconButton, InputBase, Menu, MenuItem, Stack, styled, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Card, CardMedia, Container, Fab, IconButton, Menu, MenuItem, Stack, Tooltip, Typography } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AddIcon from '@mui/icons-material/Add';
@@ -153,7 +153,12 @@ function FormationLibrary() {
                                                     <MoreVertIcon fontSize="large" sx={{ color: 'black' }} />
                                                 </IconButton>
                                             </Tooltip>
-                                            <Menu
+                                            
+                                        </Stack>
+                                    </Card>
+                                ))
+                                )}
+                                <Menu
                                                 anchorEl={anchorElFormation}
                                                 open={Boolean(anchorElFormation)}
                                                 onClose={handleCloseFormationMenu}
@@ -162,11 +167,6 @@ function FormationLibrary() {
                                                 <MenuItem onClick={() => handleEdit(selectedFormationId!!)}>Edit</MenuItem>
                                                 <MenuItem onClick={() => handleDelete(selectedFormationId!!)}>Delete</MenuItem>
                                             </Menu>
-                                        </Stack>
-                                    </Card>
-                                ))
-                                )}
-                                
                                 
 
 
@@ -193,29 +193,7 @@ function FormationLibrary() {
 
                     </Container>
                 
-                <Container className="container">
-<div>
-                    <input
-                        name="searchQuery"
-                        type="text"
-                        placeholder="Formation Name"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        required
-                    />
-                </div>
-                    <div>
-                        {filteredFormations.map((formation) => (
-                            <div key={formation.formationId}>
-                                <li>{formation.formationName}</li>
-                                <img src={formation.formationImageUrl}></img>
-                                <button onClick={() => navigate(`/formation/edit/${formation.formationId}`)}>Edit</button>
-                                <button onClick={() => handleDelete(formation.formationId)}>Delete</button>
-                            </div>
-
-                        ))}
-                    </div>
-                </Container>
+                
                 
                 </>
             )

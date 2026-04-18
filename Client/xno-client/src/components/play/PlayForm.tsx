@@ -11,7 +11,7 @@ import type { UpdatePlayInput } from "../../types/Update/UpdatePlayInput";
 import { getAllFormationsByUser } from "../../api/FormationAPI";
 import type { FormationResponse } from "../../types/Response/FormationResponse";
 import Canvas from "../other/Canvas";
-import { Box, Button, Container, FormControl, InputLabel, MenuItem, Select, Stack, TextField } from "@mui/material";
+import { Backdrop, Box, Button, CircularProgress, Container, FormControl, InputLabel, MenuItem, Select, Stack, TextField } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 
 const PLAY_DEFAULT: Play = {
@@ -44,6 +44,7 @@ function PlayForm() {
     const [imageUrl, setImageUrl] = useState<string>("");
     const [formations, setFormations] = useState<FormationResponse[]>([])
     const [updatingImage, setUpdatingImage] = useState(false);
+    const [loading, setLoading] = useState(true);
     const { playbookId, playId } = useParams();
     const navigate = useNavigate();
 
@@ -118,12 +119,15 @@ function PlayForm() {
                 }
             } else {
                 try {
+                    setLoading(true)
                     const response = await getAllFormationsByUser();
                     setFormations(response);
                 } catch (error) {
                     const message = error instanceof Error ? error.message : "Something went wrong"
                     enqueueSnackbar(message, { variant: "error" })
-
+                    navigate(`/playbook/${playbookId}`)
+                } finally {
+                    setLoading(false);
                 }
             }
         };
@@ -131,18 +135,16 @@ function PlayForm() {
         loadDefaultImage();
     }, [playId]);
 
-
+    useEffect(() => {
+        console.log(loading)
+    }, [loading])
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPlay({
             ...play, [event.target.name]: event.target.value
         });
     }
-    const handleTextAreaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setPlay({
-            ...play, [event.target.name]: event.target.value
-        });
-    }
+
 
     const handleCreate = async () => {
         if (!canvasRef.current) {
@@ -155,7 +157,7 @@ function PlayForm() {
             return
         };
         if (!image) {
-            enqueueSnackbar("Please Create The Play", { variant: "warning" })
+            enqueueSnackbar("Please Select The Formation", { variant: "error" })
             return;
         }
 
@@ -215,7 +217,7 @@ function PlayForm() {
             ...play, formationId: formationId
         });
         const currentForm = formations.find((form) => form.formationId === formationId);
-        if(!currentForm) return;
+        if (!currentForm) return;
         setFormationImageUrl(currentForm.formationImageUrl)
     }
 
@@ -231,46 +233,66 @@ function PlayForm() {
         return (
             <>
                 <Container className="container">
-                    {!updatingImage && (
-                        <button onClick={handleNewImage}>Create New Image</button>
-                    )}
-
-                    {updatingImage && (
-                        <div>
-                            <Canvas ref={canvasRef} imageUrl={formationImageUrl} />
-                            <button onClick={handleCancel}>Cancel</button>
-                        </div>
-
-
-                    )}
-                    <div>
-                        <input
-                            name="playName"
-                            type="text"
-                            value={play.playName}
-                            onChange={handleChange}
-                            required
-                        />
-                        <textarea
-                            name="playNotes"
-                            value={play.playNotes}
-                            onChange={handleTextAreaChange}
-                            required
-                        />
-                        <img src={imageUrl} />
-                        <button onClick={handleUpdate} disabled={isPending}>{isPending ? "Updating..." : "Update Play"}</button>
-
-                    </div>
-                </Container>
-
-            </>
-        )
-    } else {
-        return (
-            <>
-                <Container className="container">
                     <Box sx={style}>
-                        <Canvas ref={canvasRef} imageUrl={formationImageUrl} />
+                        {updatingImage && (
+                            <Box display='flex' justifyContent='center' flexDirection='column' alignItems='center'>
+                                <Canvas ref={canvasRef} imageUrl={formationImageUrl} />
+                                <Button sx={{
+                                    m: 1,
+                                    backgroundColor: 'green',
+                                    color: 'black',
+                                    width: '50%',
+                                    '&:hover': {
+                                        backgroundColor: 'lightgreen', // hover color
+                                    },
+
+                                    '&:active': {
+                                        backgroundColor: 'darkgreen', // click/pressed color
+                                    },
+                                }} variant="contained" onClick={handleCancel}>Cancel</Button>
+                            </Box>
+
+                        )}
+                        {!updatingImage && (
+                            <Box display='flex' justifyContent='center'>
+
+                                <Box
+                                    sx={{
+                                        position: 'relative',
+                                        '&:hover .overlay': {
+                                            opacity: 1,
+                                        },
+                                    }}
+                                >
+                                    <img
+                                        src={imageUrl}
+                                        style={{ display: 'block', width: '100%' }}
+                                    />
+
+                                    <Button
+                                        className="overlay"
+                                        sx={{
+                                            position: 'absolute',
+                                            inset: 0,
+                                            color: 'white',
+                                            borderRadius: 0,
+                                            opacity: 0,
+                                            transition: 'opacity 0.3s ease',
+                                            backgroundColor: 'rgba(0,0,0,0.4)',
+
+                                            '&:hover': {
+                                                backgroundColor: 'rgba(0,0,0,0.6)',
+                                            },
+                                        }}
+                                        onClick={handleNewImage}
+                                    >
+                                        Create New Image
+                                    </Button>
+                                </Box>
+
+                            </Box>
+
+                        )}
                         <div>
                             <h1>Play Details</h1>
                             <Stack direction="column" gap={2} p={2}>
@@ -346,6 +368,139 @@ function PlayForm() {
                                         onChange={handleChange}
                                     />
                                 </FormControl>
+                            </Stack>
+                        </div>
+                        <Box display='flex' justifyContent='center'>
+
+
+                            <LoadingButton
+                                variant="contained"
+                                type="submit"
+                                onClick={handleUpdate}
+                                loading={isPending}
+                                sx={{
+                                    backgroundColor: "green",
+                                    color: "black",
+
+                                    "&:hover": {
+                                        backgroundColor: "darkgreen",
+                                    },
+
+                                    // keep button visible in loading state
+                                    "&.Mui-disabled": {
+                                        backgroundColor: "darkgreen",
+                                        color: "transparent",   // 👈 hides text completely
+                                        opacity: .7,
+                                    },
+
+                                    // hide label completely
+                                    "& .MuiLoadingButton-label": {
+                                        visibility: isPending ? "hidden" : "visible",
+                                    },
+                                }}
+                            >
+                                Update
+                            </LoadingButton>
+
+                        </Box>
+                    </Box>
+                </Container>
+
+
+            </>
+        )
+    } else {
+        return (
+            <>
+            {loading && (
+<div>
+                <Backdrop
+                    sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+                    open={true}
+                    >
+                    <CircularProgress color="inherit"/>
+                    </Backdrop>
+            </div>
+            )}
+            
+                <Container className="container">
+                    <Box sx={style}>
+                        <Canvas ref={canvasRef} imageUrl={formationImageUrl} />
+                        <div>
+                            <h1>Play Details</h1>
+                            <Stack direction="column" gap={2} p={2}>
+                                <FormControl sx={{ m: 1, width: '35ch', color: 'white' }} variant="outlined">
+                                    <TextField
+                                        slotProps={{
+                                            inputLabel: {
+                                                sx: {
+                                                    color: "white",
+                                                    "&.Mui-focused": {
+                                                        color: "white",
+                                                    },
+                                                },
+                                            },
+                                        }}
+                                        sx={{
+                                            "& .MuiOutlinedInput-root": {
+                                                "& fieldset": {
+                                                    borderColor: "green",
+                                                },
+                                                "&:hover fieldset": {
+                                                    borderColor: "lightgreen",
+                                                },
+                                                "&.Mui-focused fieldset": {
+                                                    borderColor: "lightgreen",
+                                                },
+                                            },
+                                            "& .MuiInputBase-input": {
+                                                color: "white",
+                                            },
+                                        }}
+                                        id="playName-input"
+                                        label="Play Name"
+                                        name="playName"
+                                        value={play.playName}
+                                        onChange={handleChange}
+                                    />
+                                </FormControl>
+                                <FormControl sx={{ m: 1, width: '35ch', color: 'white' }} variant="outlined">
+                                    <TextField
+                                        slotProps={{
+                                            inputLabel: {
+                                                sx: {
+                                                    color: "white",
+                                                    "&.Mui-focused": {
+                                                        color: "white",
+                                                    },
+                                                },
+                                            },
+                                        }}
+                                        sx={{
+                                            "& .MuiOutlinedInput-root": {
+                                                "& fieldset": {
+                                                    borderColor: "green",
+                                                },
+                                                "&:hover fieldset": {
+                                                    borderColor: "lightgreen",
+                                                },
+                                                "&.Mui-focused fieldset": {
+                                                    borderColor: "lightgreen",
+                                                },
+                                            },
+                                            "& .MuiInputBase-input": {
+                                                color: "white",
+                                            },
+                                        }}
+                                        id="playNotes-input"
+                                        label="Play Notes"
+                                        name="playNotes"
+                                        multiline
+                                        maxRows={8}
+                                        value={play.playNotes}
+                                        onChange={handleChange}
+                                    />
+                                </FormControl>
                                 <FormControl variant="standard" sx={{
                                     maxWidth: 250,
                                     m: 1,
@@ -379,11 +534,11 @@ function PlayForm() {
                                         onChange={(e) => handleFormationChange(e.target.value)}
                                         label="Filter By Formation"
                                         sx={{
-                                                    color: 'white', // selected value text
-                                                    '& .MuiSvgIcon-root': {
-                                                        color: 'white', // dropdown arrow
-                                                    },
-                                                }}
+                                            color: 'white', // selected value text
+                                            '& .MuiSvgIcon-root': {
+                                                color: 'white', // dropdown arrow
+                                            },
+                                        }}
                                     >
                                         <MenuItem value={0}>
                                             None
@@ -397,8 +552,8 @@ function PlayForm() {
                             </Stack>
 
                             <Box display='flex' justifyContent='center'>
-                                
-                                
+
+
                                 <LoadingButton
                                     variant="contained"
                                     type="submit"
@@ -427,9 +582,9 @@ function PlayForm() {
                                 >
                                     Create
                                 </LoadingButton>
-                                
+
                             </Box>
-                            
+
 
                         </div>
                     </Box>

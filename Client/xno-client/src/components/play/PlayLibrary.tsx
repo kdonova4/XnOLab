@@ -268,42 +268,7 @@ function PlayLibrary({ playbookId }: PlayLibraryProps) {
                             </Box>
                         </Stack>
                     </Container>
-                    <div className="mt-60">
-                        <input
-                            name="searchQuery"
-                            type="text"
-                            placeholder="Play Name"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            required
-                        />
-                        <select
-                            id="formationFilter"
-                            name="formation"
-                            value={selectedFormationId ?? ""}
-                            onChange={(e) => setSelectedFormationId(Number(e.target.value))}
-                        >
-                            <option value={0}>None</option>
-                            {formationsQuery.data.map((formation) => (
-                                <option key={formation.formationId} value={formation.formationId}>{formation.formationName}</option>
-                            ))}
-                        </select>
-                    </div>
-                    <div>
-                        {filteredPlays.map((play) => (
-                            <div key={play.playId}>
-                                <p onClick={() => handlePlayOpen(play)}>Name: {play.playName}</p>
-                                {play.playNotes && (
-                                    <p>Notes: {play.playNotes}</p>
-                                )}
-
-                                <img src={play.playImageUrl} />
-                                <p onClick={() => handleFormationOpen(play.formationResponse)}>{play.formationResponse.formationName}</p>
-                                <button onClick={() => navigate(`/play/edit/${play.playId}`)}>Edit</button>
-                                <button onClick={() => handleDelete(play.playId)}>Delete</button>
-                            </div>
-                        ))}
-                    </div>
+                    
                     <Modal
                         open={formationViewOpen}
                         onClose={handleFormationClose}

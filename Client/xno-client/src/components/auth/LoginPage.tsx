@@ -2,8 +2,7 @@ import { useState } from "react";
 import type { LoginRequest } from "../../types/Auth/LoginRequest";
 import { useAuth } from "../hooks/AuthContext";
 import { enqueueSnackbar } from "notistack";
-import { useNavigate } from "react-router-dom";
-import { Box, Button, Card, Container, Divider, FormControl, IconButton, InputAdornment, InputLabel, Link, OutlinedInput, Stack, TextField, Typography } from "@mui/material";
+import { Box, Card, Container, Divider, FormControl, IconButton, InputAdornment, InputLabel, Link, OutlinedInput, Stack, TextField, Typography } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 
@@ -15,7 +14,6 @@ function LoginPage() {
     })
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
 
     const { loginUser } = useAuth();
 
