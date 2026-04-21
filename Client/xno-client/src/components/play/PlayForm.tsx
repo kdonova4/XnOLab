@@ -35,7 +35,13 @@ const style = {
     p: 4,
 };
 
-function PlayForm() {
+type PlayFormProps = {
+    handlePlayFormClose: () => void;
+    playId: number | undefined;
+    playbookId: number
+}
+
+function PlayForm({ handlePlayFormClose, playId, playbookId }: PlayFormProps) {
 
     const [selectedFormationId, setSelectedFormationId] = useState<number>(0);
     const [formationImageUrl, setFormationImageUrl] = useState<string>("");
@@ -45,7 +51,7 @@ function PlayForm() {
     const [formations, setFormations] = useState<FormationResponse[]>([])
     const [updatingImage, setUpdatingImage] = useState(false);
     const [loading, setLoading] = useState(true);
-    const { playbookId, playId } = useParams();
+    const [detailsLoading, setDetailsLoading] = useState(true);
     const navigate = useNavigate();
 
     const canvasRef = useRef<{ getImage: () => Promise<Blob | null> }>(null);
@@ -57,7 +63,7 @@ function PlayForm() {
             queryClient.invalidateQueries({ queryKey: ["plays"] })
             enqueueSnackbar(`${variables.play.playName} Play Created`, { variant: "success" });
             setPlay(PLAY_DEFAULT);
-            navigate(`/playbook/${playbookId}`)
+            handlePlayFormClose();
         },
         onError: (error) => {
             const message = error instanceof Error ? error.message : "Something went wrong"
@@ -70,6 +76,7 @@ function PlayForm() {
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ["plays"] })
             enqueueSnackbar(`${variables.play.playName} Play Updated`, { variant: "success" });
+            handlePlayFormClose();
         },
         onError: (error) => {
             const message = error instanceof Error ? error.message : "Something went wrong"
@@ -96,7 +103,7 @@ function PlayForm() {
             })
             if (playId) {
                 try {
-                    const response = await getPlayById(Number(playId));
+                    const response = await getPlayById(playId);
                     const existingPlay: Play = {
                         playId: response.playId,
                         playName: response.playName,
@@ -116,6 +123,8 @@ function PlayForm() {
                     const message = error instanceof Error ? error.message : "Something went wrong"
                     enqueueSnackbar(message, { variant: "error" })
                     navigate("/");
+                } finally {
+                    setDetailsLoading(false);
                 }
             } else {
                 try {
@@ -232,6 +241,16 @@ function PlayForm() {
     if (playId) {
         return (
             <>
+            {detailsLoading && (
+<div>
+                <Backdrop
+                    sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+                    open={true}
+                    >
+                    <CircularProgress color="inherit"/>
+                    </Backdrop>
+            </div>
+            )}
                 <Container className="container">
                     <Box sx={style}>
                         {updatingImage && (

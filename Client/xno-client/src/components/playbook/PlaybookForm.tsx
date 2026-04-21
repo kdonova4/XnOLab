@@ -27,10 +27,15 @@ const style = {
     p: 4,
 };
 
-function PlaybookForm() {
+type PlaybookFormProps = {
+    handlePlaybookFormClose: () => void;
+    playbookId: number | null;
+}
+
+function PlaybookForm({ handlePlaybookFormClose, playbookId }: PlaybookFormProps) {
 
     const [playbook, setPlaybook] = useState<Playbook>(PLAYBOOK_DEFAULT)
-    const { id } = useParams();
+
     const navigate = useNavigate();
 
     const queryClient = useQueryClient();
@@ -41,6 +46,7 @@ function PlaybookForm() {
             queryClient.invalidateQueries({ queryKey: ["playbooks"] })
             enqueueSnackbar(`${variables.playbookName} Playbook Created`, { variant: "success" });
             setPlaybook(PLAYBOOK_DEFAULT);
+            handlePlaybookFormClose();
         },
         onError: (error) => {
             const message = error instanceof Error ? error.message : "Something went wrong"
@@ -53,6 +59,7 @@ function PlaybookForm() {
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ["playbooks"] })
             enqueueSnackbar(`${variables.playbookName} Playbook Updated`, { variant: "success" });
+            handlePlaybookFormClose();
         },
         onError: (error) => {
             const message = error instanceof Error ? error.message : "Something went wrong"
@@ -66,9 +73,10 @@ function PlaybookForm() {
 
     useEffect(() => {
         const fetchPlaybook = async () => {
-            if (id) {
+            if (playbookId) {
                 try {
-                    const response = await getPlaybookSummaryById(Number(id));
+                    console.log("FETCHING")
+                    const response = await getPlaybookSummaryById(playbookId);
                     const existingPlaybook: Playbook = {
                         playbookId: response.playbookId,
                         playbookName: response.playbookName
@@ -83,7 +91,7 @@ function PlaybookForm() {
         }
 
         fetchPlaybook();
-    }, [id]);
+    }, [playbookId]);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPlaybook({
@@ -115,14 +123,14 @@ function PlaybookForm() {
         updateMutation.mutate(updateRequest);
     }
 
-    if (id) {
+    if (playbookId) {
         return (
             <>
                 <Container className="container">
                     <Box sx={style} display='flex' alignItems='center' flexDirection='column'>
 
                         <div>
-                            <h1 style={{ textAlign: 'center' }}>Create Playbook</h1>
+                            <h1 style={{ textAlign: 'center' }}>Update Playbook</h1>
                             <FormControl sx={{ m: 1, width: '35ch', color: 'white' }} variant="outlined">
                                 <TextField
                                     slotProps={{

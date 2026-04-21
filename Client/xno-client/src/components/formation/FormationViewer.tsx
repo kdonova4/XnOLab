@@ -11,7 +11,7 @@ const style = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 400,
-    bgcolor: 'background.paper',
+    bgcolor: '#181a1b',
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
@@ -25,7 +25,7 @@ function FormationViewer({ formation }: FormationViewerProps) {
         return (
             <>
                 <Box sx={style}>
-                    <Typography color="black" id="modal-modal-title" variant="h6" component="h2">
+                    <Typography p={1} id="modal-modal-title" variant="h6" component="h2">
                         {formation.formationName}
                     </Typography>
                     <Stack>

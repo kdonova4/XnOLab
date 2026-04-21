@@ -89,6 +89,7 @@ public class AuthController {
     @PostMapping("/sign-out")
     public ResponseEntity<?> signOutUser() {
         ResponseCookie cookie = appUserService.signOut();
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(new MessageResponse("Successfully Signed Out"));
+        return ResponseEntity.ok().header("Clear-Site-Data", "\"cookies\"")
+         .body(new MessageResponse("Successfully Signed Out"));
     }
 }

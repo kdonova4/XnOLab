@@ -8,6 +8,7 @@ import { Container, Fab, Modal, Stack, Tooltip } from "@mui/material";
 import PlayCopyForm from "../play/PlayCopyForm";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
+
 function PlaybookViewer() {
 
     const { playbookId } = useParams();
@@ -19,6 +20,7 @@ function PlaybookViewer() {
         queryFn: () => getPlaybookSummaryById(Number(playbookId)),
         retry: false
     })
+    
 
     const playbookQuery = useQuery({
         queryKey: ["playbooks"],
@@ -48,6 +50,8 @@ function PlaybookViewer() {
     const handleClose = () => {
         setOpen(false);
     }
+
+    
 
     if (isSuccess) {
         if (!data) {
@@ -105,6 +109,7 @@ function PlaybookViewer() {
                             aria-describedby="modal-modal-description">
                             <PlayCopyForm playbookId={Number(playbookId)} handleClose={handleClose} />
                         </Modal>
+                        
                     </Container>
 
                 </>

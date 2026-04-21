@@ -3,6 +3,7 @@ import type { LoginRequest } from "../../types/Auth/LoginRequest";
 import type { UserInfoResponse } from "../../types/Auth/UserInfoResponse";
 import { useNavigate } from "react-router-dom";
 import { getUserDetails, login, logout } from "../../api/AuthAPI";
+import { enqueueSnackbar } from "notistack";
 
 interface AuthContextType {
     appUser: UserInfoResponse | null;
@@ -26,18 +27,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const navigate = useNavigate();
 
     const refreshUser = async () => {
-        try {
-            const user = await getUserDetails();
-            setAppUser(user)
-            setIsAuthenticated(true)
-        } catch {
-            setAppUser(null);
-            
-            setIsAuthenticated(false)
-        } finally {
-            setLoading(false);
-        }
-    };
+    try {
+        const user = await getUserDetails();
+        setAppUser(user);
+        setIsAuthenticated(true);
+    } catch {
+        setAppUser(null);
+        setIsAuthenticated(false);
+    } finally {
+        setLoading(false);
+    }
+};
 
     const loginUser = async (credentials: LoginRequest) => {
         const user = await login(credentials);
@@ -47,16 +47,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
 
     const logoutUser = async () => {
-        try {
-         await logout();
-        } catch {
-            
-        } finally {
-            setAppUser(null);
-            setIsAuthenticated(false)
-            navigate("/");
-        }
+    try {
+        const data = await logout();
+        enqueueSnackbar(data.message, { variant: "success" });
+
+        setAppUser(null);
+        setIsAuthenticated(false);
+
+        // optional: prevents immediate re-fetch flicker
+        await new Promise(res => setTimeout(res, 50));
+
+        navigate("/");
+    } catch {
+        setAppUser(null);
+        setIsAuthenticated(false);
+        navigate("/");
     }
+};
 
     useEffect(() => {
         refreshUser();

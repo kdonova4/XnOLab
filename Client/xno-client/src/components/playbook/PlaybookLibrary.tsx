@@ -3,10 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { deletePlaybook, getPlaybooksByUser } from "../../api/PlaybookAPI";
 import { enqueueSnackbar } from "notistack";
 import { useEffect, useMemo, useState } from "react";
-import { alpha, Box, Button, Card, Container, Fab, IconButton, InputBase, Menu, MenuItem, Stack, styled, Tooltip, Typography } from "@mui/material";
+import { alpha, Box, Button, Card, Container, Fab, IconButton, InputBase, Menu, MenuItem, Modal, Stack, styled, Tooltip, Typography } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AddIcon from '@mui/icons-material/Add';
+import PlaybookForm from "./PlaybookForm";
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -64,6 +65,20 @@ function PlaybookLibrary() {
 
     const [anchorElPlaybook, setAnchorElPlaybook] = useState<null | HTMLElement>(null);
     const [selectedPlaybookId, setSelectedPlaybookId] = useState<null | number>(null);
+
+    const [playbookFormOpen, setPlaybookFormOpen] = useState(false);
+
+    const handlePlaybookFormOpen = () => {
+        setPlaybookFormOpen(true)
+    }
+    
+    const handlePlaybookFormClose = () => {
+        setPlaybookFormOpen(false)
+        setSelectedPlaybookId(null);
+    }
+
+
+
     const handleOpenPlaybookMenu = (event: React.MouseEvent<HTMLElement>, playbookId: number) => {
         setAnchorElPlaybook(event.currentTarget);
         setSelectedPlaybookId(playbookId);
@@ -71,12 +86,11 @@ function PlaybookLibrary() {
 
     const handleClosePlaybookmenu = () => {
         setAnchorElPlaybook(null);
-        setSelectedPlaybookId(null);
     }
 
-    const handleEdit = (playbookId: number) => {
+    const handleEdit = () => {
         handleClosePlaybookmenu();
-        navigate(`/playbook/edit/${playbookId}`)
+        handlePlaybookFormOpen();
     }
 
 
@@ -114,7 +128,8 @@ function PlaybookLibrary() {
             if (confirmed) {
                 mutate(playbookId)
             }
-            handleClosePlaybookmenu()
+            handleClosePlaybookmenu();
+            setSelectedPlaybookId(null)
         } catch (error) {
             const message = error instanceof Error ? error.message : "Something went wrong"
             enqueueSnackbar(message, { variant: "success" });
@@ -167,7 +182,7 @@ function PlaybookLibrary() {
                                             backgroundColor: 'darkgreen', // click/pressed color
                                         },
                                     }}
-                                    onClick={() => navigate("/playbook/create")}>
+                                    onClick={handlePlaybookFormOpen}>
                                     <AddIcon sx={{ mr: 1 }} />
                                     Create New
                                 </Fab>
@@ -197,7 +212,7 @@ function PlaybookLibrary() {
                                                 onClose={handleClosePlaybookmenu}
                                                 disableScrollLock={true}
                                             >
-                                                <MenuItem onClick={() => handleEdit(selectedPlaybookId!!)}>Edit</MenuItem>
+                                                <MenuItem onClick={handleEdit}>Edit</MenuItem>
                                                 <MenuItem onClick={() => handleDelete(selectedPlaybookId!!)}>Delete</MenuItem>
                                             </Menu>
                                         </Stack>
@@ -224,10 +239,18 @@ function PlaybookLibrary() {
                                     '& .MuiButton-label': {
                                         color: 'black',
                                     },
-                                }} onClick={() => navigate("/playbook/create")}>Create New</Button>
+                                }} onClick={handlePlaybookFormOpen}>Create New</Button>
                             </Card>
                         </Box>
                     </Stack>
+
+                    <Modal
+                            open={playbookFormOpen}
+                            onClose={handlePlaybookFormClose}
+                            aria-labelledby="modal-modal-title"
+                            aria-describedby="modal-modal-description">
+                                <PlaybookForm handlePlaybookFormClose={handlePlaybookFormClose} playbookId={selectedPlaybookId}/>
+                            </Modal>
 
                 </Container>
             </>

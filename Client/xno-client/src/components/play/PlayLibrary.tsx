@@ -13,6 +13,7 @@ import { Search, SearchIconWrapper, StyledInputBase } from "../other/MUISearchLi
 import SearchIcon from '@mui/icons-material/Search';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AddIcon from '@mui/icons-material/Add';
+import PlayForm from "./PlayForm";
 
 type PlayLibraryProps = {
     playbookId: number
@@ -28,6 +29,7 @@ function PlayLibrary({ playbookId }: PlayLibraryProps) {
     const [selectedPlay, setSelectedPlay] = useState<PlayResponse | null>(null);
     const [selectedFormationId, setSelectedFormationId] = useState<number | null>(null)
     const [searchQuery, setSearchQuery] = useState<string>("")
+    const [openPlayForm, setOpenPlayForm] = useState(false);
 
     const [anchorElPlay, setAnchorElPlay] = useState<null | HTMLElement>(null);
     const handleOpenPlayMenu = (event: React.MouseEvent<HTMLElement>, play: PlayResponse) => {
@@ -37,14 +39,22 @@ function PlayLibrary({ playbookId }: PlayLibraryProps) {
 
     const handleClosePlayMenu = () => {
         setAnchorElPlay(null);
+        
+    }
+
+    const handleEdit = () => {
+        handleClosePlayMenu();
+        handleOpenPlayForm();
+    }
+
+    const handleOpenPlayForm = () => {
+        setOpenPlayForm(true);
+    }
+
+    const handleClosePlayForm = () => {
+        setOpenPlayForm(false);
         setSelectedPlay(null);
     }
-
-    const handleEdit = (playId: number) => {
-        handleClosePlayMenu();
-        navigate(`/play/edit/${playId}`)
-    }
-
 
     const { data, error, isSuccess } = useQuery({
         queryKey: ["plays", playbookId],
@@ -62,6 +72,7 @@ function PlayLibrary({ playbookId }: PlayLibraryProps) {
         onSuccess: (_, deletedId) => {
             queryClient.invalidateQueries({ queryKey: ["plays", playbookId] })
             enqueueSnackbar(`Play With ID ${deletedId} Successfully Deleted`, { variant: "success" })
+            setSelectedPlay(null);
         }
     })
 
@@ -93,6 +104,7 @@ function PlayLibrary({ playbookId }: PlayLibraryProps) {
             const confirm = window.confirm("Are you sure?")
             if (confirm) mutate(playId);
             handleClosePlayMenu();
+            setSelectedPlay(null)
         } catch (error) {
             const message = error instanceof Error ? error.message : "Something went wrong"
             enqueueSnackbar(message, { variant: "error" })
@@ -115,6 +127,7 @@ function PlayLibrary({ playbookId }: PlayLibraryProps) {
 
     const handlePlayClose = () => {
         setPlayViewOpen(false)
+        setSelectedPlay(null);
     }
 
     if (isSuccess) {
@@ -205,7 +218,7 @@ function PlayLibrary({ playbookId }: PlayLibraryProps) {
                                                 backgroundColor: 'darkgreen', // click/pressed color
                                             },
                                         }}
-                                        onClick={() => navigate(`/play/${playbookId}/create`)}>
+                                        onClick={handleOpenPlayForm}>
                                         <AddIcon sx={{ mr: 1 }} />
                                         Create New
                                     </Fab>
@@ -242,7 +255,7 @@ function PlayLibrary({ playbookId }: PlayLibraryProps) {
                                     onClose={handleClosePlayMenu}
                                     disableScrollLock={true}
                                 >
-                                    <MenuItem onClick={() => handleEdit(selectedPlay?.playId!!)}>Edit</MenuItem>
+                                    <MenuItem onClick={handleEdit}>Edit</MenuItem>
                                     <MenuItem onClick={() => handleDelete(selectedPlay?.playId!!)}>Delete</MenuItem>
                                 </Menu>
 
@@ -263,30 +276,28 @@ function PlayLibrary({ playbookId }: PlayLibraryProps) {
                                         '& .MuiButton-label': {
                                             color: 'black',
                                         },
-                                    }} onClick={() => navigate(`/play/${playbookId}/create`)}>Create New</Button>
+                                    }} onClick={handleOpenPlayForm}>Create New</Button>
                                 </Card>
                             </Box>
                         </Stack>
                     </Container>
                     
-                    <Modal
-                        open={formationViewOpen}
-                        onClose={handleFormationClose}
-                        aria-labelledby="modal-modal-title"
-                        aria-describedby="modal-modal-description"
-                    >
-
-                        <FormationViewer formation={viewedFormation}></FormationViewer>
-
-
-                    </Modal>
+                    
                     <Modal
                         open={playViewOpen}
                         onClose={handlePlayClose}
                         aria-labelledby="modal-modal-title"
                         aria-describedby="modal-modal-description"
                     >
-                        <PlayViewer play={selectedPlay} />
+                        <PlayViewer play={selectedPlay}  handleFormationOpen={handleFormationOpen} handleFormationClose={handleFormationClose} formationViewOpen={formationViewOpen}/>
+                    </Modal>
+                    <Modal
+                        open={openPlayForm}
+                        onClose={handleClosePlayForm}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                    >
+                        <PlayForm handlePlayFormClose={handleClosePlayForm} playId={selectedPlay?.playId} playbookId={playbookId}/>
                     </Modal>
 
                 </>
@@ -339,7 +350,7 @@ function PlayLibrary({ playbookId }: PlayLibraryProps) {
                                                 backgroundColor: 'darkgreen', // click/pressed color
                                             },
                                         }}
-                                        onClick={() => navigate(`/play/${playbookId}/create`)}>
+                                        onClick={handleOpenPlayForm}>
                                         <AddIcon sx={{ mr: 1 }} />
                                         Create New
                                     </Fab>
@@ -361,10 +372,19 @@ function PlayLibrary({ playbookId }: PlayLibraryProps) {
                                         '& .MuiButton-label': {
                                             color: 'black',
                                         },
-                                    }} onClick={() => navigate(`/play/${playbookId}/create`)}>Create New</Button>
+                                    }} onClick={handleOpenPlayForm}>Create New</Button>
                                 </Card>
                             </Box>
                         </Stack>
+
+                        <Modal
+                        open={openPlayForm}
+                        onClose={handleClosePlayForm}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                    >
+                        <PlayForm handlePlayFormClose={handleClosePlayForm} playId={selectedPlay?.playId} playbookId={playbookId}/>
+                    </Modal>
                     </Container>
                 </>
             )
