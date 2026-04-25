@@ -8,7 +8,7 @@ import type { PlaySheetCreateRequest } from "../../types/Create/PlaySheetCreateR
 import { createPlaySheet, getPlaySheetDetailsById, updatePlaySheet } from "../../api/PlaySheetAPI";
 import { enqueueSnackbar } from "notistack";
 import type { PlaySheetSituation } from "../../types/PlaySheetSituation";
-import { Box, Button, Container, Divider, Fab, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Tooltip, Typography } from "@mui/material";
+import { Backdrop, Box, Button, CircularProgress, Container, Divider, Fab, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Tooltip, Typography } from "@mui/material";
 import type { PlaySheetSituationCreateRequest } from "../../types/Create/PlaySheetSituationCreateRequest";
 import type { PlaySheetUpdateRequest } from "../../types/Update/PlaySheetUpdateRequest";
 import type { PlaySheetSituationUpdateRequest } from "../../types/Update/PlaySheetSituationUpdateRequest";
@@ -41,6 +41,7 @@ function PlaySheetForm() {
     const [playSheet, setPlaySheet] = useState<PlaySheet>(PLAYSHEET_DEFAULT)
     const [selectedSitaution, setSelectedSituation] = useState<number | null>(null)
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
     const { id, playbookId } = useParams();
 
     const finalPlaybookId =
@@ -78,6 +79,7 @@ function PlaySheetForm() {
 
         const loadPlaySheet = async () => {
             try {
+                setLoading(true)
                 const data = await getPlaySheetDetailsById(Number(id));
                 console.log(data)
                 const existingPlaySheet: PlaySheet = {
@@ -115,9 +117,12 @@ function PlaySheetForm() {
 
                 setPlaySheet(existingPlaySheet);
             } catch (error) {
+                setLoading(false);
                 const message = error instanceof Error ? error.message : "Something went wrong";
                 enqueueSnackbar(message, { variant: "success" });
                 navigate("/playsheets")
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -328,6 +333,25 @@ function PlaySheetForm() {
         updateMutation.mutate(updateRequest);
     }
 
+    if (playQuery.isPending || loading) {
+
+        return (
+            <>
+
+                <div>
+                    <Backdrop
+                        sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+                        open={true}
+                    >
+                        <CircularProgress color="inherit" />
+                    </Backdrop>
+                </div>
+
+            </>
+        )
+
+    }
+
     if (playQuery.isSuccess) {
         if (!playQuery.data) {
             console.log("UPDATE")
@@ -378,34 +402,34 @@ function PlaySheetForm() {
                                         />
                                     </FormControl>
                                     <LoadingButton
-                                variant="contained"
-                                onClick={handleUpdate}
-                                loading={isPending}
+                                        variant="contained"
+                                        onClick={handleUpdate}
+                                        loading={isPending}
 
-                                sx={{
-                                    backgroundColor: "green",
-                                    color: "black",
-                                    m: 1,
-                                    "&:hover": {
-                                        backgroundColor: "darkgreen",
-                                    },
+                                        sx={{
+                                            backgroundColor: "green",
+                                            color: "black",
+                                            m: 1,
+                                            "&:hover": {
+                                                backgroundColor: "darkgreen",
+                                            },
 
-                                    // keep button visible in loading state
-                                    "&.Mui-disabled": {
-                                        backgroundColor: "darkgreen",
-                                        color: "transparent",   // 👈 hides text completely
-                                        opacity: .7,
-                                    },
+                                            // keep button visible in loading state
+                                            "&.Mui-disabled": {
+                                                backgroundColor: "darkgreen",
+                                                color: "transparent",   // 👈 hides text completely
+                                                opacity: .7,
+                                            },
 
-                                    // hide label completely
-                                    "& .MuiLoadingButton-label": {
-                                        visibility: isPending ? "hidden" : "visible",
-                                    },
-                                }}
-                            >
-                                Update PlaySheet
-                            </LoadingButton>
-                            
+                                            // hide label completely
+                                            "& .MuiLoadingButton-label": {
+                                                visibility: isPending ? "hidden" : "visible",
+                                            },
+                                        }}
+                                    >
+                                        Update PlaySheet
+                                    </LoadingButton>
+
 
                                 </Stack>
 
@@ -650,16 +674,16 @@ function PlaySheetForm() {
                                                 ))
                                             )}
                                         </Stack>
-                                    
-                                        
-                                        
+
+
+
                                     </Stack>
 
                                 </Stack>
 
                             </Box>
                         </Container>
-                        
+
 
                     </>
                 )
@@ -707,19 +731,34 @@ function PlaySheetForm() {
                                             onChange={handleChange}
                                         />
                                     </FormControl>
-                                    <Button sx={{
-                                        m: 1,
-                                        backgroundColor: 'green',
-                                        color: 'black',
+                                    <LoadingButton
+                                        variant="contained"
+                                        onClick={handleCreate}
+                                        loading={isPending}
 
-                                        '&:hover': {
-                                            backgroundColor: 'lightgreen', // hover color
-                                        },
+                                        sx={{
+                                            backgroundColor: "green",
+                                            color: "black",
+                                            m: 1,
+                                            "&:hover": {
+                                                backgroundColor: "darkgreen",
+                                            },
 
-                                        '&:active': {
-                                            backgroundColor: 'darkgreen', // click/pressed color
-                                        },
-                                    }} variant="contained" onClick={handleCreate}>Create Playsheet</Button>
+                                            // keep button visible in loading state
+                                            "&.Mui-disabled": {
+                                                backgroundColor: "darkgreen",
+                                                color: "transparent",   // 👈 hides text completely
+                                                opacity: .7,
+                                            },
+
+                                            // hide label completely
+                                            "& .MuiLoadingButton-label": {
+                                                visibility: isPending ? "hidden" : "visible",
+                                            },
+                                        }}
+                                    >
+                                        Create PlaySheet
+                                    </LoadingButton>
 
                                 </Stack>
 
@@ -813,7 +852,7 @@ function PlaySheetForm() {
                                                             <MenuItem value="green">
                                                                 Green
                                                             </MenuItem>
-                                                            
+
                                                             <MenuItem value="red">
                                                                 Red
                                                             </MenuItem>
@@ -972,7 +1011,7 @@ function PlaySheetForm() {
                             </Box>
                         </Container>
 
-                    
+
 
                     </>
                 )

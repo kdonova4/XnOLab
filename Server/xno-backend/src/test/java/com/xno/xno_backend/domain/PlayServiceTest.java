@@ -275,8 +275,8 @@ public class PlayServiceTest {
         // play duplicated in playbook
         when(playRepository.findById(playUpdateDTO.getPlayId())).thenReturn(Optional.of(play1));
         when(playRepository.findByPlayNameAndUser_AppUserIdAndPlaybook_PlaybookId(playUpdateDTO.getPlayName(), user.getAppUserId(), playbook.getPlaybookId()))
-                .thenReturn(Optional.of(play1));
-        actual = playService.updatePlay(playUpdateDTO, file, user.getAppUserId());
+                .thenReturn(Optional.of(play2));
+        actual = playService.updatePlay(playUpdateDTO, null, user.getAppUserId());
         assertEquals(ResultType.INVALID, actual.getType());
 
         // play doesn't belong to user

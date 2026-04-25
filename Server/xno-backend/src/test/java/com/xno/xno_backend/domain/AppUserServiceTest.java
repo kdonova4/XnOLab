@@ -148,7 +148,7 @@ public class AppUserServiceTest {
         Result<UserInfoResponse> actual = service.authenticateUser(new LoginRequest(appUser.getUsername(), appUser.getPassword()));
 
         assertEquals(ResultType.UNAUTHORIZED, actual.getType());
-        assertTrue(actual.getMessages().contains("Bad Credentials"));
+        assertTrue(actual.getMessages().contains("Username or Password is incorrect. Please Try Again."));
     }
 
 }

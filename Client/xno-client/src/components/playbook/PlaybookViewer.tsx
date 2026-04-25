@@ -4,7 +4,7 @@ import { getPlaybooksByUser, getPlaybookSummaryById } from "../../api/PlaybookAP
 import { useEffect, useState } from "react";
 import { enqueueSnackbar } from "notistack";
 import PlayLibrary from "../play/PlayLibrary";
-import { Container, Fab, Modal, Stack, Tooltip, Typography } from "@mui/material";
+import { Backdrop, CircularProgress, Container, Fab, Modal, Stack, Tooltip, Typography } from "@mui/material";
 import PlayCopyForm from "../play/PlayCopyForm";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
@@ -51,7 +51,22 @@ function PlaybookViewer() {
         setOpen(false);
     }
 
-    
+        if(playbookQuery.isPending) {
+        return (
+            <>
+
+<div>
+                <Backdrop
+                    sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+                    open={true}
+                    >
+                    <CircularProgress color="inherit"/>
+                    </Backdrop>
+            </div>
+
+            </>
+        )
+    }
 
     if (isSuccess) {
         if (!data) {

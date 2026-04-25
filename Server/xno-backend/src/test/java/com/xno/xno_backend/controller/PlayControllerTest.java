@@ -54,7 +54,7 @@ public class PlayControllerTest {
         play = new Play(1L, "play", "url", "id", "notes", null, null, null);
         playCreateDTO = new PlayCreateDTO(play.getPlayName(), play.getNotes(), 1L, 1L);
         playUpdateDTO = new PlayUpdateDTO(play.getPlayId(), play.getPlayName(), play.getNotes());
-        playResponseDTO = new PlayResponseDTO(play.getPlayId(), play.getPlayName(), play.getPlayImageUrl(), play.getNotes(), null);
+        playResponseDTO = new PlayResponseDTO(play.getPlayId(), play.getPlayName(), play.getPlayImageUrl(), play.getNotes(), null, null);
     }
 
     @Test

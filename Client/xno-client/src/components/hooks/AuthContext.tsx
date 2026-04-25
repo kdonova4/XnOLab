@@ -48,6 +48,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     const logoutUser = async () => {
     try {
+        navigate("/");
         const data = await logout();
         enqueueSnackbar(data.message, { variant: "success" });
 
@@ -57,7 +58,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // optional: prevents immediate re-fetch flicker
         await new Promise(res => setTimeout(res, 50));
 
-        navigate("/");
+        
     } catch {
         setAppUser(null);
         setIsAuthenticated(false);

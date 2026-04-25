@@ -3,7 +3,7 @@ import { deletePlaySheet, getPlaySheetsByUser } from "../../api/PlaySheetAPI";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
-import { Box, Button, Card, Container, Fab, FormControl, IconButton, InputLabel, Menu, MenuItem, Modal, Select, Stack, Tooltip, Typography } from "@mui/material";
+import { Backdrop, Box, Button, Card, CircularProgress, Container, Fab, FormControl, IconButton, InputLabel, Menu, MenuItem, Modal, Select, Stack, Tooltip, Typography } from "@mui/material";
 import GenerationDetailsForm from "./GenerationDetailsForm";
 import type { PlaySheetSummaryResponse } from "../../types/Response/PlaySheetSummaryResponse";
 import { Search, SearchIconWrapper, StyledInputBase } from "../other/MUISearchLibraryComponents";
@@ -42,7 +42,7 @@ function PlaySheetLibrary() {
 
 
 
-    const { data, error, isSuccess } = useQuery({
+    const { data, error, isSuccess, isPending } = useQuery({
         queryKey: ["playsheets"],
         queryFn: () => getPlaySheetsByUser(),
         retry: false
@@ -121,6 +121,23 @@ function PlaySheetLibrary() {
 
     const handlePlaybookSelectClose = () => {
         setPlaybookSelectOpen(false);
+    }
+
+    if (isPending) {
+        return (
+            <>
+
+                <div>
+                    <Backdrop
+                        sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+                        open={true}
+                    >
+                        <CircularProgress color="inherit" />
+                    </Backdrop>
+                </div>
+
+            </>
+        )
     }
 
 
@@ -284,7 +301,7 @@ function PlaySheetLibrary() {
                                                 }}
                                             >
                                                 Select Playbook
-                                            </InputLabel>                                                
+                                            </InputLabel>
                                             <Select
                                                 labelId="demo-simple-select-standard-label"
                                                 id="demo-simple-select-standard"

@@ -4,7 +4,7 @@ import { deletePlay, getPlaysByPlaybook } from "../../api/PlayAPI";
 import { useEffect, useMemo, useState } from "react";
 import { enqueueSnackbar } from "notistack";
 import { getAllFormationsByUser } from "../../api/FormationAPI";
-import { Box, Button, Card, CardMedia, Container, Fab, FormControl, IconButton, InputLabel, Menu, MenuItem, Modal, Select, Stack, Tooltip, Typography } from "@mui/material";
+import { Backdrop, Box, Button, Card, CardMedia, CircularProgress, Container, Fab, FormControl, IconButton, InputLabel, Menu, MenuItem, Modal, Select, Stack, Tooltip, Typography } from "@mui/material";
 import type { FormationResponse } from "../../types/Response/FormationResponse";
 import type { PlayResponse } from "../../types/Response/PlayResponse";
 import PlayViewer from "./PlayViewer";
@@ -55,7 +55,7 @@ function PlayLibrary({ playbookId }: PlayLibraryProps) {
         setSelectedPlay(null);
     }
 
-    const { data, error, isSuccess } = useQuery({
+    const { data, error, isSuccess, isPending } = useQuery({
         queryKey: ["plays", playbookId],
         queryFn: () => getPlaysByPlaybook(Number(playbookId)),
         retry: false
@@ -134,11 +134,28 @@ function PlayLibrary({ playbookId }: PlayLibraryProps) {
         handleOpenPlayForm();
     }
 
+    if(isPending) {
+        return (
+            <>
+
+<div>
+                <Backdrop
+                    sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+                    open={true}
+                    >
+                    <CircularProgress color="inherit"/>
+                    </Backdrop>
+            </div>
+
+            </>
+        )
+    }
+
     if (isSuccess) {
         if (data.length > 0 && formationsQuery.data) {
             return (
                 <>
-
+            
                     <Container>
                         <Stack>
                             <Box sx={{ backgroundColor: 'darkgreen', borderTopRightRadius: '40px', borderTopLeftRadius: '40px' }}>
@@ -308,7 +325,18 @@ function PlayLibrary({ playbookId }: PlayLibraryProps) {
             )
         } else if (data.length === 0) {
             return (
+                
                 <>
+                            {isPending && (
+<div>
+                <Backdrop
+                    sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+                    open={true}
+                    >
+                    <CircularProgress color="inherit"/>
+                    </Backdrop>
+            </div>
+            )}
                     <Container>
                         <Stack>
                             <Box sx={{ backgroundColor: 'darkgreen', borderTopRightRadius: '40px', borderTopLeftRadius: '40px' }}>

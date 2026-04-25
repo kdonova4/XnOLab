@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { deletePlaybook, getPlaybooksByUser } from "../../api/PlaybookAPI";
 import { enqueueSnackbar } from "notistack";
 import { useEffect, useMemo, useState } from "react";
-import { alpha, Box, Button, Card, Container, Fab, IconButton, InputBase, Menu, MenuItem, Modal, Stack, styled, Tooltip, Typography } from "@mui/material";
+import { alpha, Backdrop, Box, Button, Card, CircularProgress, Container, Fab, IconButton, InputBase, Menu, MenuItem, Modal, Stack, styled, Tooltip, Typography } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AddIcon from '@mui/icons-material/Add';
@@ -57,7 +57,7 @@ function PlaybookLibrary() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const [searchQuery, setSearchQuery] = useState<string>("")
-    const { data, error, isSuccess } = useQuery({
+    const { data, error, isSuccess, isPending } = useQuery({
         queryKey: ["playbooks"],
         queryFn: () => getPlaybooksByUser(),
         retry: false
@@ -139,6 +139,23 @@ function PlaybookLibrary() {
     const handleCreateClick = () => {
         setSelectedPlaybookId(null);
         handlePlaybookFormOpen();
+    }
+
+    if (isPending) {
+        return (
+            <>
+
+                <div>
+                    <Backdrop
+                        sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+                        open={true}
+                    >
+                        <CircularProgress color="inherit" />
+                    </Backdrop>
+                </div>
+
+            </>
+        )
     }
 
     if (isSuccess) {

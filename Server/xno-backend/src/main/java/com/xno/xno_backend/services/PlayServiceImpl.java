@@ -342,6 +342,7 @@ public class PlayServiceImpl implements PlayService {
         String name = playUpdateDTO.getPlayName();
         if(name == null || name.isBlank()) {
             result.addMessages("Play name cannot be null", ResultType.INVALID);
+            return result;
         }
 
         if(name.length() > 25) {

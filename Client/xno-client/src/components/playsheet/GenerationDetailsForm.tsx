@@ -7,6 +7,7 @@ import type { GenerateRequest } from "../../types/Misc/GenerateRequest";
 import { enqueueSnackbar } from "notistack";
 import type { PlaySheetSummaryResponse } from "../../types/Response/PlaySheetSummaryResponse";
 import NumberField from "../../types/Misc/NumberField";
+import { LoadingButton } from "@mui/lab";
 
 const DEFAULT_GENERATION_DETAILS: GenerationDetails = {
     maxRows: 20,
@@ -24,7 +25,7 @@ const style = {
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
-    
+
 };
 
 type GenerationDetailsFormProps = {
@@ -38,40 +39,40 @@ function GenerationDetailsForm({ playSheet, handleClose }: GenerationDetailsForm
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, type, value, checked } = event.target;
-    
+
         setGenDetails(prev => ({
             ...prev,
             [name]: type === "checkbox" ? checked : value
         }))
     }
 
-    const { mutate } = useMutation<
-    { blob: Blob; filename: string }, // return type
-    Error,
-    GenerateRequest
->({
-    mutationFn: generatePlaySheet,
-    onSuccess: ({ blob }) => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        const newFilename = playSheet ? playSheet.playSheetName : "PlaySheet";
-        a.download = newFilename; // use the filename from backend
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        window.URL.revokeObjectURL(url);
-        handleClose()
-        enqueueSnackbar(`Downloaded ${newFilename}.xlsx`, { variant: 'success' });
-    },
-    onError: (error) => {
-        const message = error instanceof Error ? error.message : 'Something went wrong';
-        enqueueSnackbar(message, { variant: 'error' });
-    },
-});
-    
+    const { mutate, isPending } = useMutation<
+        { blob: Blob; filename: string }, // return type
+        Error,
+        GenerateRequest
+    >({
+        mutationFn: generatePlaySheet,
+        onSuccess: ({ blob }) => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const newFilename = playSheet ? playSheet.playSheetName : "PlaySheet";
+            a.download = newFilename; // use the filename from backend
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+            handleClose()
+            enqueueSnackbar(`Downloaded ${newFilename}.xlsx`, { variant: 'success' });
+        },
+        onError: (error) => {
+            const message = error instanceof Error ? error.message : 'Something went wrong';
+            enqueueSnackbar(message, { variant: 'error' });
+        },
+    });
+
     const handleGenerate = () => {
-        if(!playSheet) return;
+        if (!playSheet) return;
         const request: GenerateRequest = {
             playSheetId: playSheet.playSheetId,
             generationDetails: genDetails
@@ -83,7 +84,7 @@ function GenerationDetailsForm({ playSheet, handleClose }: GenerationDetailsForm
     return (
         <>
 
-        
+
             <Box sx={style}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
                     Enter Generation Details
@@ -92,35 +93,57 @@ function GenerationDetailsForm({ playSheet, handleClose }: GenerationDetailsForm
                     <Stack p={1} flexDirection={"row"} alignItems={"center"} gap={1}>
                         <Typography variant="h6">Max Rows: </Typography>
                         <NumberField defaultValue={20} min={20} onValueChange={(val) => setGenDetails(prev => ({
-                            ...prev, 
+                            ...prev,
                             maxRows: val ?? prev.maxRows
                         }))} />
-                        
+
                     </Stack>
-                    
+
 
                     <Stack p={1} flexDirection={"row"} alignItems={"center"}>
                         <Typography variant="h6">Wrap Plays: </Typography>
-                        <Checkbox sx={{ color: 'white', '&.Mui-checked': { color: 'green' },}}
+                        <Checkbox sx={{ color: 'white', '&.Mui-checked': { color: 'green' }, }}
                             name="wrapPlays"
                             value={genDetails.wrapPlays}
                             onChange={handleChange}
                         ></Checkbox>
                     </Stack>
-                    <Button sx={{
-                                        m: 1,
-                                        backgroundColor: 'green',
-                                        color: 'black',
+                    
+                    <Box display='flex' justifyContent='center'>
 
-                                        '&:hover': {
-                                            backgroundColor: 'lightgreen', // hover color
-                                        },
 
-                                        '&:active': {
-                                            backgroundColor: 'darkgreen', // click/pressed color
-                                        },
-                                    }} variant="contained" onClick={handleGenerate}>Generate</Button>
-        
+                        <LoadingButton
+                            variant="contained"
+                            type="submit"
+                            fullWidth
+                            onClick={handleGenerate}
+                            loading={isPending}
+                            sx={{
+                                backgroundColor: "green",
+                                color: "black",
+                                m: 1,
+                                "&:hover": {
+                                    backgroundColor: "darkgreen",
+                                },
+
+                                // keep button visible in loading state
+                                "&.Mui-disabled": {
+                                    backgroundColor: "darkgreen",
+                                    color: "transparent",   // 👈 hides text completely
+                                    opacity: .7,
+                                },
+
+                                // hide label completely
+                                "& .MuiLoadingButton-label": {
+                                    visibility: isPending ? "hidden" : "visible",
+                                },
+                            }}
+                        >
+                            Generate
+                        </LoadingButton>
+
+                    </Box>
+
                 </Stack>
 
             </Box>

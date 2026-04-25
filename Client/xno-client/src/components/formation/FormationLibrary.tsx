@@ -3,7 +3,7 @@ import { deleteFormation, getAllFormationsByUser } from "../../api/FormationAPI"
 import { enqueueSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Box, Button, Card, CardMedia, Container, Fab, IconButton, Menu, MenuItem, Modal, Stack, Tooltip, Typography } from "@mui/material";
+import { Backdrop, Box, Button, Card, CardMedia, CircularProgress, Container, Fab, IconButton, Menu, MenuItem, Modal, Stack, Tooltip, Typography } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AddIcon from '@mui/icons-material/Add';
@@ -19,7 +19,7 @@ function FormationLibrary() {
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [selectedFormationId, setSelectedFormationId] = useState<null | number>(null)
 
-    const { data, error, isSuccess } = useQuery({
+    const { data, error, isSuccess, isPending } = useQuery({
         queryKey: ["formations"],
         queryFn: () => getAllFormationsByUser(),
         retry: false
@@ -62,16 +62,16 @@ function FormationLibrary() {
     }
 
     const filteredFormations = useMemo(() => {
-            if (!data) return [];
-    
-            return data.filter(formation => {
-                if (!formation.formationName.toLowerCase().includes(searchQuery.toLowerCase())) {
-                    return false;
-                }
-    
-                return true;
-            })
-        }, [data, searchQuery])
+        if (!data) return [];
+
+        return data.filter(formation => {
+            if (!formation.formationName.toLowerCase().includes(searchQuery.toLowerCase())) {
+                return false;
+            }
+
+            return true;
+        })
+    }, [data, searchQuery])
 
 
 
@@ -101,66 +101,82 @@ function FormationLibrary() {
         handleFormationFormOpen();
     }
 
+    if (isPending) {
+        return (
+            <>
+
+                <div>
+                    <Backdrop
+                        sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+                        open={true}
+                    >
+                        <CircularProgress color="inherit" />
+                    </Backdrop>
+                </div>
+
+            </>
+        )
+    }
 
 
     if (isSuccess) {
-            return (
-                <>
+        return (
+            <>
                 <Container className="container">
                     <Typography variant="h3" p={2}>
-                            Your Formations
-                        </Typography>
-                        <Stack marginBottom={4}>
-                            <Box sx={{ backgroundColor: 'darkgreen', borderTopRightRadius: '40px', borderTopLeftRadius: '40px' }}>
-                                <Stack
-                                    direction="row"
-                                    p={2}
-                                    width="100%"
-                                    justifyContent="space-between"
-                                    alignItems="center"
-                                    sx={{ boxSizing: "border-box" }}
-                                >
-                                    <Search>
-                                        <SearchIconWrapper>
-                                            <SearchIcon />
-                                        </SearchIconWrapper>
+                        Your Formations
+                    </Typography>
+                    <Stack marginBottom={4}>
+                        <Box sx={{ backgroundColor: 'darkgreen', borderTopRightRadius: '40px', borderTopLeftRadius: '40px' }}>
+                            <Stack
+                                direction="row"
+                                p={2}
+                                width="100%"
+                                justifyContent="space-between"
+                                alignItems="center"
+                                sx={{ boxSizing: "border-box" }}
+                            >
+                                <Search>
+                                    <SearchIconWrapper>
+                                        <SearchIcon />
+                                    </SearchIconWrapper>
 
-                                        <StyledInputBase
-                                            name="searchQuery"
-                                            placeholder="Filter By Name"
-                                            inputProps={{ 'aria-label': 'search' }}
-                                            value={searchQuery}
-                                            onChange={(e) => setSearchQuery(e.target.value)}
-                                        />
-                                    </Search>
+                                    <StyledInputBase
+                                        name="searchQuery"
+                                        placeholder="Filter By Name"
+                                        inputProps={{ 'aria-label': 'search' }}
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                    />
+                                </Search>
 
-                                    <Fab
-                                        variant="extended"
-                                        sx={{
-                                            backgroundColor: 'green',
-                                            color: 'black',
+                                <Fab
+                                    variant="extended"
+                                    sx={{
+                                        backgroundColor: 'green',
+                                        color: 'black',
 
-                                            '&:hover': {
-                                                backgroundColor: 'lightgreen', // hover color
-                                            },
+                                        '&:hover': {
+                                            backgroundColor: 'lightgreen', // hover color
+                                        },
 
-                                            '&:active': {
-                                                backgroundColor: 'darkgreen', // click/pressed color
-                                            },
-                                        }}
-                                     onClick={handleClickCreate}>
-                                        <AddIcon sx={{ mr: 1 }} />
-                                        Create New
-                                    </Fab>
-                                </Stack>
-                            </Box>
-                            <Box sx={{ backgroundColor: '#181a1b', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', borderBottomRightRadius: '20px', borderBottomLeftRadius: '20px' }}>
-                                {data && data.length > 0 && (
-                                    filteredFormations.map((formation) => (
+                                        '&:active': {
+                                            backgroundColor: 'darkgreen', // click/pressed color
+                                        },
+                                    }}
+                                    onClick={handleClickCreate}>
+                                    <AddIcon sx={{ mr: 1 }} />
+                                    Create New
+                                </Fab>
+                            </Stack>
+                        </Box>
+                        <Box sx={{ backgroundColor: '#181a1b', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', borderBottomRightRadius: '20px', borderBottomLeftRadius: '20px' }}>
+                            {data && data.length > 0 && (
+                                filteredFormations.map((formation) => (
                                     <Card key={formation.formationId} sx={{
-                                        width: '20%', margin: 2, backgroundColor: 'green', 
+                                        width: '20%', margin: 2, backgroundColor: 'green',
                                     }}>
-                                        <CardMedia sx={{ height: 155 }} image={formation.formationImageUrl} title={formation.formationName}/>
+                                        <CardMedia sx={{ height: 155 }} image={formation.formationImageUrl} title={formation.formationName} />
                                         <Stack sx={{ width: '100%', justifyContent: 'space-between', alignItems: 'center' }} direction="row">
 
                                             <Typography sx={{ width: '100%' }} overflow="hidden" textOverflow="ellipsis" noWrap p={1} variant="h6">{formation.formationName}</Typography>
@@ -170,44 +186,44 @@ function FormationLibrary() {
                                                     <MoreVertIcon fontSize="large" sx={{ color: 'black' }} />
                                                 </IconButton>
                                             </Tooltip>
-                                            
+
                                         </Stack>
                                     </Card>
                                 ))
-                                )}
-                                <Menu
-                                                anchorEl={anchorElFormation}
-                                                open={Boolean(anchorElFormation)}
-                                                onClose={handleCloseFormationMenu}
-                                                disableScrollLock={true}
-                                            >
-                                                <MenuItem onClick={handleEdit}>Edit</MenuItem>
-                                                <MenuItem onClick={() => handleDelete(selectedFormationId!!)}>Delete</MenuItem>
-                                            </Menu>
-                                
+                            )}
+                            <Menu
+                                anchorEl={anchorElFormation}
+                                open={Boolean(anchorElFormation)}
+                                onClose={handleCloseFormationMenu}
+                                disableScrollLock={true}
+                            >
+                                <MenuItem onClick={handleEdit}>Edit</MenuItem>
+                                <MenuItem onClick={() => handleDelete(selectedFormationId!!)}>Delete</MenuItem>
+                            </Menu>
 
 
 
 
-                                <Card sx={{ width: '20%', height: '203px', margin: 2, backgroundColor: 'rgba(187, 187, 187, 0.27)' }}>
-                                    <Button sx={{
-                                        width: '100%', height: '100%', color: 'black', backgroundColor: 'darkgreen',
 
-                                        '&:hover': {
-                                            backgroundColor: 'lightgreen', // hover color
-                                        },
+                            <Card sx={{ width: '20%', height: '203px', margin: 2, backgroundColor: 'rgba(187, 187, 187, 0.27)' }}>
+                                <Button sx={{
+                                    width: '100%', height: '100%', color: 'black', backgroundColor: 'darkgreen',
 
-                                        '&:active': {
-                                            backgroundColor: 'darkgreen', // click/pressed color
-                                        },
-                                        '& .MuiButton-label': {
-                                            color: 'black',
-                                        },
-                                    }} onClick={handleClickCreate}>Create New</Button>
-                                </Card>
-                            </Box>
-                        </Stack>
-                        <Modal
+                                    '&:hover': {
+                                        backgroundColor: 'lightgreen', // hover color
+                                    },
+
+                                    '&:active': {
+                                        backgroundColor: 'darkgreen', // click/pressed color
+                                    },
+                                    '& .MuiButton-label': {
+                                        color: 'black',
+                                    },
+                                }} onClick={handleClickCreate}>Create New</Button>
+                            </Card>
+                        </Box>
+                    </Stack>
+                    <Modal
                         open={formationFormOpen}
                         onClose={handleFormationFormClose}
                         aria-labelledby="modal-modal-title"
@@ -216,13 +232,13 @@ function FormationLibrary() {
                         <FormationForm handleFormationFormClose={handleFormationFormClose} formationId={selectedFormationId} />
                     </Modal>
 
-                    </Container>
-                
-                
-                
-                </>
-            )
-        
+                </Container>
+
+
+
+            </>
+        )
+
     }
 
 
