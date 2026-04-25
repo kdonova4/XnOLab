@@ -169,6 +169,12 @@ public class FormationServiceImpl implements FormationService{
         String name = formationCreateDTO.getFormationName();
         if(name == null || name.isBlank()) {
             result.addMessages("Formation Name cannot be blank or empty", ResultType.INVALID);
+            return result;
+        }
+
+        if(name.length() > 25) {
+            result.addMessages("Formation name cannot be longer than 25 characters", ResultType.INVALID);
+            return result;
         }
 
         List<Formation> userFormations = formationRepository.findByUser_AppUserId(userId);
@@ -208,6 +214,11 @@ public class FormationServiceImpl implements FormationService{
         String name = formationUpdateDTO.getFormationName();
         if(name == null || name.isBlank()) {
             result.addMessages("Formation Name cannot be blank or empty", ResultType.INVALID);
+            return result;
+        }
+
+        if(name.length() > 25) {
+            result.addMessages("Play name cannot be longer than 25 characters", ResultType.INVALID);
             return result;
         }
 

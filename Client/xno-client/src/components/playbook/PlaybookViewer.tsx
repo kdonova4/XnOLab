@@ -4,7 +4,7 @@ import { getPlaybooksByUser, getPlaybookSummaryById } from "../../api/PlaybookAP
 import { useEffect, useState } from "react";
 import { enqueueSnackbar } from "notistack";
 import PlayLibrary from "../play/PlayLibrary";
-import { Container, Fab, Modal, Stack, Tooltip } from "@mui/material";
+import { Container, Fab, Modal, Stack, Tooltip, Typography } from "@mui/material";
 import PlayCopyForm from "../play/PlayCopyForm";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
@@ -70,7 +70,7 @@ function PlaybookViewer() {
                                 alignItems="center"
                                 sx={{ boxSizing: "border-box" }}
                             >
-                            <h1>{data.playbookName}</h1>
+                            <Typography p={2} variant="h3">{data.playbookName}</Typography>
 
                             <Tooltip title={hasNone ? "You Have No Other Playbooks To Copy From" : "Choose Plays From Other Playbooks To Copy From"}>
                                 <span>

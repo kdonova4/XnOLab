@@ -148,6 +148,11 @@ public class PlaybookServiceImpl implements PlaybookService{
             return result;
         }
 
+        if(name.length() > 25) {
+            result.addMessages("Playbook name cannot be longer than 25 characters", ResultType.INVALID);
+            return result;
+        }
+
         if(userId == null || !appUserRepository.existsById(userId)) {
             result.addMessages("User must exist", ResultType.INVALID);
             return result;
@@ -182,6 +187,12 @@ public class PlaybookServiceImpl implements PlaybookService{
         String name = playbookUpdateDTO.getPlaybookName();
         if(name == null || name.isBlank()) {
             result.addMessages("Playbook name cannot be null or blank", ResultType.INVALID);
+            return result;
+        }
+
+        if(name.length() > 25) {
+            result.addMessages("Playbook name cannot be longer than 25 characters", ResultType.INVALID);
+            return result;
         }
 
         if(playbookRepository.existsByUser_AppUserIdAndPlaybookNameAndPlaybookIdNot(userId, playbookUpdateDTO.getPlaybookName(), playbookUpdateDTO.getPlaybookId())) {

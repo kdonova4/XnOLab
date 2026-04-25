@@ -297,10 +297,17 @@ public class PlayServiceImpl implements PlayService {
             result.addMessages("Play cannot be null", ResultType.INVALID);
             return result;
         }
+        
+
 
         String name = playCreateDTO.getPlayName();
         if(name == null || name.isBlank()) {
             result.addMessages("Play name cannot be null or blank", ResultType.INVALID);
+            return result;
+        }
+
+        if(name.length() > 25) {
+            result.addMessages("Play name cannot be longer than 25 characters", ResultType.INVALID);
             return result;
         }
 
@@ -337,10 +344,15 @@ public class PlayServiceImpl implements PlayService {
             result.addMessages("Play name cannot be null", ResultType.INVALID);
         }
 
+        if(name.length() > 25) {
+            result.addMessages("Play name cannot be longer than 25 characters", ResultType.INVALID);
+            return result;
+        }
+
         String notes = playUpdateDTO.getPlayNotes();
         if(notes != null) {
-            if(notes.length() > 1000) {
-                result.addMessages("Notes cannot be over 1000 characters", ResultType.INVALID);
+            if(notes.length() > 100) {
+                result.addMessages("Notes cannot be over 100 characters", ResultType.INVALID);
             }
         }
 

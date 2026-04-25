@@ -90,7 +90,7 @@ function GenerationDetailsForm({ playSheet, handleClose }: GenerationDetailsForm
                 </Typography>
                 <Stack>
                     <Stack p={1} flexDirection={"row"} alignItems={"center"} gap={1}>
-                        <p>Max Rows: </p>
+                        <Typography variant="h6">Max Rows: </Typography>
                         <NumberField defaultValue={20} min={20} onValueChange={(val) => setGenDetails(prev => ({
                             ...prev, 
                             maxRows: val ?? prev.maxRows
@@ -100,7 +100,7 @@ function GenerationDetailsForm({ playSheet, handleClose }: GenerationDetailsForm
                     
 
                     <Stack p={1} flexDirection={"row"} alignItems={"center"}>
-                        <p>Wrap Plays: </p>
+                        <Typography variant="h6">Wrap Plays: </Typography>
                         <Checkbox sx={{ color: 'white', '&.Mui-checked': { color: 'green' },}}
                             name="wrapPlays"
                             value={genDetails.wrapPlays}

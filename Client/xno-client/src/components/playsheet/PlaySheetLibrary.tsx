@@ -175,7 +175,7 @@ function PlaySheetLibrary() {
                                 </Fab>
                             </Stack>
                         </Box>
-                        <Box sx={{ backgroundColor: '#181a1b', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', borderBottomRightRadius: '20px', borderBottomLeftRadius: '20px' }}>
+                        <Box marginBottom={4} sx={{ backgroundColor: '#181a1b', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', borderBottomRightRadius: '20px', borderBottomLeftRadius: '20px' }}>
                             {data && data.length > 0 && (
                                 filteredPlaySheets.map((playsheet) => (
                                     <Card key={playsheet.playSheetId} sx={{

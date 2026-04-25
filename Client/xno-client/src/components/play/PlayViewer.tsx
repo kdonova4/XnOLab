@@ -1,4 +1,4 @@
-import { Box, Modal, Stack, Typography } from "@mui/material";
+import { Box, Button, Modal, Stack, Typography } from "@mui/material";
 import type { PlayResponse } from "../../types/Response/PlayResponse";
 import type { FormationResponse } from "../../types/Response/FormationResponse";
 import FormationViewer from "../formation/FormationViewer";
@@ -51,7 +51,7 @@ function PlayViewer({ play, handleFormationOpen, handleFormationClose, formation
                     </Typography>
                     <br></br>
                     <Typography p={1}>
-                        Formation: <button
+                        Formation: <Button
                             onClick={() => handleFormationOpen(play.formationResponse)}
                             style={{
                                 background: 'none',
@@ -60,11 +60,12 @@ function PlayViewer({ play, handleFormationOpen, handleFormationClose, formation
                                 color: 'green',
                                 textDecoration: 'underline',
                                 cursor: 'pointer',
-                                font: 'inherit'
+                                fontSize: '1.1rem',
+                                textTransform: 'none'
                             }}
                         >
                             {play.formationResponse.formationName}
-                        </button>
+                        </Button>
                     </Typography>
                     <Modal
                         open={formationViewOpen}

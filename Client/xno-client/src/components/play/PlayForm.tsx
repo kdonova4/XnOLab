@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { Play } from "../../types/Play";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { PlayResponse } from "../../types/Response/PlayResponse";
 import type { CreatePlayInput } from "../../types/Create/CreatePlayInput";
@@ -130,6 +130,10 @@ function PlayForm({ handlePlayFormClose, playId, playbookId }: PlayFormProps) {
                 try {
                     setLoading(true)
                     const response = await getAllFormationsByUser();
+                    if (response.length == 0) {
+                        handlePlayFormClose();
+                        enqueueSnackbar('Create At Least One Formation First!', { variant: 'warning' })
+                    }
                     setFormations(response);
                 } catch (error) {
                     const message = error instanceof Error ? error.message : "Something went wrong"

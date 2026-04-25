@@ -1,6 +1,6 @@
 import { AppBar, Box, Button, Container, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography } from "@mui/material";
 import { useState } from "react";
-import AdbIcon from '@mui/icons-material/Adb';
+import logo from "/XnO-Logo.png";
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useAuth } from "../hooks/AuthContext";
@@ -106,7 +106,7 @@ export default function AppBarComponent() {
                                         textDecoration: 'none'
                                     }}
                                 >
-                                    XnO
+                                    <img width={50} src={logo}/>
                                 </Typography>
                             </Box>
                             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
@@ -148,14 +148,14 @@ export default function AppBarComponent() {
                                     letterSpacing: '.3rem'
                                 }}
                             >
-                                LOGO
+                                <img width={50} src={logo}/>
                             </Typography>
                         </Box>
 
                         {/* RIGHT (user info) */}
                         <Box sx={{ display: 'flex', alignItems: 'center', ml: 'auto' }}>
 
-                            <Typography sx={{ mr: 1, fontFamily: 'monospace' }}>
+                            <Typography sx={{ mr: 1, }}>
                                 {appUser?.username}
                             </Typography>
 
@@ -235,7 +235,7 @@ export default function AppBarComponent() {
                                         textDecoration: 'none'
                                     }}
                                 >
-                                    XnO
+                                    <img width={50} src={logo}/>
                                 </Typography>
                             </Box>
 
@@ -258,14 +258,14 @@ export default function AppBarComponent() {
                                     letterSpacing: '.3rem'
                                 }}
                             >
-                                LOGO
+                                <img width={50} src={logo}/>
                             </Typography>
                         </Box>
 
                         {/* RIGHT (user info) */}
                         <Box sx={{ display: 'flex', alignItems: 'center', ml: 'auto' }}>
 
-                            <Typography sx={{ mr: 1, fontFamily: 'monospace' }}>
+                            <Typography sx={{ mr: 1, }}>
                                 {appUser?.username}
                             </Typography>
 

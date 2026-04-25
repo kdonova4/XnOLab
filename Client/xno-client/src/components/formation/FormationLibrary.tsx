@@ -3,11 +3,12 @@ import { deleteFormation, getAllFormationsByUser } from "../../api/FormationAPI"
 import { enqueueSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Box, Button, Card, CardMedia, Container, Fab, IconButton, Menu, MenuItem, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Card, CardMedia, Container, Fab, IconButton, Menu, MenuItem, Modal, Stack, Tooltip, Typography } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AddIcon from '@mui/icons-material/Add';
 import { Search, SearchIconWrapper, StyledInputBase } from "../other/MUISearchLibraryComponents";
+import FormationForm from "./FormationForm";
 
 
 
@@ -17,11 +18,14 @@ function FormationLibrary() {
     const queryClient = useQueryClient();
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [selectedFormationId, setSelectedFormationId] = useState<null | number>(null)
+
     const { data, error, isSuccess } = useQuery({
         queryKey: ["formations"],
         queryFn: () => getAllFormationsByUser(),
         retry: false
     })
+
+    const [formationFormOpen, setFormationFormOpen] = useState(false);
 
     const { mutate } = useMutation<void, Error, number>({
         mutationFn: deleteFormation,
@@ -31,23 +35,30 @@ function FormationLibrary() {
         }
     })
 
-    
+    const handleFormationFormOpen = () => {
+        setFormationFormOpen(true)
+    }
+
+    const handleFormationFormClose = () => {
+        setFormationFormOpen(false)
+        setSelectedFormationId(null);
+    }
 
     const [anchorElFormation, setAnchorElFormation] = useState<null | HTMLElement>(null);
-    const handleOpenPlaybookMenu = (event: React.MouseEvent<HTMLElement>, formationId: number) => {
+    const handleOpenFormationMenu = (event: React.MouseEvent<HTMLElement>, formationId: number) => {
         setAnchorElFormation(event.currentTarget);
         setSelectedFormationId(formationId);
     }
 
     const handleCloseFormationMenu = () => {
         setAnchorElFormation(null);
-        setSelectedFormationId(null);
+
     }
 
 
-    const handleEdit = (formationId: number) => {
+    const handleEdit = () => {
         handleCloseFormationMenu();
-        navigate(`/formation/edit/${formationId}`)
+        handleFormationFormOpen();
     }
 
     const filteredFormations = useMemo(() => {
@@ -77,11 +88,17 @@ function FormationLibrary() {
             if (confirmed) {
                 mutate(formationId);
             }
-            handleCloseFormationMenu()
+            handleCloseFormationMenu();
+            setSelectedFormationId(null);
         } catch (error) {
             const message = error instanceof Error ? error.message : "Something went wrong"
             enqueueSnackbar(message, { variant: "error" })
         }
+    }
+
+    const handleClickCreate = () => {
+        setSelectedFormationId(null);
+        handleFormationFormOpen();
     }
 
 
@@ -93,7 +110,7 @@ function FormationLibrary() {
                     <Typography variant="h3" p={2}>
                             Your Formations
                         </Typography>
-                        <Stack>
+                        <Stack marginBottom={4}>
                             <Box sx={{ backgroundColor: 'darkgreen', borderTopRightRadius: '40px', borderTopLeftRadius: '40px' }}>
                                 <Stack
                                     direction="row"
@@ -131,7 +148,7 @@ function FormationLibrary() {
                                                 backgroundColor: 'darkgreen', // click/pressed color
                                             },
                                         }}
-                                     onClick={() => navigate("/formation/create")}>
+                                     onClick={handleClickCreate}>
                                         <AddIcon sx={{ mr: 1 }} />
                                         Create New
                                     </Fab>
@@ -149,7 +166,7 @@ function FormationLibrary() {
                                             <Typography sx={{ width: '100%' }} overflow="hidden" textOverflow="ellipsis" noWrap p={1} variant="h6">{formation.formationName}</Typography>
 
                                             <Tooltip sx={{ alignContent: 'flex-end', }} title="Open Settings">
-                                                <IconButton onClick={(e) => handleOpenPlaybookMenu(e, formation.formationId)} sx={{ p: 0 }}>
+                                                <IconButton onClick={(e) => handleOpenFormationMenu(e, formation.formationId)} sx={{ p: 0 }}>
                                                     <MoreVertIcon fontSize="large" sx={{ color: 'black' }} />
                                                 </IconButton>
                                             </Tooltip>
@@ -164,7 +181,7 @@ function FormationLibrary() {
                                                 onClose={handleCloseFormationMenu}
                                                 disableScrollLock={true}
                                             >
-                                                <MenuItem onClick={() => handleEdit(selectedFormationId!!)}>Edit</MenuItem>
+                                                <MenuItem onClick={handleEdit}>Edit</MenuItem>
                                                 <MenuItem onClick={() => handleDelete(selectedFormationId!!)}>Delete</MenuItem>
                                             </Menu>
                                 
@@ -186,10 +203,18 @@ function FormationLibrary() {
                                         '& .MuiButton-label': {
                                             color: 'black',
                                         },
-                                    }} onClick={() => navigate("/formation/create")}>Create New</Button>
+                                    }} onClick={handleClickCreate}>Create New</Button>
                                 </Card>
                             </Box>
                         </Stack>
+                        <Modal
+                        open={formationFormOpen}
+                        onClose={handleFormationFormClose}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                    >
+                        <FormationForm handleFormationFormClose={handleFormationFormClose} formationId={selectedFormationId} />
+                    </Modal>
 
                     </Container>
                 

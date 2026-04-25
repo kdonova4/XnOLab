@@ -5,11 +5,11 @@ import { createFormation, getFormationById, updateFormation } from "../../api/Fo
 import { enqueueSnackbar } from "notistack";
 import type { CreateFormationInput } from "../../types/Create/CreateFormationInput";
 import heroImg from "../../assets/hero.png";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import type { UpdateFormationInput } from "../../types/Update/UpdateFormationInput";
 import type { Formation } from "../../types/Formation";
 import Canvas from "../other/Canvas";
-import { Box, Button, Container, FormControl, Stack, TextField } from "@mui/material";
+import { Backdrop, Box, Button, CircularProgress, Container, FormControl, Stack, TextField } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 
 const FORMATION_DEFAULT: Formation = {
@@ -30,12 +30,17 @@ const style = {
     p: 4,
 };
 
-function FormationForm() {
+type FormationFormProps = {
+    handleFormationFormClose: () => void;
+    formationId: number | null
+}
+
+function FormationForm({ handleFormationFormClose, formationId }: FormationFormProps) {
 
     const [formation, setFormation] = useState<Formation>(FORMATION_DEFAULT);
     const [image, setImage] = useState<File | null>(null);
     const [imageUrl, setImageUrl] = useState<string>("");
-    const { id } = useParams();
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const [isUpdatingImage, setIsUpdatingImage] = useState(false);
 
@@ -49,6 +54,7 @@ function FormationForm() {
             queryClient.invalidateQueries({ queryKey: ['formations'] })
             enqueueSnackbar(`${variables.formation.formationName} Formation Created`, { variant: "success" });
             setFormation(FORMATION_DEFAULT);
+            handleFormationFormClose();
         },
         onError: (error) => {
             const message = error instanceof Error ? error.message : "Something went wrong"
@@ -61,6 +67,7 @@ function FormationForm() {
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ['formations'] })
             enqueueSnackbar(`${variables.formation.formationName} Formation Updated`, { variant: "success" });
+            handleFormationFormClose();
         },
         onError: (error) => {
             const message = error instanceof Error ? error.message : "Something went wrong"
@@ -83,9 +90,9 @@ function FormationForm() {
             setImage(file);
 
 
-            if (id) {
+            if (formationId) {
                 try {
-                    const response = await getFormationById(Number(id));
+                    const response = await getFormationById(formationId);
                     const existingFormation: Formation = {
                         formationId: response.formationId,
                         formationName: response.formationName,
@@ -99,15 +106,19 @@ function FormationForm() {
                     // const file = new File([blob], "existing.png", { type: blob.type });
                     setImageUrl(response.formationImageUrl);
                 } catch (error) {
+                    setLoading(false);
                     const message = error instanceof Error ? error.message : "Something went wrong"
                     enqueueSnackbar(message, { variant: "error" })
                     navigate("/");
+                } finally {
+                    setLoading(false);
                 }
             }
         };
 
         loadDefaultImage();
-    }, [id]);
+        
+    }, [formationId]);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setFormation({
@@ -185,10 +196,19 @@ function FormationForm() {
         setIsUpdatingImage(false);
     }
 
-    if (id) {
+    if (formationId) {
         return (
             <>
-                
+                {loading && (
+<div>
+                <Backdrop
+                    sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+                    open={true}
+                    >
+                    <CircularProgress color="inherit"/>
+                    </Backdrop>
+            </div>
+            )}
                 <Container className="container">
                     <Box sx={style}>
                         {isUpdatingImage && (
@@ -221,10 +241,13 @@ function FormationForm() {
                                         },
                                     }}
                                 >
-                                    <img
+                                    {imageUrl && (
+                                        <img
                                         src={imageUrl}
                                         style={{ display: 'block', width: '100%' }}
-                                    />
+                                        />
+                                    )}
+                                    
 
                                     <Button
                                         className="overlay"

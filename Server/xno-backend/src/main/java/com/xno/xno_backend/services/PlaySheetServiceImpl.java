@@ -555,6 +555,11 @@ public class PlaySheetServiceImpl implements PlaySheetService {
             return result;
         }
 
+        if(name.length() > 25) {
+            result.addMessages("Playsheet name cannot be longer than 25 characters", ResultType.INVALID);
+            return result;
+        }
+
         Optional<PlaySheet> playSheet = playSheetRepository.findByPlaySheetName(name);
         if(playSheet.isPresent()) {
             result.addMessages("PlaySheet name cannot be duplicated", ResultType.INVALID);
@@ -600,6 +605,11 @@ public class PlaySheetServiceImpl implements PlaySheetService {
         String name = playSheetUpdateDTO.getPlaySheetName();
         if(name == null || name.isBlank()) {
             result.addMessages("PlaySheet name cannot be null or blank", ResultType.INVALID);
+            return result;
+        }
+
+        if(name.length() > 25) {
+            result.addMessages("Playsheet name cannot be longer than 25 characters", ResultType.INVALID);
             return result;
         }
 

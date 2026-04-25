@@ -115,7 +115,7 @@ export default function NumberField({
               '& input': {
                 color: 'white',
               },
-              backgroundColor: 'black',
+              backgroundColor: "#181a1b",
 
               '& .MuiOutlinedInput-notchedOutline': {
                 borderColor: 'white',

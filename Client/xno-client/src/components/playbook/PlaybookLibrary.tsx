@@ -71,7 +71,7 @@ function PlaybookLibrary() {
     const handlePlaybookFormOpen = () => {
         setPlaybookFormOpen(true)
     }
-    
+
     const handlePlaybookFormClose = () => {
         setPlaybookFormOpen(false)
         setSelectedPlaybookId(null);
@@ -136,6 +136,11 @@ function PlaybookLibrary() {
         }
     }
 
+    const handleCreateClick = () => {
+        setSelectedPlaybookId(null);
+        handlePlaybookFormOpen();
+    }
+
     if (isSuccess) {
 
         return (
@@ -165,6 +170,10 @@ function PlaybookLibrary() {
                                         inputProps={{ 'aria-label': 'search' }}
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
+                                        sx={{
+                                            fontFamily: '"Oswald", sans-serif',
+                                            fontWeight: 300
+                                        }}
                                     />
                                 </Search>
 
@@ -182,13 +191,13 @@ function PlaybookLibrary() {
                                             backgroundColor: 'darkgreen', // click/pressed color
                                         },
                                     }}
-                                    onClick={handlePlaybookFormOpen}>
+                                    onClick={handleCreateClick}>
                                     <AddIcon sx={{ mr: 1 }} />
                                     Create New
                                 </Fab>
                             </Stack>
                         </Box>
-                        <Box sx={{ backgroundColor: '#181a1b', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', borderBottomRightRadius: '20px', borderBottomLeftRadius: '20px' }}>
+                        <Box marginBottom={4} sx={{ backgroundColor: '#181a1b', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', borderBottomRightRadius: '20px', borderBottomLeftRadius: '20px' }}>
                             {data && data.length > 0 && (
                                 filteredPlaybooks.map((playbook) => (
                                     <Card key={playbook.playbookId} sx={{
@@ -239,18 +248,18 @@ function PlaybookLibrary() {
                                     '& .MuiButton-label': {
                                         color: 'black',
                                     },
-                                }} onClick={handlePlaybookFormOpen}>Create New</Button>
+                                }} onClick={handleCreateClick}>Create New</Button>
                             </Card>
                         </Box>
                     </Stack>
 
                     <Modal
-                            open={playbookFormOpen}
-                            onClose={handlePlaybookFormClose}
-                            aria-labelledby="modal-modal-title"
-                            aria-describedby="modal-modal-description">
-                                <PlaybookForm handlePlaybookFormClose={handlePlaybookFormClose} playbookId={selectedPlaybookId}/>
-                            </Modal>
+                        open={playbookFormOpen}
+                        onClose={handlePlaybookFormClose}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description">
+                        <PlaybookForm handlePlaybookFormClose={handlePlaybookFormClose} playbookId={selectedPlaybookId} />
+                    </Modal>
 
                 </Container>
             </>

@@ -1,4 +1,4 @@
-import { Box, Fab, FormControl, InputLabel, MenuItem, Select, Stack, Typography } from "@mui/material";
+import { Box, Fab, FormControl, InputLabel, MenuItem, Select, Stack, Tooltip, Typography } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { getPlaybooksByUser } from "../../api/PlaybookAPI";
@@ -124,7 +124,7 @@ function PlayCopyForm({ playbookId, handleClose }: PlayCopyFormProps) {
                             
                             {fullPlays.map((play) => (
                                 <div>
-                                    
+                                    <Tooltip enterNextDelay={1000} enterDelay={1000} leaveDelay={0} title={<img width={200} src={play.playImageUrl}/>}>
                                         <Fab
                                             variant="extended"
                                             sx={{
@@ -146,7 +146,7 @@ function PlayCopyForm({ playbookId, handleClose }: PlayCopyFormProps) {
                                             <ClearIcon sx={{ mr: .1 }} fontSize="small"/>
                                             {play.playName}
                                         </Fab>
-                                    
+                                    </Tooltip>
 
 
                                 </div>
@@ -211,7 +211,8 @@ function PlayCopyForm({ playbookId, handleClose }: PlayCopyFormProps) {
                             {playQuery.data.map((play) => (
                                 <div>
                                     {!playIds.includes(play.playId) && (
-                                        <Fab
+                                        <Tooltip enterNextDelay={1000} enterDelay={1000} leaveDelay={0} title={<img width={200} src={play.playImageUrl}/>}>
+                                            <Fab
                                             variant="extended"
                                             sx={{
                                                 backgroundColor: 'green',
@@ -231,6 +232,8 @@ function PlayCopyForm({ playbookId, handleClose }: PlayCopyFormProps) {
                                         >
                                             {play.playName}
                                         </Fab>
+                                        </Tooltip>
+                                        
                                     )}
 
 

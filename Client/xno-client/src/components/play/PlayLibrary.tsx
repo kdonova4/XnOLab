@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from "react";
 import { enqueueSnackbar } from "notistack";
 import { getAllFormationsByUser } from "../../api/FormationAPI";
 import { Box, Button, Card, CardMedia, Container, Fab, FormControl, IconButton, InputLabel, Menu, MenuItem, Modal, Select, Stack, Tooltip, Typography } from "@mui/material";
-import FormationViewer from "../formation/FormationViewer";
 import type { FormationResponse } from "../../types/Response/FormationResponse";
 import type { PlayResponse } from "../../types/Response/PlayResponse";
 import PlayViewer from "./PlayViewer";
@@ -130,6 +129,11 @@ function PlayLibrary({ playbookId }: PlayLibraryProps) {
         setSelectedPlay(null);
     }
 
+    const handleCreateClick = () => {
+        setSelectedPlay(null);
+        handleOpenPlayForm();
+    }
+
     if (isSuccess) {
         if (data.length > 0 && formationsQuery.data) {
             return (
@@ -218,13 +222,13 @@ function PlayLibrary({ playbookId }: PlayLibraryProps) {
                                                 backgroundColor: 'darkgreen', // click/pressed color
                                             },
                                         }}
-                                        onClick={handleOpenPlayForm}>
+                                        onClick={handleCreateClick}>
                                         <AddIcon sx={{ mr: 1 }} />
                                         Create New
                                     </Fab>
                                 </Stack>
                             </Box>
-                            <Box sx={{ backgroundColor: '#181a1b', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', borderBottomRightRadius: '20px', borderBottomLeftRadius: '20px' }}>
+                            <Box marginBottom={4} sx={{ backgroundColor: '#181a1b', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', borderBottomRightRadius: '20px', borderBottomLeftRadius: '20px' }}>
                                 {data && data.length > 0 && formationsQuery.data && (
                                     filteredPlays.map((play) => (
                                         <Card key={play.playId} sx={{
@@ -276,7 +280,7 @@ function PlayLibrary({ playbookId }: PlayLibraryProps) {
                                         '& .MuiButton-label': {
                                             color: 'black',
                                         },
-                                    }} onClick={handleOpenPlayForm}>Create New</Button>
+                                    }} onClick={handleCreateClick}>Create New</Button>
                                 </Card>
                             </Box>
                         </Stack>

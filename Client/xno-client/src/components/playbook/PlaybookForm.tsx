@@ -7,7 +7,7 @@ import type { PlaybookCreateRequest } from "../../types/Create/PlaybookCreateReq
 import { createPlaybook, getPlaybookSummaryById, updatePlaybook } from "../../api/PlaybookAPI";
 import { enqueueSnackbar } from "notistack";
 import type { PlaybookUpdateRequest } from "../../types/Update/PlaybookUpdateRequest";
-import { Box, Container, FormControl, TextField } from "@mui/material";
+import { Box, Container, FormControl, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 
 const PLAYBOOK_DEFAULT: Playbook = {
@@ -130,7 +130,7 @@ function PlaybookForm({ handlePlaybookFormClose, playbookId }: PlaybookFormProps
                     <Box sx={style} display='flex' alignItems='center' flexDirection='column'>
 
                         <div>
-                            <h1 style={{ textAlign: 'center' }}>Update Playbook</h1>
+                            <Typography p={2} variant="h4" sx={{ textAlign: 'center' }}>Update Playbook</Typography>
                             <FormControl sx={{ m: 1, width: '35ch', color: 'white' }} variant="outlined">
                                 <TextField
                                     slotProps={{
@@ -215,7 +215,7 @@ function PlaybookForm({ handlePlaybookFormClose, playbookId }: PlaybookFormProps
                     <Box sx={style} display='flex' alignItems='center' flexDirection='column'>
 
                         <div>
-                            <h1 style={{ textAlign: 'center' }}>Create Playbook</h1>
+                            <Typography p={2} variant="h4" sx={{ textAlign: 'center' }}>Create Playbook</Typography>
                             <FormControl sx={{ m: 1, width: '35ch', color: 'white' }} variant="outlined">
                                 <TextField
                                     slotProps={{
