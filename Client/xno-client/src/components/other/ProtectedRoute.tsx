@@ -8,11 +8,15 @@ type ProtectedRouteProps = {
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     const { isAuthenticated, loading } = useAuth();
-    
-    if(!isAuthenticated && !loading) {
-        enqueueSnackbar("Please Login To Access This Feature", { variant: "warning" })
-        return <Navigate to="/login" replace />
+
+    if (loading) {
+        return null;
     }
 
-    return <>{children}</>
+    if (!isAuthenticated) {
+        enqueueSnackbar("Please Login To Access This Feature", { variant: "warning" });
+        return <Navigate to="/login" replace />;
+    }
+
+    return <>{children}</>;
 }

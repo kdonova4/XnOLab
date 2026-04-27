@@ -55,7 +55,11 @@ export const getUserDetails = async (): Promise<UserInfoResponse> => {
 
 export const logout = async (): Promise<MessageResponse> => {
     try {
-        const response = await axios.post(`${url}/sign-out`, getAxiosConfig());
+        const response = await axios.post(
+            `${url}/sign-out`,
+            {}, 
+            getAxiosConfig()
+        );
         return response.data;
     } catch (error: any) {
         throw handleError(error);        

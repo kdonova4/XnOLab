@@ -61,15 +61,13 @@ public class JwtUtils {
     }
 
     public ResponseCookie getCleanJwtCookie() {
-        ResponseCookie cookie = ResponseCookie.from(jwtCookie, null)
+        return ResponseCookie.from(jwtCookie, "")
                 .httpOnly(true)
-                .sameSite("None")
                 .secure(true)
+                .sameSite("None")
                 .path("/")
                 .maxAge(0)
                 .build();
-
-        return cookie;
     }
 
     public String generateTokenFromUsername(String username) {
