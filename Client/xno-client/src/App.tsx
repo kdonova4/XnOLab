@@ -1,15 +1,12 @@
-import { Box, Button, Container, createTheme, IconButton, Stack, Typography } from "@mui/material";
+import { Box, Container, IconButton, Stack, Typography } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SnackbarProvider } from "notistack";
-import { Route, BrowserRouter as Router, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import HomePage from "./components/other/HomePage";
 import RegisterPage from "./components/auth/RegisterPage";
 import LoginPage from "./components/auth/LoginPage";
-import FormationForm from "./components/formation/FormationForm";
-import PlayForm from "./components/play/PlayForm";
 import PlaybookLibrary from "./components/playbook/PlaybookLibrary";
 import PlaybookViewer from "./components/playbook/PlaybookViewer";
-import PlaybookForm from "./components/playbook/PlaybookForm";
 import PlaySheetForm from "./components/playsheet/PlaySheetForm";
 import PlaySheetLibrary from "./components/playsheet/PlaySheetLibrary";
 import { AuthProvider } from "./components/hooks/AuthContext";

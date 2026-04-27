@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from "react";
 import { enqueueSnackbar } from "notistack";
 import { getAllFormationsByUser } from "../../api/FormationAPI";
 import { Backdrop, Box, Button, Card, CardMedia, CircularProgress, Container, Fab, FormControl, IconButton, InputLabel, Menu, MenuItem, Modal, Select, Stack, Tooltip, Typography } from "@mui/material";
-import type { FormationResponse } from "../../types/Response/FormationResponse";
 import type { PlayResponse } from "../../types/Response/PlayResponse";
 import PlayViewer from "./PlayViewer";
 import { Search, SearchIconWrapper, StyledInputBase } from "../other/MUISearchLibraryComponents";
@@ -24,7 +23,6 @@ function PlayLibrary({ playbookId }: PlayLibraryProps) {
     const navigate = useNavigate();
     const [formationViewOpen, setFormationViewOpen] = useState(false);
     const [playViewOpen, setPlayViewOpen] = useState(false);
-    const [viewedFormation, setViewedFormation] = useState<FormationResponse>()
     const [selectedPlay, setSelectedPlay] = useState<PlayResponse | null>(null);
     const [selectedFormationId, setSelectedFormationId] = useState<number | null>(null)
     const [searchQuery, setSearchQuery] = useState<string>("")
@@ -110,9 +108,8 @@ function PlayLibrary({ playbookId }: PlayLibraryProps) {
         }
     }
 
-    const handleFormationOpen = (formation: FormationResponse) => {
+    const handleFormationOpen = () => {
         setFormationViewOpen(true);
-        setViewedFormation(formation)
     }
 
     const handlePlayOpen = (play: PlayResponse) => {

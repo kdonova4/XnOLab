@@ -20,7 +20,7 @@ function PlaybookViewer() {
         queryFn: () => getPlaybookSummaryById(Number(playbookId)),
         retry: false
     })
-    
+
 
     const playbookQuery = useQuery({
         queryKey: ["playbooks"],
@@ -51,18 +51,18 @@ function PlaybookViewer() {
         setOpen(false);
     }
 
-        if(playbookQuery.isPending) {
+    if (playbookQuery.isPending) {
         return (
             <>
 
-<div>
-                <Backdrop
-                    sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
-                    open={true}
+                <div>
+                    <Backdrop
+                        sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+                        open={true}
                     >
-                    <CircularProgress color="inherit"/>
+                        <CircularProgress color="inherit" />
                     </Backdrop>
-            </div>
+                </div>
 
             </>
         )
@@ -76,45 +76,45 @@ function PlaybookViewer() {
                 <>
                     <Container className="container">
 
-                        
+
                         <Stack
-                                direction="row"
-                                p={2}
-                                width="100%"
-                                justifyContent="space-between"
-                                alignItems="center"
-                                sx={{ boxSizing: "border-box" }}
-                            >
+                            direction="row"
+                            p={2}
+                            width="100%"
+                            justifyContent="space-between"
+                            alignItems="center"
+                            sx={{ boxSizing: "border-box" }}
+                        >
                             <Typography p={2} variant="h3">{data.playbookName}</Typography>
 
                             <Tooltip title={hasNone ? "You Have No Other Playbooks To Copy From" : "Choose Plays From Other Playbooks To Copy From"}>
                                 <span>
                                     <Fab
-                                    variant="extended"
-                                    sx={{
-                                        backgroundColor: 'green',
-                                        color: 'black',
+                                        variant="extended"
+                                        sx={{
+                                            backgroundColor: 'green',
+                                            color: 'black',
 
-                                        '&:hover': {
-                                            backgroundColor: 'lightgreen', // hover color
-                                        },
+                                            '&:hover': {
+                                                backgroundColor: 'lightgreen', // hover color
+                                            },
 
-                                        '&:active': {
-                                            backgroundColor: 'darkgreen', // click/pressed color
-                                        },
-                                    }}
-                                    disabled={hasNone}
-                                    onClick={handleOpen}>
-                                    <ContentCopyIcon sx={{ mr: 1 }} />
-                                    Copy Plays To This Playbook
-                                </Fab>
+                                            '&:active': {
+                                                backgroundColor: 'darkgreen', // click/pressed color
+                                            },
+                                        }}
+                                        disabled={hasNone}
+                                        onClick={handleOpen}>
+                                        <ContentCopyIcon sx={{ mr: 1 }} />
+                                        Copy Plays To This Playbook
+                                    </Fab>
                                 </span>
-                                
+
                             </Tooltip>
-                            
+
                         </Stack>
 
-                        
+
                         <div>
                             <PlayLibrary playbookId={Number(playbookId)} />
                         </div>
@@ -124,7 +124,7 @@ function PlaybookViewer() {
                             aria-describedby="modal-modal-description">
                             <PlayCopyForm playbookId={Number(playbookId)} handleClose={handleClose} />
                         </Modal>
-                        
+
                     </Container>
 
                 </>

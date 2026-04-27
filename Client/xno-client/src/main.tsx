@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import { createTheme, ThemeProvider } from '@mui/material';
-import { BrowserRouter, Route, BrowserRouter as Router, Routes, useNavigate } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 const theme = createTheme({
   typography: {
     fontFamily: '"Oswald", sans-serif', 

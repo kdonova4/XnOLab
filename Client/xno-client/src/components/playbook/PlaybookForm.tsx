@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Playbook } from "../../types/Playbook";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import type { PlaybookSummaryResponse } from "../../types/Response/PlaybookSummaryResponse";
 import type { PlaybookCreateRequest } from "../../types/Create/PlaybookCreateRequest";
 import { createPlaybook, getPlaybookSummaryById, updatePlaybook } from "../../api/PlaybookAPI";

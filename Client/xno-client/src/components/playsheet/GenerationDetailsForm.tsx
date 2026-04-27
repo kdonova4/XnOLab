@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { GenerationDetails } from "../../types/Misc/GenerationDetails";
-import { Box, Button, Checkbox, Stack, Typography } from "@mui/material";
+import { Box, Checkbox, Stack, Typography } from "@mui/material";
 import { generatePlaySheet } from "../../api/PlaySheetAPI";
 import { useMutation } from "@tanstack/react-query";
 import type { GenerateRequest } from "../../types/Misc/GenerateRequest";
